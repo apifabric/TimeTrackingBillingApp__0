@@ -1,0 +1,284 @@
+{
+    "models": [
+        {
+            "classname": "Client",
+            "code": "class Client(Base):\n    __tablename__ = 'client'\n\n    id = Column(Integer, primary_key=True)\n    name = Column(String)\n    email = Column(String)\n    phone = Column(String)\n    total_hours = Column(DECIMAL(10, 2), default=0)\n    total_amount = Column(DECIMAL(10, 2), default=0)\n    budget_amount = Column(DECIMAL(10, 2), default=0)\n    is_over_budget = Column(Boolean, default=False)",
+            "description": "Represents a client with financials and budget constraints.",
+            "name": "Client"
+        },
+        {
+            "classname": "Project",
+            "code": "class Project(Base):\n    __tablename__ = 'project'\n\n    id = Column(Integer, primary_key=True)\n    client_id = Column(Integer, ForeignKey('client.id'))\n    name = Column(String)\n    total_project_hours = Column(DECIMAL(10, 2), default=0)\n    total_project_amount = Column(DECIMAL(10, 2), default=0)\n    project_budget_amount = Column(DECIMAL(10, 2), default=0)\n    is_over_budget = Column(Boolean, default=False)",
+            "description": "Tracks project details and monitors project budget.",
+            "name": "Project"
+        },
+        {
+            "classname": "Invoice",
+            "code": "class Invoice(Base):\n    __tablename__ = 'invoice'\n\n    id = Column(Integer, primary_key=True)\n    invoice_date = Column(Date)\n    project_id = Column(Integer, ForeignKey('project.id'))\n    invoice_amount = Column(DECIMAL(10, 2), default=0)\n    payment_total = Column(DECIMAL(10, 2), default=0)\n    invoice_balance = Column(DECIMAL(10, 2), default=0)\n    is_paid = Column(Boolean, default=False)",
+            "description": "Manages invoice creation and financial tracking.",
+            "name": "Invoice"
+        },
+        {
+            "classname": "Task",
+            "code": "class Task(Base):\n    __tablename__ = 'task'\n\n    id = Column(Integer, primary_key=True)\n    project_id = Column(Integer, ForeignKey('project.id'))\n    name = Column(String)\n    description = Column(String)\n    total_task_hours_worked = Column(DECIMAL(10, 2), default=0)\n    total_task_amount_billed = Column(DECIMAL(10, 2), default=0)\n    task_budget_hours = Column(DECIMAL(10, 2), default=0)\n    is_over_budget = Column(Boolean, default=False)\n    invoice_id = Column(Integer, ForeignKey('invoice.id'))",
+            "description": "Represents tasks asscoiated with projects, tracking hours and amounts billed.",
+            "name": "Task"
+        },
+        {
+            "classname": "Person",
+            "code": "class Person(Base):\n    __tablename__ = 'person'\n\n    id = Column(Integer, primary_key=True)\n    client_id = Column(Integer, ForeignKey('client.id'))\n    name = Column(String)\n    email = Column(String)\n    phone = Column(String)\n    billing_rate = Column(DECIMAL(10, 2), CheckConstraint('billing_rate > 0 and billing_rate < 200'), default=0)\n    total_hours_entered = Column(DECIMAL(10, 2), default=0)\n    total_amount_billed = Column(DECIMAL(10, 2), default=0)",
+            "description": "Captures personnel data and their billing details.",
+            "name": "Person"
+        },
+        {
+            "classname": "Timesheet",
+            "code": "class Timesheet(Base):\n    __tablename__ = 'timesheet'\n\n    id = Column(Integer, primary_key=True)\n    task_id = Column(Integer, ForeignKey('task.id'))\n    person_id = Column(Integer, ForeignKey('person.id'))\n    date_worked = Column(Date, CheckConstraint('date_worked > \"2025-01-01\"'))\n    hours_worked = Column(DECIMAL(10, 2), CheckConstraint('hours_worked > 0 and hours_worked < 15'), default=0)\n    month = Column(Integer)\n    year = Column(Integer)\n    billing_rate = Column(DECIMAL(10, 2), default=0)\n    total_amount_billed = Column(DECIMAL(10, 2), default=0)",
+            "description": "Track time worked and calculate billing based on hours and rates.",
+            "name": "Timesheet"
+        },
+        {
+            "classname": "Payment",
+            "code": "class Payment(Base):\n    __tablename__ = 'payment'\n\n    id = Column(Integer, primary_key=True)\n    invoice_id = Column(Integer, ForeignKey('invoice.id'))\n    payment_amount = Column(DECIMAL(10, 2))\n    payment_date = Column(Date)\n    notes = Column(String)",
+            "description": "Records payment transactions linked to invoices.",
+            "name": "Payment"
+        }
+    ],
+    "rules": [
+        {
+            "name": "PersonTotalHours",
+            "description": "Calculate total hours entered for a person based on timesheets.",
+            "use_case": "Person",
+            "entity": "Person",
+            "code": "Rule.sum(derive=Person.total_hours_entered, as_sum_of=Timesheet.hours_worked)"
+        },
+        {
+            "name": "PersonTotalAmountBilled",
+            "description": "Compute total amount billed for a person.",
+            "use_case": "Person",
+            "entity": "Person",
+            "code": "Rule.formula(derive=Person.total_amount_billed, as_expression=lambda row: row.total_hours_entered * row.billing_rate)"
+        },
+        {
+            "name": "TimesheetTotalAmountBilled",
+            "description": "Total amount billed for timesheet entry.",
+            "use_case": "Timesheet",
+            "entity": "Timesheet",
+            "code": "Rule.formula(derive=Timesheet.total_amount_billed, as_expression=lambda row: row.hours_worked * row.billing_rate)"
+        },
+        {
+            "name": "TimesheetBillingRateCopy",
+            "description": "Copy billing rate from person to timesheet on creation.",
+            "use_case": "Timesheet",
+            "entity": "Timesheet",
+            "code": "Rule.copy(derive=Timesheet.billing_rate, from_parent=Person.billing_rate)"
+        },
+        {
+            "name": "TaskTotalHoursWorked",
+            "description": "Sum of hours worked for a task based on associated timesheets.",
+            "use_case": "Task",
+            "entity": "Task",
+            "code": "Rule.sum(derive=Task.total_task_hours_worked, as_sum_of=Timesheet.hours_worked)"
+        },
+        {
+            "name": "TaskTotalAmountBilled",
+            "description": "Sum of amount billed for a task based on timesheets.",
+            "use_case": "Task",
+            "entity": "Task",
+            "code": "Rule.sum(derive=Task.total_task_amount_billed, as_sum_of=Timesheet.total_amount_billed)"
+        },
+        {
+            "name": "TaskIsOverBudget",
+            "description": "Determine if a task is over budget based on hours.",
+            "use_case": "Task",
+            "entity": "Task",
+            "code": "Rule.formula(derive=Task.is_over_budget, as_expression=lambda row: row.total_task_hours_worked > row.task_budget_hours)"
+        },
+        {
+            "name": "ProjectTotalHours",
+            "description": "Total project hours computed from all tasks.",
+            "use_case": "Project",
+            "entity": "Project",
+            "code": "Rule.sum(derive=Project.total_project_hours, as_sum_of=Task.total_task_hours_worked)"
+        },
+        {
+            "name": "ProjectTotalAmount",
+            "description": "Total project amount is sum of all task amounts.",
+            "use_case": "Project",
+            "entity": "Project",
+            "code": "Rule.sum(derive=Project.total_project_amount, as_sum_of=Task.total_task_amount_billed)"
+        },
+        {
+            "name": "ProjectIsOverBudget",
+            "description": "Check if a project is over budget based on total billing against project budget.",
+            "use_case": "Project",
+            "entity": "Project",
+            "code": "Rule.formula(derive=Project.is_over_budget, as_expression=lambda row: row.total_project_amount > row.project_budget_amount)"
+        },
+        {
+            "name": "ClientTotalHours",
+            "description": "Calculate total hours worked for a client from projects.",
+            "use_case": "Client",
+            "entity": "Client",
+            "code": "Rule.sum(derive=Client.total_hours, as_sum_of=Project.total_project_hours)"
+        },
+        {
+            "name": "ClientTotalAmount",
+            "description": "Compute total amount billed for a client across all projects.",
+            "use_case": "Client",
+            "entity": "Client",
+            "code": "Rule.sum(derive=Client.total_amount, as_sum_of=Project.total_project_amount)"
+        },
+        {
+            "name": "ClientIsOverBudget",
+            "description": "Determine if a client is over budget.",
+            "use_case": "Client",
+            "entity": "Client",
+            "code": "Rule.formula(derive=Client.is_over_budget, as_expression=lambda row: row.total_amount > row.budget_amount)"
+        },
+        {
+            "name": "InvoiceAmount",
+            "description": "Sum of task amounts billed for invoice.",
+            "use_case": "Invoice",
+            "entity": "Invoice",
+            "code": "Rule.sum(derive=Invoice.invoice_amount, as_sum_of=Task.total_task_amount_billed)"
+        },
+        {
+            "name": "InvoicePaymentTotal",
+            "description": "Sum of payments made against an invoice.",
+            "use_case": "Invoice",
+            "entity": "Invoice",
+            "code": "Rule.sum(derive=Invoice.payment_total, as_sum_of=Payment.payment_amount)"
+        },
+        {
+            "name": "InvoiceBalance",
+            "description": "Calculate outstanding balance for an invoice.",
+            "use_case": "Invoice",
+            "entity": "Invoice",
+            "code": "Rule.formula(derive=Invoice.invoice_balance, as_expression=lambda row: row.invoice_amount - row.payment_total)"
+        },
+        {
+            "name": "InvoiceIsPaid",
+            "description": "Evaluate if an invoice is fully paid.",
+            "use_case": "Invoice",
+            "entity": "Invoice",
+            "code": "Rule.formula(derive=Invoice.is_paid, as_expression=lambda row: row.invoice_balance == 0)"
+        }
+    ],
+    "test_data": "Client(id=1,name=\"Alpha Corp\",email=\"contact@alphacorp.com\",phone=\"123-456-7890\",total_hours=200.00,total_amount=15000.00,budget_amount=20000.00,is_over_budget=False)",
+    "test_data_rows": [
+        {
+            "test_data_row_variable": "alpha_corp",
+            "code": "alpha_corp = Client(id=1, name=\"Alpha Corp\", email=\"contact@alphacorp.com\", phone=\"123-456-7890\", total_hours=200.00, total_amount=15000.00, budget_amount=20000.00, is_over_budget=False)"
+        },
+        {
+            "test_data_row_variable": "beta_inc",
+            "code": "beta_inc = Client(id=2, name=\"Beta Inc\", email=\"support@betainc.com\", phone=\"098-765-4321\", total_hours=0.00, total_amount=7500.00, budget_amount=10000.00, is_over_budget=False)"
+        },
+        {
+            "test_data_row_variable": "gamma_llc",
+            "code": "gamma_llc = Client(id=3, name=\"Gamma LLC\", email=\"info@gammallc.com\", phone=\"234-567-8901\", total_hours=50.00, total_amount=5000.00, budget_amount=7000.00, is_over_budget=True)"
+        },
+        {
+            "test_data_row_variable": "delta_plc",
+            "code": "delta_plc = Client(id=4, name=\"Delta PLC\", email=\"service@deltaplc.com\", phone=\"345-678-9012\", total_hours=100.00, total_amount=12000.00, budget_amount=15000.00, is_over_budget=False)"
+        },
+        {
+            "test_data_row_variable": "alpha_project",
+            "code": "alpha_project = Project(id=1, client_id=1, name=\"Build Website\", total_project_hours=150.0, total_project_amount=12000.00, project_budget_amount=15000.00, is_over_budget=False)"
+        },
+        {
+            "test_data_row_variable": "beta_project",
+            "code": "beta_project = Project(id=2, client_id=2, name=\"App Development\", total_project_hours=250.0, total_project_amount=25000.00, project_budget_amount=23000.00, is_over_budget=True)"
+        },
+        {
+            "test_data_row_variable": "gamma_project",
+            "code": "gamma_project = Project(id=3, client_id=3, name=\"SEO Optimization\", total_project_hours=80.0, total_project_amount=8000.00, project_budget_amount=10000.00, is_over_budget=False)"
+        },
+        {
+            "test_data_row_variable": "delta_project",
+            "code": "delta_project = Project(id=4, client_id=4, name=\"Cloud Migration\", total_project_hours=170.0, total_project_amount=18000.00, project_budget_amount=20000.00, is_over_budget=False)"
+        },
+        {
+            "test_data_row_variable": "invoice_1",
+            "code": "invoice_1 = Invoice(id=1, invoice_date=date(2025, 2, 15), project_id=1, invoice_amount=12000.00, payment_total=8000.00, invoice_balance=4000.00, is_paid=False)"
+        },
+        {
+            "test_data_row_variable": "invoice_2",
+            "code": "invoice_2 = Invoice(id=2, invoice_date=date(2026, 5, 20), project_id=2, invoice_amount=7000.00, payment_total=7000.00, invoice_balance=0.00, is_paid=True)"
+        },
+        {
+            "test_data_row_variable": "invoice_3",
+            "code": "invoice_3 = Invoice(id=3, invoice_date=date(2026, 9, 10), project_id=3, invoice_amount=0.00, payment_total=0.00, invoice_balance=0.00, is_paid=True)"
+        },
+        {
+            "test_data_row_variable": "invoice_4",
+            "code": "invoice_4 = Invoice(id=4, invoice_date=date(2027, 1, 1), project_id=4, invoice_amount=18000.00, payment_total=16000.00, invoice_balance=2000.00, is_paid=False)"
+        },
+        {
+            "test_data_row_variable": "task_alpha",
+            "code": "task_alpha = Task(id=1, project_id=1, name=\"Design Phase\", description=\"Initial design and prototype\", total_task_hours_worked=30.0, total_task_amount_billed=3000.00, task_budget_hours=40.0, is_over_budget=False, invoice_id=1)"
+        },
+        {
+            "test_data_row_variable": "task_beta",
+            "code": "task_beta = Task(id=2, project_id=2, name=\"Development Phase\", description=\"Core application development\", total_task_hours_worked=100.0, total_task_amount_billed=10000.00, task_budget_hours=90.0, is_over_budget=True, invoice_id=2)"
+        },
+        {
+            "test_data_row_variable": "task_gamma",
+            "code": "task_gamma = Task(id=3, project_id=3, name=\"Optimization Phase\", description=\"Enhance site performance\", total_task_hours_worked=20.0, total_task_amount_billed=2000.00, task_budget_hours=25.0, is_over_budget=False, invoice_id=3)"
+        },
+        {
+            "test_data_row_variable": "task_delta",
+            "code": "task_delta = Task(id=4, project_id=4, name=\"Testing Phase\", description=\"End-to-end testing and QA\", total_task_hours_worked=50.0, total_task_amount_billed=5000.00, task_budget_hours=55.0, is_over_budget=False, invoice_id=4)"
+        },
+        {
+            "test_data_row_variable": "person_john",
+            "code": "person_john = Person(id=1, client_id=1, name=\"John Doe\", email=\"john@alphacorp.com\", phone=\"111-222-3333\", billing_rate=150.00, total_hours_entered=60.0, total_amount_billed=9000.00)"
+        },
+        {
+            "test_data_row_variable": "person_jane",
+            "code": "person_jane = Person(id=2, client_id=2, name=\"Jane Smith\", email=\"jane@betainc.com\", phone=\"222-333-4444\", billing_rate=100.00, total_hours_entered=45.0, total_amount_billed=4500.00)"
+        },
+        {
+            "test_data_row_variable": "person_alex",
+            "code": "person_alex = Person(id=3, client_id=3, name=\"Alex Brown\", email=\"alex@gammallc.com\", phone=\"333-444-5555\", billing_rate=175.00, total_hours_entered=30.0, total_amount_billed=5250.00)"
+        },
+        {
+            "test_data_row_variable": "person_emma",
+            "code": "person_emma = Person(id=4, client_id=4, name=\"Emma Taylor\", email=\"emma@deltaplc.com\", phone=\"444-555-6666\", billing_rate=90.00, total_hours_entered=55.0, total_amount_billed=4950.00)"
+        },
+        {
+            "test_data_row_variable": "timesheet_1",
+            "code": "timesheet_1 = Timesheet(id=1, task_id=1, person_id=1, date_worked=date(2026, 2, 5), hours_worked=15.0, month=2, year=2026, billing_rate=150.00, total_amount_billed=2250.00)"
+        },
+        {
+            "test_data_row_variable": "timesheet_2",
+            "code": "timesheet_2 = Timesheet(id=2, task_id=2, person_id=2, date_worked=date(2026, 5, 12), hours_worked=10.0, month=5, year=2026, billing_rate=100.00, total_amount_billed=1000.00)"
+        },
+        {
+            "test_data_row_variable": "timesheet_3",
+            "code": "timesheet_3 = Timesheet(id=3, task_id=3, person_id=3, date_worked=date(2026, 9, 8), hours_worked=5.0, month=9, year=2026, billing_rate=175.00, total_amount_billed=875.00)"
+        },
+        {
+            "test_data_row_variable": "timesheet_4",
+            "code": "timesheet_4 = Timesheet(id=4, task_id=4, person_id=4, date_worked=date(2026, 12, 21), hours_worked=12.0, month=12, year=2026, billing_rate=90.00, total_amount_billed=1080.00)"
+        },
+        {
+            "test_data_row_variable": "payment_1",
+            "code": "payment_1 = Payment(id=1, invoice_id=1, payment_amount=4000.00, payment_date=date(2026, 3, 1), notes=\"Initial Payment\")"
+        },
+        {
+            "test_data_row_variable": "payment_2",
+            "code": "payment_2 = Payment(id=2, invoice_id=2, payment_amount=7000.00, payment_date=date(2026, 6, 20), notes=\"Final Settlement\")"
+        },
+        {
+            "test_data_row_variable": "payment_3",
+            "code": "payment_3 = Payment(id=3, invoice_id=3, payment_amount=0.00, payment_date=date(2026, 9, 12), notes=\"No payment required\")"
+        },
+        {
+            "test_data_row_variable": "payment_4",
+            "code": "payment_4 = Payment(id=4, invoice_id=4, payment_amount=16000.00, payment_date=date(2027, 2, 1), notes=\"Majority payment\")"
+        }
+    ],
+    "test_data_sqlite": "insert into client(id, name, email, phone, total_hours, total_amount, budget_amount, is_over_budget) values(1, 'Alpha Corp', 'contact@alphacorp.com', '123-456-7890', 200.00, 15000.00, 20000.00, FALSE);\ninsert into client(id, name, email, phone, total_hours, total_amount, budget_amount, is_over_budget) values(2, 'Beta Inc', 'support@betainc.com', '098-765-4321', 0.00, 7500.00, 10000.00, FALSE);\ninsert into client(id, name, email, phone, total_hours, total_amount, budget_amount, is_over_budget) values(3, 'Gamma LLC', 'info@gammallc.com', '234-567-8901', 50.00, 5000.00, 7000.00, TRUE);\ninsert into client(id, name, email, phone, total_hours, total_amount, budget_amount, is_over_budget) values(4, 'Delta PLC', 'service@deltaplc.com', '345-678-9012', 100.00, 12000.00, 15000.00, FALSE);\n\ninsert into project(id, client_id, name, total_project_hours, total_project_amount, project_budget_amount, is_over_budget) values(1, 1, 'Build Website', 150.0, 12000.00, 15000.00, FALSE);\ninsert into project(id, client_id, name, total_project_hours, total_project_amount, project_budget_amount, is_over_budget) values(2, 2, 'App Development', 250.0, 25000.00, 23000.00, TRUE);\ninsert into project(id, client_id, name, total_project_hours, total_project_amount, project_budget_amount, is_over_budget) values(3, 3, 'SEO Optimization', 80.0, 8000.00, 10000.00, FALSE);\ninsert into project(id, client_id, name, total_project_hours, total_project_amount, project_budget_amount, is_over_budget) values(4, 4, 'Cloud Migration', 170.0, 18000.00, 20000.00, FALSE);\n\ninsert into invoice(id, invoice_date, project_id, invoice_amount, payment_total, invoice_balance, is_paid) values(1, '2025-02-15', 1, 12000.00, 8000.00, 4000.00, FALSE);\ninsert into invoice(id, invoice_date, project_id, invoice_amount, payment_total, invoice_balance, is_paid) values(2, '2026-05-20', 2, 7000.00, 7000.00, 0.00, TRUE);\ninsert into invoice(id, invoice_date, project_id, invoice_amount, payment_total, invoice_balance, is_paid) values(3, '2026-09-10', 3, 0.00, 0.00, 0.00, TRUE);\ninsert into invoice(id, invoice_date, project_id, invoice_amount, payment_total, invoice_balance, is_paid) values(4, '2027-01-01', 4, 18000.00, 16000.00, 2000.00, FALSE);\n\ninsert into task(id, project_id, name, description, total_task_hours_worked, total_task_amount_billed, task_budget_hours, is_over_budget, invoice_id) values(1, 1, 'Design Phase', 'Initial design and prototype', 30.0, 3000.00, 40.0, FALSE, 1);\ninsert into task(id, project_id, name, description, total_task_hours_worked, total_task_amount_billed, task_budget_hours, is_over_budget, invoice_id) values(2, 2, 'Development Phase', 'Core application development', 100.0, 10000.00, 90.0, TRUE, 2);\ninsert into task(id, project_id, name, description, total_task_hours_worked, total_task_amount_billed, task_budget_hours, is_over_budget, invoice_id) values(3, 3, 'Optimization Phase', 'Enhance site performance', 20.0, 2000.00, 25.0, FALSE, 3);\ninsert into task(id, project_id, name, description, total_task_hours_worked, total_task_amount_billed, task_budget_hours, is_over_budget, invoice_id) values(4, 4, 'Testing Phase', 'End-to-end testing and QA', 50.0, 5000.00, 55.0, FALSE, 4);\n\ninsert into person(id, client_id, name, email, phone, billing_rate, total_hours_entered, total_amount_billed) values(1, 1, 'John Doe', 'john@alphacorp.com', '111-222-3333', 150.00, 60.0, 9000.00);\ninsert into person(id, client_id, name, email, phone, billing_rate, total_hours_entered, total_amount_billed) values(2, 2, 'Jane Smith', 'jane@betainc.com', '222-333-4444', 100.00, 45.0, 4500.00);\ninsert into person(id, client_id, name, email, phone, billing_rate, total_hours_entered, total_amount_billed) values(3, 3, 'Alex Brown', 'alex@gammallc.com', '333-444-5555', 175.00, 30.0, 5250.00);\ninsert into person(id, client_id, name, email, phone, billing_rate, total_hours_entered, total_amount_billed) values(4, 4, 'Emma Taylor', 'emma@deltaplc.com', '444-555-6666', 90.00, 55.0, 4950.00);\n\ninsert into timesheet(id, task_id, person_id, date_worked, hours_worked, month, year, billing_rate, total_amount_billed) values(1, 1, 1, '2026-02-05', 15.0, 2, 2026, 150.00, 2250.00);\ninsert into timesheet(id, task_id, person_id, date_worked, hours_worked, month, year, billing_rate, total_amount_billed) values(2, 2, 2, '2026-05-12', 10.0, 5, 2026, 100.00, 1000.00);\ninsert into timesheet(id, task_id, person_id, date_worked, hours_worked, month, year, billing_rate, total_amount_billed) values(3, 3, 3, '2026-09-08', 5.0, 9, 2026, 175.00, 875.00);\ninsert into timesheet(id, task_id, person_id, date_worked, hours_worked, month, year, billing_rate, total_amount_billed) values(4, 4, 4, '2026-12-21', 12.0, 12, 2026, 90.00, 1080.00);\n\ninsert into payment(id, invoice_id, payment_amount, payment_date, notes) values(1, 1, 4000.00, '2026-03-01', 'Initial Payment');\ninsert into payment(id, invoice_id, payment_amount, payment_date, notes) values(2, 2, 7000.00, '2026-06-20', 'Final Settlement');\ninsert into payment(id, invoice_id, payment_amount, payment_date, notes) values(3, 3, 0.00, '2026-09-12', 'No payment required');\ninsert into payment(id, invoice_id, payment_amount, payment_date, notes) values(4, 4, 16000.00, '2027-02-01', 'Majority payment');",
+    "name": "TimeTrackBillingApp"
+}

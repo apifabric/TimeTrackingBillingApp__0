@@ -1,0 +1,256 @@
+about:
+  date: January 24, 2025 15:34:29
+  recent_changes: works with modified safrs-react-admin
+  version: 0.0.0
+api_root: '{http_type}://{swagger_host}:{port}/{api}'
+authentication: '{system-default}'
+info:
+  number_relationships: 8
+  number_tables: 7
+info_toggle_checked: true
+resources:
+  Client:
+    attributes:
+    - label: ' name*'
+      name: name
+      required: true
+      search: true
+      sort: true
+    - name: email
+    - name: phone
+    - name: total_hours
+    - name: total_amount
+    - name: budget_amount
+    - name: is_over_budget
+      type: Boolean
+    - name: id
+    description: Represents clients in the system.
+    info_list: Represents clients in the system.
+    tab_groups:
+    - direction: tomany
+      fks:
+      - client_id
+      name: PersonList
+      resource: Person
+    - direction: tomany
+      fks:
+      - client_id
+      name: ProjectList
+      resource: Project
+    type: Client
+    user_key: name
+  Invoice:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: project_id
+    - name: invoice_date
+      type: DATE
+    - name: invoice_amount
+    - name: payment_total
+    - name: invoice_balance
+    - name: is_paid
+      type: Boolean
+    description: Represents invoices related to a specific project.
+    info_list: Represents invoices related to a specific project.
+    tab_groups:
+    - direction: tomany
+      fks:
+      - invoice_id
+      name: PaymentList
+      resource: Payment
+    - direction: tomany
+      fks:
+      - invoice_id
+      name: TaskList
+      resource: Task
+    - direction: toone
+      fks:
+      - project_id
+      name: project
+      resource: Project
+    type: Invoice
+    user_key: id
+  Payment:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: invoice_id
+    - name: payment_amount
+    - name: payment_date
+      type: DATE
+    - name: notes
+    description: Represents payments made against invoices.
+    info_list: Represents payments made against invoices.
+    tab_groups:
+    - direction: toone
+      fks:
+      - invoice_id
+      name: invoice
+      resource: Invoice
+    type: Payment
+    user_key: id
+  Person:
+    attributes:
+    - label: ' name*'
+      name: name
+      required: true
+      search: true
+      sort: true
+    - name: client_id
+    - name: email
+    - name: phone
+    - name: billing_rate
+    - name: id
+    - name: total_hours_entered
+    - name: total_amount_billed
+    description: Represents personnel and their billing information.
+    info_list: Represents personnel and their billing information.
+    tab_groups:
+    - direction: tomany
+      fks:
+      - person_id
+      name: TimesheetList
+      resource: Timesheet
+    - direction: toone
+      fks:
+      - client_id
+      name: client
+      resource: Client
+    type: Person
+    user_key: name
+  Project:
+    attributes:
+    - label: ' name*'
+      name: name
+      required: true
+      search: true
+      sort: true
+    - name: client_id
+    - name: total_project_hours
+    - name: total_project_amount
+    - name: project_budget_amount
+    - name: is_over_budget
+      type: Boolean
+    - name: id
+    description: Represents projects associated with clients.
+    info_list: Represents projects associated with clients.
+    tab_groups:
+    - direction: tomany
+      fks:
+      - project_id
+      name: InvoiceList
+      resource: Invoice
+    - direction: tomany
+      fks:
+      - project_id
+      name: TaskList
+      resource: Task
+    - direction: toone
+      fks:
+      - client_id
+      name: client
+      resource: Client
+    type: Project
+    user_key: name
+  Task:
+    attributes:
+    - label: ' name*'
+      name: name
+      required: true
+      search: true
+      sort: true
+    - name: invoice_id
+    - name: project_id
+    - name: description
+    - name: task_budget_hours
+    - name: is_over_budget
+      type: Boolean
+    - name: id
+    - name: total_task_hours_worked
+    - name: total_task_amount_billed
+    description: Represents tasks within projects.
+    info_list: Represents tasks within projects.
+    tab_groups:
+    - direction: tomany
+      fks:
+      - task_id
+      name: TimesheetList
+      resource: Timesheet
+    - direction: toone
+      fks:
+      - invoice_id
+      name: invoice
+      resource: Invoice
+    - direction: toone
+      fks:
+      - project_id
+      name: project
+      resource: Project
+    type: Task
+    user_key: name
+  Timesheet:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: person_id
+    - name: task_id
+    - name: month
+    - name: year
+    - name: billing_rate
+    - name: date_worked
+      type: DATE
+    - name: hours_worked
+    - name: total_amount_billed
+    description: Represents timesheets logging work done by personnel.
+    info_list: Represents timesheets logging work done by personnel.
+    tab_groups:
+    - direction: toone
+      fks:
+      - person_id
+      name: person
+      resource: Person
+    - direction: toone
+      fks:
+      - task_id
+      name: task
+      resource: Task
+    type: Timesheet
+    user_key: id
+settings:
+  HomeJS: /admin-app/home.js
+  max_list_columns: 8
+  style_guide:
+    applicationLocales:
+    - en
+    - es
+    currency_symbol: $
+    currency_symbol_position: left
+    date_format: LL
+    decimal_max: '1000000000'
+    decimal_min: '0'
+    decimal_separator: .
+    detail_mode: tab
+    edit_on_mode: dblclick
+    exclude_listpicker: false
+    include_translation: 'false'
+    keycloak_client_id: alsclient
+    keycloak_realm: kcals
+    keycloak_url: http://localhost:8080
+    locale: en
+    max_decimal_digits: '4'
+    min_decimal_digits: '2'
+    new_mode: dialog
+    pick_style: list
+    row_height: small,
+    serviceType: OntimizeEE
+    startSessionPath: /auth/login
+    style: light
+    thousand_separator: ','
+    use_keycloak: 'false'

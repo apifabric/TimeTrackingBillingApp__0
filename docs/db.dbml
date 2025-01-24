@@ -1,0 +1,101 @@
+// Copy this text, paste to https://dbdiagram.io/d
+// Or, https://databasediagram.com/app
+// Or, view in VSCode with extension: "DBML Live Preview"
+
+Project DBML {
+  Note: '''
+Client: Represents clients in the system.
+Invoice: Represents invoices related to a specific project.
+Project: Represents projects associated with clients.
+Payment: Represents payments made against invoices.
+Person: Represents personnel and their billing information.
+Task: Represents tasks within projects.
+Timesheet: Represents timesheets logging work done by personnel.
+'''
+}
+
+Table Client {
+    id INTEGER [primary key]
+    name VARCHAR 
+    email VARCHAR 
+    phone VARCHAR 
+    total_hours DECIMAL 
+    total_amount DECIMAL 
+    budget_amount DECIMAL 
+    is_over_budget BOOLEAN 
+    }
+
+Table Invoice {
+    id INTEGER [primary key]
+    invoice_date DATE 
+    project_id INTEGER 
+    invoice_amount DECIMAL 
+    payment_total DECIMAL 
+    invoice_balance DECIMAL 
+    is_paid BOOLEAN 
+    }
+
+Table Project {
+    id INTEGER [primary key]
+    client_id INTEGER 
+    name VARCHAR 
+    total_project_hours DECIMAL 
+    total_project_amount DECIMAL 
+    project_budget_amount DECIMAL 
+    is_over_budget BOOLEAN 
+    }
+
+Table Payment {
+    id INTEGER [primary key]
+    invoice_id INTEGER 
+    payment_amount DECIMAL 
+    payment_date DATE 
+    notes VARCHAR 
+    }
+
+Table Person {
+    id INTEGER [primary key]
+    client_id INTEGER 
+    name VARCHAR 
+    email VARCHAR 
+    phone VARCHAR 
+    billing_rate DECIMAL 
+    total_hours_entered DECIMAL 
+    total_amount_billed DECIMAL 
+    }
+
+Table Task {
+    id INTEGER [primary key]
+    project_id INTEGER 
+    name VARCHAR 
+    description VARCHAR 
+    total_task_hours_worked DECIMAL 
+    total_task_amount_billed DECIMAL 
+    task_budget_hours DECIMAL 
+    is_over_budget BOOLEAN 
+    invoice_id INTEGER 
+    }
+
+Table Timesheet {
+    id INTEGER [primary key]
+    task_id INTEGER 
+    person_id INTEGER 
+    date_worked DATE 
+    hours_worked DECIMAL 
+    month INTEGER 
+    year INTEGER 
+    billing_rate DECIMAL 
+    total_amount_billed DECIMAL 
+    }
+
+
+
+// Relationships
+    Ref: Invoice.(project_id) < Project.(id)
+    Ref: Project.(client_id) < Client.(id)
+    Ref: Payment.(invoice_id) < Invoice.(id)
+    Ref: Person.(client_id) < Client.(id)
+    Ref: Task.(invoice_id) < Invoice.(id)
+    Ref: Task.(project_id) < Project.(id)
+    Ref: Timesheet.(person_id) < Person.(id)
+    Ref: Timesheet.(task_id) < Task.(id)

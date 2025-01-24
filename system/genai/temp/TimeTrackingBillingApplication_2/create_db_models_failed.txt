@@ -1,0 +1,2 @@
+Error creating database from model: January 24, 2025 15:33:01
+name 'CheckConstraint' is not defined

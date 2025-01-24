@@ -1,0 +1,388 @@
+"models":
+- "classname": |-
+    Client
+  "code": |-
+    class Client(Base):
+        __tablename__ = 'client'
+        id = Column(Integer, primary_key=True, autoincrement=True)
+        name = Column(String, nullable=False)
+        email = Column(String, nullable=True)
+        phone = Column(String, nullable=True)
+        total_hours = Column(Decimal(10, 2), default=0)
+        total_amount = Column(Decimal(10, 2), default=0)
+        budget_amount = Column(Decimal(10, 2), default=0)
+        is_over_budget = Column(Boolean, default=False)
+  "description": |-
+    Represents clients in the system.
+  "name": |-
+    Client
+- "classname": |-
+    Project
+  "code": |-
+    class Project(Base):
+        __tablename__ = 'project'
+        id = Column(Integer, primary_key=True, autoincrement=True)
+        client_id = Column(Integer, ForeignKey('client.id'), nullable=True)
+        name = Column(String, nullable=False)
+        total_project_hours = Column(Decimal(10, 2), default=0)
+        total_project_amount = Column(Decimal(10, 2), default=0)
+        project_budget_amount = Column(Decimal(10, 2), default=0)
+        is_over_budget = Column(Boolean, default=False)
+  "description": |-
+    Represents projects associated with clients.
+  "name": |-
+    Project
+- "classname": |-
+    Invoice
+  "code": |-
+    class Invoice(Base):
+        __tablename__ = 'invoice'
+        id = Column(Integer, primary_key=True, autoincrement=True)
+        invoice_date = Column(Date, nullable=True)
+        project_id = Column(Integer, ForeignKey('project.id'), nullable=True)
+        invoice_amount = Column(Decimal(10, 2), default=0)
+        payment_total = Column(Decimal(10, 2), default=0)
+        invoice_balance = Column(Decimal(10, 2), default=0)
+        is_paid = Column(Boolean, default=False)
+  "description": |-
+    Represents invoices related to a specific project.
+  "name": |-
+    Invoice
+- "classname": |-
+    Task
+  "code": |-
+    class Task(Base):
+        __tablename__ = 'task'
+        id = Column(Integer, primary_key=True, autoincrement=True)
+        project_id = Column(Integer, ForeignKey('project.id'), nullable=True)
+        name = Column(String, nullable=False)
+        description = Column(String, nullable=True)
+        total_task_hours_worked = Column(Decimal(10, 2), default=0)
+        total_task_amount_billed = Column(Decimal(10, 2), default=0)
+        task_budget_hours = Column(Decimal(10, 2), default=0)
+        is_over_budget = Column(Boolean, default=False)
+        invoice_id = Column(Integer, ForeignKey('invoice.id'), nullable=True)
+  "description": |-
+    Represents tasks within projects.
+  "name": |-
+    Task
+- "classname": |-
+    Person
+  "code": |-
+    class Person(Base):
+        __tablename__ = 'person'
+        id = Column(Integer, primary_key=True, autoincrement=True)
+        client_id = Column(Integer, ForeignKey('client.id'), nullable=True)
+        name = Column(String, nullable=False)
+        email = Column(String, nullable=True)
+        phone = Column(String, nullable=True)
+        billing_rate = Column(Decimal(10, 2), default=0)
+        total_hours_entered = Column(Decimal(10, 2), default=0)
+        total_amount_billed = Column(Decimal(10, 2), default=0)
+  "description": |-
+    Represents personnel and their billing information.
+  "name": |-
+    Person
+- "classname": |-
+    Timesheet
+  "code": |-
+    class Timesheet(Base):
+        __tablename__ = 'timesheet'
+        id = Column(Integer, primary_key=True, autoincrement=True)
+        task_id = Column(Integer, ForeignKey('task.id'), nullable=True)
+        person_id = Column(Integer, ForeignKey('person.id'), nullable=True)
+        date_worked = Column(Date, nullable=True)
+        hours_worked = Column(Decimal(10, 2), default=0)
+        month = Column(Integer, nullable=True)
+        year = Column(Integer, nullable=True)
+        billing_rate = Column(Decimal(10, 2), default=0)
+        total_amount_billed = Column(Decimal(10, 2), default=0)
+  "description": |-
+    Represents timesheets logging work done by personnel.
+  "name": |-
+    Timesheet
+- "classname": |-
+    Payment
+  "code": |-
+    class Payment(Base):
+        __tablename__ = 'payment'
+        id = Column(Integer, primary_key=True, autoincrement=True)
+        invoice_id = Column(Integer, ForeignKey('invoice.id'), nullable=True)
+        payment_amount = Column(Decimal(10, 2), default=0)
+        payment_date = Column(Date, nullable=True)
+        notes = Column(String, nullable=True)
+  "description": |-
+    Represents payments made against invoices.
+  "name": |-
+    Payment
+"name": |-
+  TimeTrackingBillingApp
+"rules":
+- "code": |-
+    Rule.sum(derive=Person.total_hours_entered, as_sum_of=Timesheet.hours_worked)
+    Rule.formula(derive=Person.total_amount_billed, as_expression=lambda row: row.total_hours_entered * row.billing_rate)
+    Rule.constraint(validate=Person, as_condition=lambda row: 0 < row.billing_rate < 200, error_msg='Billing rate must be between 0 and 200')
+  "description": |-
+    Total Hours entered is sum of timesheet hours worked. Total amount billed is total hours entered times billing rate. Billing rate must be greater than 0 and less than 200.
+  "entity": |-
+    Person
+  "name": |-
+    Person_Totals
+  "use_case": |-
+    Person
+- "code": |-
+    Rule.formula(derive=Timesheet.total_amount_billed, as_expression=lambda row: row.billing_rate * row.hours_worked)
+    Rule.constraint(validate=Timesheet, as_condition=lambda row: 0 < row.hours_worked < 15, error_msg='Hours worked must be between 0 and 15')
+    Rule.constraint(validate=Timesheet, as_condition=lambda row: row.date_worked > date(2025, 1, 1), error_msg='Date worked must be after 2025-01-01')
+    Rule.formula(derive=Timesheet.month, as_expression=lambda row: row.date_worked.month)
+    Rule.formula(derive=Timesheet.year, as_expression=lambda row: row.date_worked.year)
+    Rule.copy(derive=Timesheet.billing_rate, from_parent=Person.billing_rate)
+  "description": |-
+    The total amount billed is the Person billing rate times hours worked. Hours worked must be greater than 0 and less than 15. Date worked must be greater than 2025-01-01. Month is extracted using datetime from the date worked. Year is extracted using datetime from the date worked. Copy billing rate from Person billing rate.
+  "entity": |-
+    Timesheet
+  "name": |-
+    Timesheet_Bill_Calc
+  "use_case": |-
+    Timesheet
+- "code": |-
+    Rule.sum(derive=Task.total_task_hours_worked, as_sum_of=Timesheet.hours_worked)
+    Rule.sum(derive=Task.total_task_amount_billed, as_sum_of=Timesheet.total_amount_billed)
+    Rule.formula(derive=Task.is_over_budget, as_expression=lambda row: row.total_task_hours_worked > row.task_budget_hours)
+  "description": |-
+    Total task hours worked is the sum of Timesheet hours worked. Total task amount billed is the sum of Timesheet total amount billed. Formula: is Over Budget  when total task hours worked exceeds task budget hours.
+  "entity": |-
+    Task
+  "name": |-
+    Task_Totals
+  "use_case": |-
+    Task
+- "code": |-
+    Rule.sum(derive=Project.total_project_hours, as_sum_of=Task.total_task_hours_worked)
+    Rule.sum(derive=Project.total_project_amount, as_sum_of=Task.total_task_amount_billed)
+    Rule.formula(derive=Project.is_over_budget, as_expression=lambda row: row.total_project_amount > row.project_budget_amount)
+  "description": |-
+    Total project hours is the sum of Task total task hours worked. Total project amount is the sum of Task total amount billed. Formula: set  is Over Budget when total project amount exceeds project budget amount.
+  "entity": |-
+    Project
+  "name": |-
+    Project_Totals
+  "use_case": |-
+    Project
+- "code": |-
+    Rule.sum(derive=Client.total_hours, as_sum_of=Project.total_task_hours_worked)
+    Rule.sum(derive=Client.total_amount, as_sum_of=Task.total_task_amount_billed)
+    Rule.formula(derive=Client.is_over_budget, as_expression=lambda row: row.total_amount > row.budget_amount)
+  "description": |-
+    Total hours is the sum of Project total task hours. Total amount is the sum of Task total amount. Formula: is Over Budget is true when total amount exceeds budget amount.
+  "entity": |-
+    Client
+  "name": |-
+    Client_Totals
+  "use_case": |-
+    Client
+- "code": |-
+    Rule.sum(derive=Invoice.invoice_amount, as_sum_of=Task.total_task_amount_billed)
+    Rule.sum(derive=Invoice.payment_total, as_sum_of=Payment.payment_amount)
+    Rule.formula(derive=Invoice.invoice_balance, as_expression=lambda row: row.invoice_amount - row.payment_total)
+    Rule.formula(derive=Invoice.is_paid, as_expression=lambda row: row.invoice_balance == 0)
+  "description": |-
+    Invoice Amount is the sum of Task total amount billed. Payment total is the sum of Payment. Invoice balance is invoice amount less payment total. Formula: invoice_paid is true when invoice balance is zero.
+  "entity": |-
+    Invoice
+  "name": |-
+    Invoice_Totals
+  "use_case": |-
+    Invoice
+"test_data": |-
+  # Example test data for tables:
+
+  client_1 = Client(id=1, name="Acme Corp", email="acme@corp.com", phone="123-456-7890", total_hours=0, total_amount=0, budget_amount=1000, is_over_budget=False)
+  client_2 = Client(id=2, name="Beta Inc", email="beta@inc.com", phone="234-567-8901", total_hours=0, total_amount=0, budget_amount=2000, is_over_budget=False)
+  client_3 = Client(id=3, name="Gamma LLC", email="gamma@llc.com", phone="345-678-9012", total_hours=0, total_amount=0, budget_amount=1500, is_over_budget=False)
+  client_4 = Client(id=4, name="Delta Co", email="delta@co.com", phone="456-789-0123", total_hours=0, total_amount=0, budget_amount=500, is_over_budget=False)
+
+  project_1 = Project(id=1, client_id=1, name="Project Alpha", total_project_hours=0, total_project_amount=0, project_budget_amount=800, is_over_budget=False)
+  project_2 = Project(id=2, client_id=1, name="Project Beta", total_project_hours=0, total_project_amount=0, project_budget_amount=1200, is_over_budget=False)
+  project_3 = Project(id=3, client_id=2, name="Project Gamma", total_project_hours=0, total_project_amount=0, project_budget_amount=1500, is_over_budget=False)
+  project_4 = Project(id=4, client_id=3, name="Project Delta", total_project_hours=0, total_project_amount=0, project_budget_amount=1000, is_over_budget=False)
+
+  invoice_1 = Invoice(id=1, invoice_date=date(2025, 6, 15), project_id=1, invoice_amount=0, payment_total=0, invoice_balance=0, is_paid=False)
+  invoice_2 = Invoice(id=2, invoice_date=date(2025, 7, 10), project_id=2, invoice_amount=0, payment_total=0, invoice_balance=0, is_paid=False)
+  invoice_3 = Invoice(id=3, invoice_date=date(2025, 8, 25), project_id=3, invoice_amount=0, payment_total=0, invoice_balance=0, is_paid=False)
+  invoice_4 = Invoice(id=4, invoice_date=date(2025, 9, 5), project_id=4, invoice_amount=0, payment_total=0, invoice_balance=0, is_paid=False)
+
+  task_1 = Task(id=1, project_id=1, name="Design", description="Design phase", total_task_hours_worked=0, total_task_amount_billed=0, task_budget_hours=100, is_over_budget=False, invoice_id=1)
+  task_2 = Task(id=2, project_id=1, name="Development", description="Development phase", total_task_hours_worked=0, total_task_amount_billed=0, task_budget_hours=200, is_over_budget=False, invoice_id=2)
+  task_3 = Task(id=3, project_id=2, name="Testing", description="Testing phase", total_task_hours_worked=0, total_task_amount_billed=0, task_budget_hours=150, is_over_budget=False, invoice_id=3)
+  task_4 = Task(id=4, project_id=2, name="Deployment", description="Deployment phase", total_task_hours_worked=0, total_task_amount_billed=0, task_budget_hours=120, is_over_budget=False, invoice_id=4)
+
+  person_1 = Person(id=1, client_id=1, name="Alice", email="alice@corp.com", phone="111-222-3333", billing_rate=150, total_hours_entered=0, total_amount_billed=0)
+  person_2 = Person(id=2, client_id=1, name="Bob", email="bob@inc.com", phone="222-333-4444", billing_rate=125, total_hours_entered=0, total_amount_billed=0)
+  person_3 = Person(id=3, client_id=2, name="Charlie", email="charlie@co.com", phone="333-444-5555", billing_rate=100, total_hours_entered=0, total_amount_billed=0)
+  person_4 = Person(id=4, client_id=3, name="Diana", email="diana@llc.com", phone="444-555-6666", billing_rate=175, total_hours_entered=0, total_amount_billed=0)
+
+  timesheet_1 = Timesheet(id=1, task_id=1, person_id=1, date_worked=date(2026, 1, 8), hours_worked=7.5, month=1, year=2026, billing_rate=150, total_amount_billed=1125)
+  timesheet_2 = Timesheet(id=2, task_id=2, person_id=2, date_worked=date(2026, 2, 10), hours_worked=10, month=2, year=2026, billing_rate=125, total_amount_billed=1250)
+  timesheet_3 = Timesheet(id=3, task_id=3, person_id=3, date_worked=date(2026, 3, 12), hours_worked=12.5, month=3, year=2026, billing_rate=100, total_amount_billed=1250)
+  timesheet_4 = Timesheet(id=4, task_id=4, person_id=4, date_worked=date(2026, 4, 15), hours_worked=8, month=4, year=2026, billing_rate=175, total_amount_billed=1400)
+
+  payment_1 = Payment(id=1, invoice_id=1, payment_amount=500, payment_date=date(2026, 1, 20), notes="Partial payment")
+  payment_2 = Payment(id=2, invoice_id=2, payment_amount=650, payment_date=date(2026, 2, 15), notes="Half payment")
+  payment_3 = Payment(id=3, invoice_id=3, payment_amount=900, payment_date=date(2026, 3, 25), notes="Nearly paid")
+  payment_4 = Payment(id=4, invoice_id=4, payment_amount=0, payment_date=date(2026, 4, 10), notes="No payment")
+"test_data_rows":
+- "code": |-
+    client_1 = Client(id=1, name="Acme Corp", email="acme@corp.com", phone="123-456-7890", total_hours=0, total_amount=0, budget_amount=1000, is_over_budget=False)
+  "test_data_row_variable": |-
+    client_1
+- "code": |-
+    client_2 = Client(id=2, name="Beta Inc", email="beta@inc.com", phone="234-567-8901", total_hours=0, total_amount=0, budget_amount=2000, is_over_budget=False)
+  "test_data_row_variable": |-
+    client_2
+- "code": |-
+    client_3 = Client(id=3, name="Gamma LLC", email="gamma@llc.com", phone="345-678-9012", total_hours=0, total_amount=0, budget_amount=1500, is_over_budget=False)
+  "test_data_row_variable": |-
+    client_3
+- "code": |-
+    client_4 = Client(id=4, name="Delta Co", email="delta@co.com", phone="456-789-0123", total_hours=0, total_amount=0, budget_amount=500, is_over_budget=False)
+  "test_data_row_variable": |-
+    client_4
+- "code": |-
+    project_1 = Project(id=1, client_id=1, name="Project Alpha", total_project_hours=0, total_project_amount=0, project_budget_amount=800, is_over_budget=False)
+  "test_data_row_variable": |-
+    project_1
+- "code": |-
+    project_2 = Project(id=2, client_id=1, name="Project Beta", total_project_hours=0, total_project_amount=0, project_budget_amount=1200, is_over_budget=False)
+  "test_data_row_variable": |-
+    project_2
+- "code": |-
+    project_3 = Project(id=3, client_id=2, name="Project Gamma", total_project_hours=0, total_project_amount=0, project_budget_amount=1500, is_over_budget=False)
+  "test_data_row_variable": |-
+    project_3
+- "code": |-
+    project_4 = Project(id=4, client_id=3, name="Project Delta", total_project_hours=0, total_project_amount=0, project_budget_amount=1000, is_over_budget=False)
+  "test_data_row_variable": |-
+    project_4
+- "code": |-
+    invoice_1 = Invoice(id=1, invoice_date=date(2025, 6, 15), project_id=1, invoice_amount=0, payment_total=0, invoice_balance=0, is_paid=False)
+  "test_data_row_variable": |-
+    invoice_1
+- "code": |-
+    invoice_2 = Invoice(id=2, invoice_date=date(2025, 7, 10), project_id=2, invoice_amount=0, payment_total=0, invoice_balance=0, is_paid=False)
+  "test_data_row_variable": |-
+    invoice_2
+- "code": |-
+    invoice_3 = Invoice(id=3, invoice_date=date(2025, 8, 25), project_id=3, invoice_amount=0, payment_total=0, invoice_balance=0, is_paid=False)
+  "test_data_row_variable": |-
+    invoice_3
+- "code": |-
+    invoice_4 = Invoice(id=4, invoice_date=date(2025, 9, 5), project_id=4, invoice_amount=0, payment_total=0, invoice_balance=0, is_paid=False)
+  "test_data_row_variable": |-
+    invoice_4
+- "code": |-
+    task_1 = Task(id=1, project_id=1, name="Design", description="Design phase", total_task_hours_worked=0, total_task_amount_billed=0, task_budget_hours=100, is_over_budget=False, invoice_id=1)
+  "test_data_row_variable": |-
+    task_1
+- "code": |-
+    task_2 = Task(id=2, project_id=1, name="Development", description="Development phase", total_task_hours_worked=0, total_task_amount_billed=0, task_budget_hours=200, is_over_budget=False, invoice_id=2)
+  "test_data_row_variable": |-
+    task_2
+- "code": |-
+    task_3 = Task(id=3, project_id=2, name="Testing", description="Testing phase", total_task_hours_worked=0, total_task_amount_billed=0, task_budget_hours=150, is_over_budget=False, invoice_id=3)
+  "test_data_row_variable": |-
+    task_3
+- "code": |-
+    task_4 = Task(id=4, project_id=2, name="Deployment", description="Deployment phase", total_task_hours_worked=0, total_task_amount_billed=0, task_budget_hours=120, is_over_budget=False, invoice_id=4)
+  "test_data_row_variable": |-
+    task_4
+- "code": |-
+    person_1 = Person(id=1, client_id=1, name="Alice", email="alice@corp.com", phone="111-222-3333", billing_rate=150, total_hours_entered=0, total_amount_billed=0)
+  "test_data_row_variable": |-
+    person_1
+- "code": |-
+    person_2 = Person(id=2, client_id=1, name="Bob", email="bob@inc.com", phone="222-333-4444", billing_rate=125, total_hours_entered=0, total_amount_billed=0)
+  "test_data_row_variable": |-
+    person_2
+- "code": |-
+    person_3 = Person(id=3, client_id=2, name="Charlie", email="charlie@co.com", phone="333-444-5555", billing_rate=100, total_hours_entered=0, total_amount_billed=0)
+  "test_data_row_variable": |-
+    person_3
+- "code": |-
+    person_4 = Person(id=4, client_id=3, name="Diana", email="diana@llc.com", phone="444-555-6666", billing_rate=175, total_hours_entered=0, total_amount_billed=0)
+  "test_data_row_variable": |-
+    person_4
+- "code": |-
+    timesheet_1 = Timesheet(id=1, task_id=1, person_id=1, date_worked=date(2026, 1, 8), hours_worked=7.5, month=1, year=2026, billing_rate=150, total_amount_billed=1125)
+  "test_data_row_variable": |-
+    timesheet_1
+- "code": |-
+    timesheet_2 = Timesheet(id=2, task_id=2, person_id=2, date_worked=date(2026, 2, 10), hours_worked=10, month=2, year=2026, billing_rate=125, total_amount_billed=1250)
+  "test_data_row_variable": |-
+    timesheet_2
+- "code": |-
+    timesheet_3 = Timesheet(id=3, task_id=3, person_id=3, date_worked=date(2026, 3, 12), hours_worked=12.5, month=3, year=2026, billing_rate=100, total_amount_billed=1250)
+  "test_data_row_variable": |-
+    timesheet_3
+- "code": |-
+    timesheet_4 = Timesheet(id=4, task_id=4, person_id=4, date_worked=date(2026, 4, 15), hours_worked=8, month=4, year=2026, billing_rate=175, total_amount_billed=1400)
+  "test_data_row_variable": |-
+    timesheet_4
+- "code": |-
+    payment_1 = Payment(id=1, invoice_id=1, payment_amount=500, payment_date=date(2026, 1, 20), notes="Partial payment")
+  "test_data_row_variable": |-
+    payment_1
+- "code": |-
+    payment_2 = Payment(id=2, invoice_id=2, payment_amount=650, payment_date=date(2026, 2, 15), notes="Half payment")
+  "test_data_row_variable": |-
+    payment_2
+- "code": |-
+    payment_3 = Payment(id=3, invoice_id=3, payment_amount=900, payment_date=date(2026, 3, 25), notes="Nearly paid")
+  "test_data_row_variable": |-
+    payment_3
+- "code": |-
+    payment_4 = Payment(id=4, invoice_id=4, payment_amount=0, payment_date=date(2026, 4, 10), notes="No payment")
+  "test_data_row_variable": |-
+    payment_4
+"test_data_sqlite": |-
+  INSERT INTO client (id, name, email, phone, total_hours, total_amount, budget_amount, is_over_budget) VALUES
+  (1, 'Acme Corp', 'acme@corp.com', '123-456-7890', 0, 0, 1000, 0),
+  (2, 'Beta Inc', 'beta@inc.com', '234-567-8901', 0, 0, 2000, 0),
+  (3, 'Gamma LLC', 'gamma@llc.com', '345-678-9012', 0, 0, 1500, 0),
+  (4, 'Delta Co', 'delta@co.com', '456-789-0123', 0, 0, 500, 0);
+
+  INSERT INTO project (id, client_id, name, total_project_hours, total_project_amount, project_budget_amount, is_over_budget) VALUES
+  (1, 1, 'Project Alpha', 0, 0, 800, 0),
+  (2, 1, 'Project Beta', 0, 0, 1200, 0),
+  (3, 2, 'Project Gamma', 0, 0, 1500, 0),
+  (4, 3, 'Project Delta', 0, 0, 1000, 0);
+
+  INSERT INTO invoice (id, invoice_date, project_id, invoice_amount, payment_total, invoice_balance, is_paid) VALUES
+  (1, '2025-06-15', 1, 0, 0, 0, 0),
+  (2, '2025-07-10', 2, 0, 0, 0, 0),
+  (3, '2025-08-25', 3, 0, 0, 0, 0),
+  (4, '2025-09-05', 4, 0, 0, 0, 0);
+
+  INSERT INTO task (id, project_id, name, description, total_task_hours_worked, total_task_amount_billed, task_budget_hours, is_over_budget, invoice_id) VALUES
+  (1, 1, 'Design', 'Design phase', 0, 0, 100, 0, 1),
+  (2, 1, 'Development', 'Development phase', 0, 0, 200, 0, 2),
+  (3, 2, 'Testing', 'Testing phase', 0, 0, 150, 0, 3),
+  (4, 2, 'Deployment', 'Deployment phase', 0, 0, 120, 0, 4);
+
+  INSERT INTO person (id, client_id, name, email, phone, billing_rate, total_hours_entered, total_amount_billed) VALUES
+  (1, 1, 'Alice', 'alice@corp.com', '111-222-3333', 150, 0, 0),
+  (2, 1, 'Bob', 'bob@inc.com', '222-333-4444', 125, 0, 0),
+  (3, 2, 'Charlie', 'charlie@co.com', '333-444-5555', 100, 0, 0),
+  (4, 3, 'Diana', 'diana@llc.com', '444-555-6666', 175, 0, 0);
+
+  INSERT INTO timesheet (id, task_id, person_id, date_worked, hours_worked, month, year, billing_rate, total_amount_billed) VALUES
+  (1, 1, 1, '2026-01-08', 7.5, 1, 2026, 150, 1125),
+  (2, 2, 2, '2026-02-10', 10, 2, 2026, 125, 1250),
+  (3, 3, 3, '2026-03-12', 12.5, 3, 2026, 100, 1250),
+  (4, 4, 4, '2026-04-15', 8, 4, 2026, 175, 1400);
+
+  INSERT INTO payment (id, invoice_id, payment_amount, payment_date, notes) VALUES
+  (1, 1, 500, '2026-01-20', 'Partial payment'),
+  (2, 2, 650, '2026-02-15', 'Half payment'),
+  (3, 3, 900, '2026-03-25', 'Nearly paid'),
+  (4, 4, 0, '2026-04-10', 'No payment');
