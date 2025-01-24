@@ -1,0 +1,61 @@
+<o-form-layout-manager attr="Task" mode="tab" title="TASK">
+    <div fxFill fxLayout="column" fxLayoutAlign="start">
+        <o-table 
+            attr="TaskTable" 
+            service="Task" 
+            entity="Task" 
+            title="TASK"
+            keys="id"
+            columns="name;invoice_id;project_id;description;task_budget_hours;is_over_budget;id;total_task_hours_worked;total_task_amount_billed" 
+            header-actions="R;D"
+            visible-columns="name;invoice_id;project_id;description;task_budget_hours;is_over_budget;id;total_task_hours_worked;total_task_amount_billed"  
+            sort-columns="name" 
+            query-rows="20" 
+            quick-filter="yes"
+            row-height="medium" 
+            select-all-checkbox="true" 
+            pageable="yes"  
+            auto-adjust="true" 
+            virtual-scroll="yes" 
+            edition-mode="dblclick"
+            horizontal-scroll="yes"
+            show-title="yes"
+            export-button="yes">
+            
+            <o-table-column #name attr="name" title=" name*" editable="no" required="no" content-align="left"></o-table-column>
+            
+            <o-table-column attr="invoice_id" title="invoice_id">
+    <o-table-cell-renderer-service attr="invoice_id" 
+        service="Invoice" entity="InvoiceType" columns="id;id"
+        parent-keys="id:invoice_id"
+        value-column="id" keys="invoice_id"
+        visible-columns="id" separator=" - " width="680px">
+    </o-table-cell-renderer-service>
+</o-table-column>
+            
+            <o-table-column attr="project_id" title="project_id">
+    <o-table-cell-renderer-service attr="project_id" 
+        service="Project" entity="ProjectType" columns="id;name"
+        parent-keys="id:project_id"
+        value-column="name" keys="project_id"
+        visible-columns="name" separator=" - " width="680px">
+    </o-table-cell-renderer-service>
+</o-table-column>
+            
+            <o-table-column #description attr="description" title="description" editable="no" required="no" content-align="left"></o-table-column>
+            
+            <o-table-column #task_budget_hours attr="task_budget_hours" title="task_budget_hours" type="currency" editable="no" required="no" currency-symbol="$" currency-symbol-position="left" thousand-separator=","decimal-separator="."></o-table-column>
+            
+            <o-table-column #is_over_budget attr="is_over_budget" title="is_over_budget" editable="no" required="no" content-align="left"></o-table-column>
+            
+            <o-table-column #id attr="id" title="id" type="integer" editable="no" required="no" content-align="center"></o-table-column>
+            
+            <o-table-column #total_task_hours_worked attr="total_task_hours_worked" title="total_task_hours_worked" type="currency" editable="no" required="no" currency-symbol="$" currency-symbol-position="left" thousand-separator=","decimal-separator="."></o-table-column>
+            
+            <o-table-column #total_task_amount_billed attr="total_task_amount_billed" title="total_task_amount_billed" type="currency" editable="no" required="no" currency-symbol="$" currency-symbol-position="left" thousand-separator=","decimal-separator="."></o-table-column>
+            
+            <o-table-context-menu></o-table-context-menu>
+            <o-table-paginator page-size-options="24;48;96"></o-table-paginator>
+        </o-table>
+    </div>
+</o-form-layout-manager>

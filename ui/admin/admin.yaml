@@ -1,5 +1,5 @@
 about:
-  date: January 24, 2025 15:34:29
+  date: January 24, 2025 15:37:58
   recent_changes: works with modified safrs-react-admin
   version: 0.0.0
 api_root: '{http_type}://{swagger_host}:{port}/{api}'
@@ -13,7 +13,6 @@ resources:
     attributes:
     - label: ' name*'
       name: name
-      required: true
       search: true
       sort: true
     - name: email
@@ -24,8 +23,8 @@ resources:
     - name: is_over_budget
       type: Boolean
     - name: id
-    description: Represents clients in the system.
-    info_list: Represents clients in the system.
+    description: Client table holding client information and budget status.
+    info_list: Client table holding client information and budget status.
     tab_groups:
     - direction: tomany
       fks:
@@ -47,14 +46,14 @@ resources:
       sort: true
     - name: project_id
     - name: invoice_date
-      type: DATE
+      type: DATETIME
     - name: invoice_amount
     - name: payment_total
     - name: invoice_balance
     - name: is_paid
       type: Boolean
-    description: Represents invoices related to a specific project.
-    info_list: Represents invoices related to a specific project.
+    description: Invoice table details the amount due based on project tasking.
+    info_list: Invoice table details the amount due based on project tasking.
     tab_groups:
     - direction: tomany
       fks:
@@ -82,10 +81,10 @@ resources:
     - name: invoice_id
     - name: payment_amount
     - name: payment_date
-      type: DATE
+      type: DATETIME
     - name: notes
-    description: Represents payments made against invoices.
-    info_list: Represents payments made against invoices.
+    description: Payment records towards invoices of projects.
+    info_list: Payment records towards invoices of projects.
     tab_groups:
     - direction: toone
       fks:
@@ -98,7 +97,6 @@ resources:
     attributes:
     - label: ' name*'
       name: name
-      required: true
       search: true
       sort: true
     - name: client_id
@@ -108,8 +106,8 @@ resources:
     - name: id
     - name: total_hours_entered
     - name: total_amount_billed
-    description: Represents personnel and their billing information.
-    info_list: Represents personnel and their billing information.
+    description: Person table records employee details along with hours and billing.
+    info_list: Person table records employee details along with hours and billing.
     tab_groups:
     - direction: tomany
       fks:
@@ -127,7 +125,6 @@ resources:
     attributes:
     - label: ' name*'
       name: name
-      required: true
       search: true
       sort: true
     - name: client_id
@@ -137,8 +134,10 @@ resources:
     - name: is_over_budget
       type: Boolean
     - name: id
-    description: Represents projects associated with clients.
-    info_list: Represents projects associated with clients.
+    description: Project table associated with clients, holds project specifics and
+      budget status.
+    info_list: Project table associated with clients, holds project specifics and
+      budget status.
     tab_groups:
     - direction: tomany
       fks:
@@ -161,7 +160,6 @@ resources:
     attributes:
     - label: ' name*'
       name: name
-      required: true
       search: true
       sort: true
     - name: invoice_id
@@ -173,8 +171,10 @@ resources:
     - name: id
     - name: total_task_hours_worked
     - name: total_task_amount_billed
-    description: Represents tasks within projects.
-    info_list: Represents tasks within projects.
+    description: Task table defining task specifics, hours worked, amount billed,
+      and budget status.
+    info_list: Task table defining task specifics, hours worked, amount billed, and
+      budget status.
     tab_groups:
     - direction: tomany
       fks:
@@ -205,11 +205,11 @@ resources:
     - name: year
     - name: billing_rate
     - name: date_worked
-      type: DATE
+      type: DATETIME
     - name: hours_worked
     - name: total_amount_billed
-    description: Represents timesheets logging work done by personnel.
-    info_list: Represents timesheets logging work done by personnel.
+    description: Timesheet table that tracks employee hours worked on tasks.
+    info_list: Timesheet table that tracks employee hours worked on tasks.
     tab_groups:
     - direction: toone
       fks:

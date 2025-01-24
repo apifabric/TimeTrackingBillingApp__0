@@ -1,0 +1,283 @@
+
+API Logic Project Server Setup (01JJCFB49RE2G3FW6A1JFBJAG1) Starting with CLI args: 
+.. /opt/projects/by-ulid/01JJCFB49RE2G3FW6A1JFBJAG1/alp_verify_only.py
+
+Created August 03, 2024 09:34:01 at /opt/projects/by-ulid/01JJCFB49RE2G3FW6A1JFBJAG1
+
+
+server_setup - get_args: Config args: 
+.. flask_host: 0.0.0.0, port: 5656, 
+.. swagger_host: g.apifabric.ai, swagger_port: 443, 
+.. client_uri: None, 
+.. http_scheme: http, api_prefix: /api, 
+.. | verbose: False, create_and_run: False
+config - get_cli_args: Getting cli args, with hostname=226b044702c1 on local_ip=172.18.0.2
+config - get_cli_args: WSGI - no args, using creation default host/port..  sys.argv = ['/opt/projects/by-ulid/01JJCFB49RE2G3FW6A1JFBJAG1/alp_verify_only.py']
+
+
+server_setup - get_args: CLI args: 
+.. flask_host: 0.0.0.0, port: 5656, 
+.. swagger_host: g.apifabric.ai, swagger_port: 443, 
+.. client_uri: None, 
+.. http_scheme: http, api_prefix: /api, 
+.. | verbose: False, create_and_run: False
+
+server_setup - get_args: ENV args: 
+.. flask_host: 0.0.0.0, port: 4444, 
+.. swagger_host: g.apifabric.ai, swagger_port: 443, 
+.. client_uri: None, 
+.. http_scheme: https, api_prefix: /01JJCFB49RE2G3FW6A1JFBJAG1, 
+.. | verbose: False, create_and_run: False
+
+
+
+server_setup - get_args: ENV args: 
+.. flask_host: 0.0.0.0, port: 4444, 
+.. swagger_host: g.apifabric.ai, swagger_port: 443, 
+.. client_uri: None, 
+.. http_scheme: https, api_prefix: /01JJCFB49RE2G3FW6A1JFBJAG1, 
+.. | verbose: False, create_and_run: False
+
+
+
+Config args: 
+.. flask_host: 0.0.0.0, port: 4444, 
+.. swagger_host: g.apifabric.ai, swagger_port: 443, 
+.. client_uri: None, 
+.. http_scheme: https, api_prefix: /01JJCFB49RE2G3FW6A1JFBJAG1, 
+.. | verbose: False, create_and_run: False
+config - get_cli_args: Getting cli args, with hostname=226b044702c1 on local_ip=172.18.0.2
+config - get_cli_args: No arguments - using creation default host/port
+
+CLI args: 
+.. flask_host: 0.0.0.0, port: 4444, 
+.. swagger_host: g.apifabric.ai, swagger_port: 443, 
+.. client_uri: None, 
+.. http_scheme: https, api_prefix: /01JJCFB49RE2G3FW6A1JFBJAG1, 
+.. | verbose: False, create_and_run: False
+
+ENV args: 
+.. flask_host: 0.0.0.0, port: 4444, 
+.. swagger_host: g.apifabric.ai, swagger_port: 443, 
+.. client_uri: None, 
+.. http_scheme: https, api_prefix: /01JJCFB49RE2G3FW6A1JFBJAG1, 
+.. | verbose: False, create_and_run: False
+
+
+sqlite_db_path validity check with db_uri: sqlite:////opt/projects/by-ulid/01JJCFB49RE2G3FW6A1JFBJAG1/database/db.sqlite
+	.. Absolute: //opt/projects/by-ulid/01JJCFB49RE2G3FW6A1JFBJAG1/database/db.sqlite
+	.. sqlite_db_path is a valid file
+
+Data Model Loaded, customizing...
+..discovered models: []
+LogicBank Activation - declare_logic.py
+Loading rules from /opt/projects/by-ulid/01JJCFB49RE2G3FW6A1JFBJAG1/logic/wg_rules
+01JJCFB5YB76XV1GS0Q5HQCS7V rule file: logic/wg_rules/Person_Totals.py
+01JJCFB5YXYHQ8FK4SK2JFY1PS rule file: logic/wg_rules/Timesheet_Bill_Calc.py
+01JJCFB5Z8T27C219Q3VH3C0KE rule file: logic/wg_rules/Task_Totals.py
+01JJCFB5ZMQP9CVPH6H0TF1AGR rule file: logic/wg_rules/Project_Totals.py
+01JJCFB5ZZHS8TBR2KQE0CH4GA rule file: logic/wg_rules/Client_Totals.py
+01JJCFB60DWS7VHA4BJ9J2NWN1 rule file: logic/wg_rules/Invoice_Totals.py
+
+[34mVerifying rule: Person_Totals - 01JJCFB5YB76XV1GS0Q5HQCS7V[0m
+
+The following rules have been loaded
+Rule Bank[0x77df76e7e750] (loaded 2025-01-24 15:38:08.340092)
+Mapped Class[Person] rules:
+  Derive <class 'database.models.Person'>.total_hours_entered as Sum(Timesheet.hours_worked Where  - None)
+  Derive <class 'database.models.Person'>.total_amount_billed as Formula (-1): Rule.formula(derive=Person.total_amount_billed, a [...]
+  Constraint Function: None 
+
+The following attributes have been referenced
+
+..Person.total_hours_entered: aggregate derivation
+..Timesheet.hours_worked: sum derived from
+..Person.total_hours_entered: - formula
+..Person.billing_rate: - formula
+..Person.billing_rate: constraint
+
+The following rules have been activated
+Rule Bank[0x77df76e7e750] (loaded 2025-01-24 15:38:08.340092)
+Mapped Class[Person] rules:
+  Derive <class 'database.models.Person'>.total_hours_entered as Sum(Timesheet.hours_worked Where  - None)
+  Derive <class 'database.models.Person'>.total_amount_billed as Formula (1): Rule.formula(derive=Person.total_amount_billed, a [...]
+  Constraint Function: None 
+Logic Bank 01.20.21 - 5 rules loaded
+
+[32mActivated rule 01JJCFB5YB76XV1GS0Q5HQCS7V[0m
+
+[34mVerifying rule: Timesheet_Bill_Calc - 01JJCFB5YXYHQ8FK4SK2JFY1PS[0m
+
+The following rules have been loaded
+Rule Bank[0x77df76e7e750] (loaded 2025-01-24 15:38:08.475823)
+Mapped Class[Timesheet] rules:
+  Derive <class 'database.models.Timesheet'>.total_amount_billed as Formula (-1): Rule.formula(derive=Timesheet.total_amount_billed [...]
+  Constraint Function: None 
+  Constraint Function: None 
+  Derive <class 'database.models.Timesheet'>.month as Formula (-1): Rule.formula(derive=Timesheet.month, as_expressio [...]
+  Derive <class 'database.models.Timesheet'>.year as Formula (-1): Rule.formula(derive=Timesheet.year, as_expression [...]
+  Derive <class 'database.models.Timesheet'>.billing_rate as Copy(person.billing_rate)
+
+The following attributes have been referenced
+
+..Timesheet.billing_rate: - formula
+..Timesheet.hours_worked: - formula
+..Timesheet.hours_worked: constraint
+..Timesheet.date_worked: constraint
+..Timesheet.date_worked.month: - formula
+..Timesheet.date_worked.year: - formula
+..Timesheet.billing_rate: parent copy derivation
+..Person.billing_rate: parent copy from
+
+The following rules have been activated
+Rule Bank[0x77df76e7e750] (loaded 2025-01-24 15:38:08.475823)
+Mapped Class[Timesheet] rules:
+  Derive <class 'database.models.Timesheet'>.total_amount_billed as Formula (1): Rule.formula(derive=Timesheet.total_amount_billed [...]
+  Constraint Function: None 
+  Constraint Function: None 
+  Derive <class 'database.models.Timesheet'>.month as Formula (2): Rule.formula(derive=Timesheet.month, as_expressio [...]
+  Derive <class 'database.models.Timesheet'>.year as Formula (3): Rule.formula(derive=Timesheet.year, as_expression [...]
+  Derive <class 'database.models.Timesheet'>.billing_rate as Copy(person.billing_rate)
+Logic Bank 01.20.21 - 8 rules loaded
+
+[32mActivated rule 01JJCFB5YXYHQ8FK4SK2JFY1PS[0m
+
+[34mVerifying rule: Task_Totals - 01JJCFB5Z8T27C219Q3VH3C0KE[0m
+
+The following rules have been loaded
+Rule Bank[0x77df76e7e750] (loaded 2025-01-24 15:38:08.563456)
+Mapped Class[Task] rules:
+  Derive <class 'database.models.Task'>.total_task_hours_worked as Sum(Timesheet.hours_worked Where  - None)
+  Derive <class 'database.models.Task'>.total_task_amount_billed as Sum(Timesheet.total_amount_billed Where  - None)
+  Derive <class 'database.models.Task'>.is_over_budget as Formula (-1): Rule.formula(derive=Task.is_over_budget, as_expre [...]
+
+The following attributes have been referenced
+
+..Task.total_task_hours_worked: aggregate derivation
+..Timesheet.hours_worked: sum derived from
+..Task.total_task_amount_billed: aggregate derivation
+..Timesheet.total_amount_billed: sum derived from
+..Task.total_task_hours_worked: - formula
+..Task.task_budget_hours: - formula
+
+The following rules have been activated
+Rule Bank[0x77df76e7e750] (loaded 2025-01-24 15:38:08.563456)
+Mapped Class[Task] rules:
+  Derive <class 'database.models.Task'>.total_task_hours_worked as Sum(Timesheet.hours_worked Where  - None)
+  Derive <class 'database.models.Task'>.total_task_amount_billed as Sum(Timesheet.total_amount_billed Where  - None)
+  Derive <class 'database.models.Task'>.is_over_budget as Formula (1): Rule.formula(derive=Task.is_over_budget, as_expre [...]
+Logic Bank 01.20.21 - 5 rules loaded
+
+[32mActivated rule 01JJCFB5Z8T27C219Q3VH3C0KE[0m
+
+[34mVerifying rule: Project_Totals - 01JJCFB5ZMQP9CVPH6H0TF1AGR[0m
+
+The following rules have been loaded
+Rule Bank[0x77df76e7e750] (loaded 2025-01-24 15:38:08.629588)
+Mapped Class[Project] rules:
+  Derive <class 'database.models.Project'>.total_project_hours as Sum(Task.total_task_hours_worked Where  - None)
+  Derive <class 'database.models.Project'>.total_project_amount as Sum(Task.total_task_amount_billed Where  - None)
+  Derive <class 'database.models.Project'>.is_over_budget as Formula (-1): Rule.formula(derive=Project.is_over_budget, as_ex [...]
+
+The following attributes have been referenced
+
+..Project.total_project_hours: aggregate derivation
+..Task.total_task_hours_worked: sum derived from
+..Project.total_project_amount: aggregate derivation
+..Task.total_task_amount_billed: sum derived from
+..Project.total_project_amount: - formula
+..Project.project_budget_amount: - formula
+
+The following rules have been activated
+Rule Bank[0x77df76e7e750] (loaded 2025-01-24 15:38:08.629588)
+Mapped Class[Project] rules:
+  Derive <class 'database.models.Project'>.total_project_hours as Sum(Task.total_task_hours_worked Where  - None)
+  Derive <class 'database.models.Project'>.total_project_amount as Sum(Task.total_task_amount_billed Where  - None)
+  Derive <class 'database.models.Project'>.is_over_budget as Formula (1): Rule.formula(derive=Project.is_over_budget, as_ex [...]
+Logic Bank 01.20.21 - 5 rules loaded
+
+[32mActivated rule 01JJCFB5ZMQP9CVPH6H0TF1AGR[0m
+
+[34mVerifying rule: Invoice_Totals - 01JJCFB60DWS7VHA4BJ9J2NWN1[0m
+
+The following rules have been loaded
+Rule Bank[0x77df76e7e750] (loaded 2025-01-24 15:38:08.679700)
+Mapped Class[Invoice] rules:
+  Derive <class 'database.models.Invoice'>.invoice_amount as Sum(Task.total_task_amount_billed Where  - None)
+  Derive <class 'database.models.Invoice'>.payment_total as Sum(Payment.payment_amount Where  - None)
+  Derive <class 'database.models.Invoice'>.invoice_balance as Formula (-1): Rule.formula(derive=Invoice.invoice_balance, as_e [...]
+  Derive <class 'database.models.Invoice'>.is_paid as Formula (-1): Rule.formula(derive=Invoice.is_paid, as_expressio [...]
+
+The following attributes have been referenced
+
+..Invoice.invoice_amount: aggregate derivation
+..Task.total_task_amount_billed: sum derived from
+..Invoice.payment_total: aggregate derivation
+..Payment.payment_amount: sum derived from
+..Invoice.invoice_amount: - formula
+..Invoice.payment_total: - formula
+..Invoice.invoice_balance: - formula
+
+The following rules have been activated
+Rule Bank[0x77df76e7e750] (loaded 2025-01-24 15:38:08.679700)
+Mapped Class[Invoice] rules:
+  Derive <class 'database.models.Invoice'>.invoice_amount as Sum(Task.total_task_amount_billed Where  - None)
+  Derive <class 'database.models.Invoice'>.payment_total as Sum(Payment.payment_amount Where  - None)
+  Derive <class 'database.models.Invoice'>.invoice_balance as Formula (1): Rule.formula(derive=Invoice.invoice_balance, as_e [...]
+  Derive <class 'database.models.Invoice'>.is_paid as Formula (2): Rule.formula(derive=Invoice.is_paid, as_expressio [...]
+Logic Bank 01.20.21 - 6 rules loaded
+
+[32mActivated rule 01JJCFB60DWS7VHA4BJ9J2NWN1[0m
+01JJCFB5YB76XV1GS0Q5HQCS7V rule file: logic/wg_rules/Person_Totals.py
+01JJCFB5YXYHQ8FK4SK2JFY1PS rule file: logic/wg_rules/Timesheet_Bill_Calc.py
+01JJCFB5Z8T27C219Q3VH3C0KE rule file: logic/wg_rules/Task_Totals.py
+01JJCFB5ZMQP9CVPH6H0TF1AGR rule file: logic/wg_rules/Project_Totals.py
+01JJCFB5ZZHS8TBR2KQE0CH4GA rule file: logic/wg_rules/Client_Totals.py
+01JJCFB60DWS7VHA4BJ9J2NWN1 rule file: logic/wg_rules/Invoice_Totals.py
+
+[34mVerifying rule: Client_Totals - 01JJCFB5ZZHS8TBR2KQE0CH4GA[0m
+type object 'Project' has no attribute 'total_task_hours_worked'
+Traceback (most recent call last):
+  File "/opt/projects/by-ulid/01JJCFB49RE2G3FW6A1JFBJAG1/logic/load_verify_rules.py", line 144, in verify_rules
+    rule_module.init_rule()
+  File "/opt/projects/by-ulid/01JJCFB49RE2G3FW6A1JFBJAG1/logic/wg_rules/Client_Totals.py", line 6, in init_rule
+    Rule.sum(derive=Client.total_hours, as_sum_of=Project.total_task_hours_worked)
+                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: type object 'Project' has no attribute 'total_task_hours_worked'
+[31mFailed to verify accepted rule code
+Rule.sum(derive=Client.total_hours, as_sum_of=Project.total_task_hours_worked)
+Rule.sum(derive=Client.total_amount, as_sum_of=Task.total_task_amount_billed)
+Rule.formula(derive=Client.is_over_budget, as_expression=lambda row: row.total_amount > row.budget_amount)
+[33mAttributeError: type object 'Project' has no attribute 'total_task_hours_worked'[0m
+
+The following rules have been loaded
+Rule Bank[0x77df76e7e750] (loaded 2025-01-24 15:38:08.679700)
+Mapped Class[Invoice] rules:
+  Derive <class 'database.models.Invoice'>.invoice_amount as Sum(Task.total_task_amount_billed Where  - None)
+  Derive <class 'database.models.Invoice'>.payment_total as Sum(Payment.payment_amount Where  - None)
+  Derive <class 'database.models.Invoice'>.invoice_balance as Formula (1): Rule.formula(derive=Invoice.invoice_balance, as_e [...]
+  Derive <class 'database.models.Invoice'>.is_paid as Formula (2): Rule.formula(derive=Invoice.is_paid, as_expressio [...]
+Circular dependencies in Invoice formula: Rule.formula(derive=Invoice.invoice_balance, as_expression=lambda row: row.invoice_amount - row.payment_total)
+Circular dependencies in Invoice formula: Rule.formula(derive=Invoice.is_paid, as_expression=lambda row: row.invoice_balance == 0)
+Logic Bank Activation Error: Mapped Class[Invoice] blocked by circular dependencies:
+Mapped Class[Invoice] blocked by circular dependencies:
+Traceback (most recent call last):
+  File "/opt/projects/by-ulid/01JJCFB49RE2G3FW6A1JFBJAG1/config/activate_logicbank.py", line 23, in activate_logicbank
+    LogicBank.activate(session=session,
+  File "/usr/local/lib/python3.12/site-packages/logic_bank/logic_bank.py", line 141, in activate
+    missing_attributes = rule_bank_setup.compute_formula_execution_order()
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/logic_bank/rule_bank/rule_bank_setup.py", line 159, in compute_formula_execution_order
+    compute_formula_execution_order_for_class(class_name=each_key)  # might raise excp
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/logic_bank/rule_bank/rule_bank_setup.py", line 146, in compute_formula_execution_order_for_class
+    raise LBCircularDependencyException("Mapped Class[" + class_name + "] blocked by circular dependencies:" + cycles, formula_list)
+logic_bank.exceptions.LBCircularDependencyException: Mapped Class[Invoice] blocked by circular dependencies:
+Exposing /Client
+Exposing /Invoice
+Exposing /Payment
+Exposing /Person
+Exposing /Project
+Exposing /Task
+Exposing /Timesheet
+Declare   API - api/expose_api_models, endpoint for each table on g.apifabric.ai:443, customizing...

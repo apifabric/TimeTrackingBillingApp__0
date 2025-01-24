@@ -1,0 +1,290 @@
+log: Invoking GenAI..
+Project 01JJCFB49RE2G3FW6A1JFBJAG1 not found
+als genai --using /tmp/context_01JJCFB49RE2G3FW6A1JFBJAG1n8iu7cd_ --project-name TimeTrackingBillingApp_iter_1 --tables 7  --active-rules
+create_project: 
+create_project: GenAI [TimeTrackingBillingApp_iter_1] creating microservice...
+create_project: .. .. --using prompt: /tmp/context_01JJCFB49RE2G3FW6A1JFBJAG1n8iu7cd_
+create_project: .. .. in pwd: /tmp/tmp.JIXaCkG2Ep
+create_project: .. conv[000] processes: 000_you_are.prompt - You are a data modelling exper...
+create_project: .. conv[001] processes: 001_logic_training.prompt - Here is the simplified API for...
+create_project: .. conv[002] processes: 002_create_db_models.prompt - Use SQLAlchemy to create a sql...
+create_project: .. iteration inserted: Update the prior response
+create_project: .. inserted: Use LogicBank to enforce these requirements (do not generate check constraints); be sure to update the data model and *all* test data with any attributes used in the logic:
+create_project: .. inserted explicit test data: Create 4 rows of test data for each table, and follow these guidelines carefully:
+create_project: .. conv[004] processes: 003_create_db_models.response - { |     "models": [ |         { |   ...
+create_project: .. conv[005] processes: 004_iteration.prompt - update model | <task>Update the ...
+create_project: .. iteration inserted: Update the prior response
+create_project: .. inserted explicit test data: Create 4 rows of test data for each table, and follow these guidelines carefully:
+create_project: .. .. conv ignores: create_db_models.py
+create_project: .. .. conv ignores: db.dbml
+create_project: .. .. conv ignores: landing_page.json
+create_project: .. .. conv ignores: project_is_genai_demo.txt
+create_project: .. .. conv ignores: readme.md
+create_project: .. .. conv ignores: response.json
+create_project: .. saved request: system/genai/temp/request.json
+create_project: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+create_project: ChatGPT (54 secs) - response at: system/genai/temp/chatgpt_original.response
+create_project: .. call_chatgpt saved response: system/genai/temp/response.json
+create_project: ..cwd: /tmp/tmp.JIXaCkG2Ep
+create_project: 
+create_project: ..docker using default directory: /tmp/tmp.JIXaCkG2Ep/TimeTrackingBillingApp_iter_1
+create_project: 
+create_project: add description to Client: Client table holding client information and budget status.
+create_project: Added description to model: Client: class Client(Base):
+create_project: """description: Client table holding client information and budget status."""
+create_project: __tablename__ = 'client'
+create_project: id = Column(Integer, primary_key=True, autoincrement=True)
+create_project: name = Column(String)
+create_project: email = Column(String)
+create_project: phone = Column(String)
+create_project: total_hours = Column(DECIMAL(10, 2), default=0)
+create_project: total_amount = Column(DECIMAL(10, 2), default=0)
+create_project: budget_amount = Column(DECIMAL(10, 2), default=0)
+create_project: is_over_budget = Column(Boolean, default=False)
+create_project: 
+create_project: add description to Project: Project table associated with clients, holds project specifics and budget status.
+create_project: Added description to model: Project: class Project(Base):
+create_project: """description: Project table associated with clients, holds project specifics and budget status."""
+create_project: __tablename__ = 'project'
+create_project: id = Column(Integer, primary_key=True, autoincrement=True)
+create_project: client_id = Column(Integer, ForeignKey('client.id'))
+create_project: name = Column(String)
+create_project: total_project_hours = Column(DECIMAL(10, 2), default=0)
+create_project: total_project_amount = Column(DECIMAL(10, 2), default=0)
+create_project: project_budget_amount = Column(DECIMAL(10, 2), default=0)
+create_project: is_over_budget = Column(Boolean, default=False)
+create_project: 
+create_project: add description to Invoice: Invoice table details the amount due based on project tasking.
+create_project: Added description to model: Invoice: class Invoice(Base):
+create_project: """description: Invoice table details the amount due based on project tasking."""
+create_project: __tablename__ = 'invoice'
+create_project: id = Column(Integer, primary_key=True, autoincrement=True)
+create_project: invoice_date = Column(DateTime)
+create_project: project_id = Column(Integer, ForeignKey('project.id'))
+create_project: invoice_amount = Column(DECIMAL(10, 2), default=0)
+create_project: payment_total = Column(DECIMAL(10, 2), default=0)
+create_project: invoice_balance = Column(DECIMAL(10, 2), default=0)
+create_project: is_paid = Column(Boolean, default=False)
+create_project: 
+create_project: add description to Task: Task table defining task specifics, hours worked, amount billed, and budget status.
+create_project: Added description to model: Task: class Task(Base):
+create_project: """description: Task table defining task specifics, hours worked, amount billed, and budget status."""
+create_project: __tablename__ = 'task'
+create_project: id = Column(Integer, primary_key=True, autoincrement=True)
+create_project: project_id = Column(Integer, ForeignKey('project.id'))
+create_project: name = Column(String)
+create_project: description = Column(String)
+create_project: total_task_hours_worked = Column(DECIMAL(10, 2), default=0)
+create_project: total_task_amount_billed = Column(DECIMAL(10, 2), default=0)
+create_project: task_budget_hours = Column(DECIMAL(10, 2), default=0)
+create_project: is_over_budget = Column(Boolean, default=False)
+create_project: invoice_id = Column(Integer, ForeignKey('invoice.id'))
+create_project: 
+create_project: add description to Person: Person table records employee details along with hours and billing.
+create_project: Added description to model: Person: class Person(Base):
+create_project: """description: Person table records employee details along with hours and billing."""
+create_project: __tablename__ = 'person'
+create_project: id = Column(Integer, primary_key=True, autoincrement=True)
+create_project: client_id = Column(Integer, ForeignKey('client.id'))
+create_project: name = Column(String)
+create_project: email = Column(String)
+create_project: phone = Column(String)
+create_project: billing_rate = Column(DECIMAL(10, 2), default=0)
+create_project: total_hours_entered = Column(DECIMAL(10, 2), default=0)
+create_project: total_amount_billed = Column(DECIMAL(10, 2), default=0)
+create_project: 
+create_project: add description to Timesheet: Timesheet table that tracks employee hours worked on tasks.
+create_project: Added description to model: Timesheet: class Timesheet(Base):
+create_project: """description: Timesheet table that tracks employee hours worked on tasks."""
+create_project: __tablename__ = 'timesheet'
+create_project: id = Column(Integer, primary_key=True, autoincrement=True)
+create_project: task_id = Column(Integer, ForeignKey('task.id'))
+create_project: person_id = Column(Integer, ForeignKey('person.id'))
+create_project: date_worked = Column(DateTime)
+create_project: hours_worked = Column(DECIMAL(10, 2), default=0)
+create_project: month = Column(Integer, default=0)
+create_project: year = Column(Integer, default=0)
+create_project: billing_rate = Column(DECIMAL(10, 2), default=0)
+create_project: total_amount_billed = Column(DECIMAL(10, 2), default=0)
+create_project: 
+create_project: add description to Payment: Payment records towards invoices of projects.
+create_project: Added description to model: Payment: class Payment(Base):
+create_project: """description: Payment records towards invoices of projects."""
+create_project: __tablename__ = 'payment'
+create_project: id = Column(Integer, primary_key=True, autoincrement=True)
+create_project: invoice_id = Column(Integer, ForeignKey('invoice.id'))
+create_project: payment_amount = Column(DECIMAL(10, 2), default=0)
+create_project: payment_date = Column(DateTime)
+create_project: notes = Column(String)
+create_project: 
+create_project: .... test_data_rows: 28
+create_project: .. code for db creation and test data: system/genai/temp/create_db_models.py
+create_project: .. saving work files to: system/genai/temp/TimeTrackingBillingApp_iter_1
+create_project: save_prompt_messages_to_system_genai_temp_project() - /tmp/tmp.JIXaCkG2Ep/system/genai/temp/TimeTrackingBillingApp_iter_1
+create_project: .. saving[000_you_are.prompt]  - You are a data modelling exper...
+create_project: .. saving[001_logic_training.prompt]  - Here is the simplified API for...
+create_project: .. saving[002_iteration.prompt]  - Update the prior response - be...
+create_project: .. saving[003_iteration.prompt]  - Update the prior response - be...
+create_project: .. saving response [004_create_db_models.response]  - Update the prior response - be...
+create_project: ..cwd: /tmp/tmp.JIXaCkG2Ep
+create_project: 
+create_project: ..docker using default directory: /tmp/tmp.JIXaCkG2Ep/TimeTrackingBillingApp_iter_1
+create_project: 
+create_project: .. fixed hallucination/indent:     Rule.sum(derive=Person.total_hours_entered, as_sum_of=Timesheet.hours_worked)
+create_project: .. found class: Person in: Rule.sum(derive=Person.total_hours_entered, as_sum_of=Timesheet.hours_worked)
+create_project: .. no classes found in: Rule.sum(derive=Person.total_hours_entered, as_sum_of=Timesheet.hours_worked)
+create_project: .. no classes found in: Rule.sum(derive=Person.total_hours_entered, as_sum_of=Timesheet.hours_worked)
+create_project: .. found class: Timesheet in: Rule.sum(derive=Person.total_hours_entered, as_sum_of=Timesheet.hours_worked)
+create_project: .. no classes found in: Rule.sum(derive=Person.total_hours_entered, as_sum_of=Timesheet.hours_worked)
+create_project: .. fixed hallucination/indent:     Rule.formula(derive=Person.total_amount_billed, as_expression=lambda row: row.total_hours_entered * row.billing_rate)
+create_project: .. found class: Person in: Rule.formula(derive=Person.total_amount_billed, as_expression=lambda row: row.total_hours_entered * row.billing_rate)
+create_project: .. no classes found in: Rule.formula(derive=Person.total_amount_billed, as_expression=lambda row: row.total_hours_entered * row.billing_rate)
+create_project: .. no classes found in: Rule.formula(derive=Person.total_amount_billed, as_expression=lambda row: row.total_hours_entered * row.billing_rate)
+create_project: .. no classes found in: Rule.formula(derive=Person.total_amount_billed, as_expression=lambda row: row.total_hours_entered * row.billing_rate)
+create_project: .. no classes found in: Rule.formula(derive=Person.total_amount_billed, as_expression=lambda row: row.total_hours_entered * row.billing_rate)
+create_project: .. fixed hallucination/indent:     Rule.constraint(validate=Person, as_condition=lambda row: 0 < row.billing_rate < 200, error_msg='Billing rate ({row.billing_rate}) out of range.')
+create_project: .. no classes found in: Rule.constraint(validate=Person, as_condition=lambda row: 0 < row.billing_rate < 200, error_msg='Billing rate ({row.billing_rate}) out of range.')
+create_project: .. no classes found in: Rule.constraint(validate=Person, as_condition=lambda row: 0 < row.billing_rate < 200, error_msg='Billing rate ({row.billing_rate}) out of range.')
+create_project: .. found class: Person in: Rule.constraint(validate=Person, as_condition=lambda row: 0 < row.billing_rate < 200, error_msg='Billing rate ({row.billing_rate}) out of range.')
+create_project: .. no classes found in: Rule.constraint(validate=Person, as_condition=lambda row: 0 < row.billing_rate < 200, error_msg='Billing rate ({row.billing_rate}) out of range.')
+create_project: .. no classes found in: Rule.constraint(validate=Person, as_condition=lambda row: 0 < row.billing_rate < 200, error_msg='Billing rate ({row.billing_rate}) out of range.')
+create_project: .. fixed hallucination/indent:     Rule.formula(derive=Timesheet.total_amount_billed, as_expression=lambda row: row.hours_worked * row.billing_rate)
+create_project: .. found class: Timesheet in: Rule.formula(derive=Timesheet.total_amount_billed, as_expression=lambda row: row.hours_worked * row.billing_rate)
+create_project: .. no classes found in: Rule.formula(derive=Timesheet.total_amount_billed, as_expression=lambda row: row.hours_worked * row.billing_rate)
+create_project: .. no classes found in: Rule.formula(derive=Timesheet.total_amount_billed, as_expression=lambda row: row.hours_worked * row.billing_rate)
+create_project: .. no classes found in: Rule.formula(derive=Timesheet.total_amount_billed, as_expression=lambda row: row.hours_worked * row.billing_rate)
+create_project: .. no classes found in: Rule.formula(derive=Timesheet.total_amount_billed, as_expression=lambda row: row.hours_worked * row.billing_rate)
+create_project: .. fixed hallucination/indent:     Rule.constraint(validate=Timesheet, as_condition=lambda row: 0 < row.hours_worked < 15, error_msg='Invalid hours worked: {row.hours_worked}.')
+create_project: .. no classes found in: Rule.constraint(validate=Timesheet, as_condition=lambda row: 0 < row.hours_worked < 15, error_msg='Invalid hours worked: {row.hours_worked}.')
+create_project: .. no classes found in: Rule.constraint(validate=Timesheet, as_condition=lambda row: 0 < row.hours_worked < 15, error_msg='Invalid hours worked: {row.hours_worked}.')
+create_project: .. found class: Timesheet in: Rule.constraint(validate=Timesheet, as_condition=lambda row: 0 < row.hours_worked < 15, error_msg='Invalid hours worked: {row.hours_worked}.')
+create_project: .. no classes found in: Rule.constraint(validate=Timesheet, as_condition=lambda row: 0 < row.hours_worked < 15, error_msg='Invalid hours worked: {row.hours_worked}.')
+create_project: .. no classes found in: Rule.constraint(validate=Timesheet, as_condition=lambda row: 0 < row.hours_worked < 15, error_msg='Invalid hours worked: {row.hours_worked}.')
+create_project: .. fixed hallucination/indent:     Rule.constraint(validate=Timesheet, as_condition=lambda row: row.date_worked > datetime(2025, 1, 1), error_msg='Invalid date worked: {row.date_worked}.')
+create_project: .. no classes found in: Rule.constraint(validate=Timesheet, as_condition=lambda row: row.date_worked > datetime(2025, 1, 1), error_msg='Invalid date worked: {row.date_worked}.')
+create_project: .. no classes found in: Rule.constraint(validate=Timesheet, as_condition=lambda row: row.date_worked > datetime(2025, 1, 1), error_msg='Invalid date worked: {row.date_worked}.')
+create_project: .. found class: Timesheet in: Rule.constraint(validate=Timesheet, as_condition=lambda row: row.date_worked > datetime(2025, 1, 1), error_msg='Invalid date worked: {row.date_worked}.')
+create_project: .. no classes found in: Rule.constraint(validate=Timesheet, as_condition=lambda row: row.date_worked > datetime(2025, 1, 1), error_msg='Invalid date worked: {row.date_worked}.')
+create_project: .. no classes found in: Rule.constraint(validate=Timesheet, as_condition=lambda row: row.date_worked > datetime(2025, 1, 1), error_msg='Invalid date worked: {row.date_worked}.')
+create_project: .. fixed hallucination/indent:     Rule.formula(derive=Timesheet.month, as_expression=lambda row: row.date_worked.month)
+create_project: .. found class: Timesheet in: Rule.formula(derive=Timesheet.month, as_expression=lambda row: row.date_worked.month)
+create_project: .. no classes found in: Rule.formula(derive=Timesheet.month, as_expression=lambda row: row.date_worked.month)
+create_project: .. no classes found in: Rule.formula(derive=Timesheet.month, as_expression=lambda row: row.date_worked.month)
+create_project: .. no classes found in: Rule.formula(derive=Timesheet.month, as_expression=lambda row: row.date_worked.month)
+create_project: .. no classes found in: Rule.formula(derive=Timesheet.month, as_expression=lambda row: row.date_worked.month)
+create_project: .. fixed hallucination/indent:     Rule.formula(derive=Timesheet.year, as_expression=lambda row: row.date_worked.year)
+create_project: .. found class: Timesheet in: Rule.formula(derive=Timesheet.year, as_expression=lambda row: row.date_worked.year)
+create_project: .. no classes found in: Rule.formula(derive=Timesheet.year, as_expression=lambda row: row.date_worked.year)
+create_project: .. no classes found in: Rule.formula(derive=Timesheet.year, as_expression=lambda row: row.date_worked.year)
+create_project: .. no classes found in: Rule.formula(derive=Timesheet.year, as_expression=lambda row: row.date_worked.year)
+create_project: .. no classes found in: Rule.formula(derive=Timesheet.year, as_expression=lambda row: row.date_worked.year)
+create_project: .. fixed hallucination/indent:     Rule.copy(derive=Timesheet.billing_rate, from_parent=Person.billing_rate)
+create_project: .. found class: Timesheet in: Rule.copy(derive=Timesheet.billing_rate, from_parent=Person.billing_rate)
+create_project: .. found class: Person in: Rule.copy(derive=Timesheet.billing_rate, from_parent=Person.billing_rate)
+create_project: .. no classes found in: Rule.copy(derive=Timesheet.billing_rate, from_parent=Person.billing_rate)
+create_project: .. no classes found in: Rule.copy(derive=Timesheet.billing_rate, from_parent=Person.billing_rate)
+create_project: .. no classes found in: Rule.copy(derive=Timesheet.billing_rate, from_parent=Person.billing_rate)
+create_project: .. fixed hallucination/indent:     Rule.sum(derive=Task.total_task_hours_worked, as_sum_of=Timesheet.hours_worked)
+create_project: .. found class: Task in: Rule.sum(derive=Task.total_task_hours_worked, as_sum_of=Timesheet.hours_worked)
+create_project: .. no classes found in: Rule.sum(derive=Task.total_task_hours_worked, as_sum_of=Timesheet.hours_worked)
+create_project: .. no classes found in: Rule.sum(derive=Task.total_task_hours_worked, as_sum_of=Timesheet.hours_worked)
+create_project: .. found class: Timesheet in: Rule.sum(derive=Task.total_task_hours_worked, as_sum_of=Timesheet.hours_worked)
+create_project: .. no classes found in: Rule.sum(derive=Task.total_task_hours_worked, as_sum_of=Timesheet.hours_worked)
+create_project: .. fixed hallucination/indent:     Rule.sum(derive=Task.total_task_amount_billed, as_sum_of=Timesheet.total_amount_billed)
+create_project: .. found class: Task in: Rule.sum(derive=Task.total_task_amount_billed, as_sum_of=Timesheet.total_amount_billed)
+create_project: .. no classes found in: Rule.sum(derive=Task.total_task_amount_billed, as_sum_of=Timesheet.total_amount_billed)
+create_project: .. no classes found in: Rule.sum(derive=Task.total_task_amount_billed, as_sum_of=Timesheet.total_amount_billed)
+create_project: .. found class: Timesheet in: Rule.sum(derive=Task.total_task_amount_billed, as_sum_of=Timesheet.total_amount_billed)
+create_project: .. no classes found in: Rule.sum(derive=Task.total_task_amount_billed, as_sum_of=Timesheet.total_amount_billed)
+create_project: .. fixed hallucination/indent:     Rule.formula(derive=Task.is_over_budget, as_expression=lambda row: row.total_task_hours_worked > row.task_budget_hours)
+create_project: .. found class: Task in: Rule.formula(derive=Task.is_over_budget, as_expression=lambda row: row.total_task_hours_worked > row.task_budget_hours)
+create_project: .. no classes found in: Rule.formula(derive=Task.is_over_budget, as_expression=lambda row: row.total_task_hours_worked > row.task_budget_hours)
+create_project: .. no classes found in: Rule.formula(derive=Task.is_over_budget, as_expression=lambda row: row.total_task_hours_worked > row.task_budget_hours)
+create_project: .. no classes found in: Rule.formula(derive=Task.is_over_budget, as_expression=lambda row: row.total_task_hours_worked > row.task_budget_hours)
+create_project: .. no classes found in: Rule.formula(derive=Task.is_over_budget, as_expression=lambda row: row.total_task_hours_worked > row.task_budget_hours)
+create_project: .. fixed hallucination/indent:     Rule.sum(derive=Project.total_project_hours, as_sum_of=Task.total_task_hours_worked)
+create_project: .. found class: Project in: Rule.sum(derive=Project.total_project_hours, as_sum_of=Task.total_task_hours_worked)
+create_project: .. no classes found in: Rule.sum(derive=Project.total_project_hours, as_sum_of=Task.total_task_hours_worked)
+create_project: .. no classes found in: Rule.sum(derive=Project.total_project_hours, as_sum_of=Task.total_task_hours_worked)
+create_project: .. found class: Task in: Rule.sum(derive=Project.total_project_hours, as_sum_of=Task.total_task_hours_worked)
+create_project: .. no classes found in: Rule.sum(derive=Project.total_project_hours, as_sum_of=Task.total_task_hours_worked)
+create_project: .. fixed hallucination/indent:     Rule.sum(derive=Project.total_project_amount, as_sum_of=Task.total_task_amount_billed)
+create_project: .. found class: Project in: Rule.sum(derive=Project.total_project_amount, as_sum_of=Task.total_task_amount_billed)
+create_project: .. no classes found in: Rule.sum(derive=Project.total_project_amount, as_sum_of=Task.total_task_amount_billed)
+create_project: .. no classes found in: Rule.sum(derive=Project.total_project_amount, as_sum_of=Task.total_task_amount_billed)
+create_project: .. found class: Task in: Rule.sum(derive=Project.total_project_amount, as_sum_of=Task.total_task_amount_billed)
+create_project: .. no classes found in: Rule.sum(derive=Project.total_project_amount, as_sum_of=Task.total_task_amount_billed)
+create_project: .. fixed hallucination/indent:     Rule.formula(derive=Project.is_over_budget, as_expression=lambda row: row.total_project_amount > row.project_budget_amount)
+create_project: .. found class: Project in: Rule.formula(derive=Project.is_over_budget, as_expression=lambda row: row.total_project_amount > row.project_budget_amount)
+create_project: .. no classes found in: Rule.formula(derive=Project.is_over_budget, as_expression=lambda row: row.total_project_amount > row.project_budget_amount)
+create_project: .. no classes found in: Rule.formula(derive=Project.is_over_budget, as_expression=lambda row: row.total_project_amount > row.project_budget_amount)
+create_project: .. no classes found in: Rule.formula(derive=Project.is_over_budget, as_expression=lambda row: row.total_project_amount > row.project_budget_amount)
+create_project: .. no classes found in: Rule.formula(derive=Project.is_over_budget, as_expression=lambda row: row.total_project_amount > row.project_budget_amount)
+create_project: .. fixed hallucination/indent:     Rule.sum(derive=Client.total_hours, as_sum_of=Project.total_project_hours)
+create_project: .. found class: Client in: Rule.sum(derive=Client.total_hours, as_sum_of=Project.total_project_hours)
+create_project: .. no classes found in: Rule.sum(derive=Client.total_hours, as_sum_of=Project.total_project_hours)
+create_project: .. no classes found in: Rule.sum(derive=Client.total_hours, as_sum_of=Project.total_project_hours)
+create_project: .. found class: Project in: Rule.sum(derive=Client.total_hours, as_sum_of=Project.total_project_hours)
+create_project: .. no classes found in: Rule.sum(derive=Client.total_hours, as_sum_of=Project.total_project_hours)
+create_project: .. fixed hallucination/indent:     Rule.sum(derive=Client.total_amount, as_sum_of=Task.total_task_amount_billed)
+create_project: .. found class: Client in: Rule.sum(derive=Client.total_amount, as_sum_of=Task.total_task_amount_billed)
+create_project: .. no classes found in: Rule.sum(derive=Client.total_amount, as_sum_of=Task.total_task_amount_billed)
+create_project: .. no classes found in: Rule.sum(derive=Client.total_amount, as_sum_of=Task.total_task_amount_billed)
+create_project: .. found class: Task in: Rule.sum(derive=Client.total_amount, as_sum_of=Task.total_task_amount_billed)
+create_project: .. no classes found in: Rule.sum(derive=Client.total_amount, as_sum_of=Task.total_task_amount_billed)
+create_project: .. fixed hallucination/indent:     Rule.formula(derive=Client.is_over_budget, as_expression=lambda row: row.total_amount > row.budget_amount)
+create_project: .. found class: Client in: Rule.formula(derive=Client.is_over_budget, as_expression=lambda row: row.total_amount > row.budget_amount)
+create_project: .. no classes found in: Rule.formula(derive=Client.is_over_budget, as_expression=lambda row: row.total_amount > row.budget_amount)
+create_project: .. no classes found in: Rule.formula(derive=Client.is_over_budget, as_expression=lambda row: row.total_amount > row.budget_amount)
+create_project: .. no classes found in: Rule.formula(derive=Client.is_over_budget, as_expression=lambda row: row.total_amount > row.budget_amount)
+create_project: .. no classes found in: Rule.formula(derive=Client.is_over_budget, as_expression=lambda row: row.total_amount > row.budget_amount)
+create_project: .. fixed hallucination/indent:     Rule.sum(derive=Invoice.invoice_amount, as_sum_of=Task.total_task_amount_billed)
+create_project: .. found class: Invoice in: Rule.sum(derive=Invoice.invoice_amount, as_sum_of=Task.total_task_amount_billed)
+create_project: .. no classes found in: Rule.sum(derive=Invoice.invoice_amount, as_sum_of=Task.total_task_amount_billed)
+create_project: .. no classes found in: Rule.sum(derive=Invoice.invoice_amount, as_sum_of=Task.total_task_amount_billed)
+create_project: .. found class: Task in: Rule.sum(derive=Invoice.invoice_amount, as_sum_of=Task.total_task_amount_billed)
+create_project: .. no classes found in: Rule.sum(derive=Invoice.invoice_amount, as_sum_of=Task.total_task_amount_billed)
+create_project: .. fixed hallucination/indent:     Rule.sum(derive=Invoice.payment_total, as_sum_of=Payment.payment_amount)
+create_project: .. found class: Invoice in: Rule.sum(derive=Invoice.payment_total, as_sum_of=Payment.payment_amount)
+create_project: .. no classes found in: Rule.sum(derive=Invoice.payment_total, as_sum_of=Payment.payment_amount)
+create_project: .. no classes found in: Rule.sum(derive=Invoice.payment_total, as_sum_of=Payment.payment_amount)
+create_project: .. found class: Payment in: Rule.sum(derive=Invoice.payment_total, as_sum_of=Payment.payment_amount)
+create_project: .. no classes found in: Rule.sum(derive=Invoice.payment_total, as_sum_of=Payment.payment_amount)
+create_project: .. fixed hallucination/indent:     Rule.formula(derive=Invoice.invoice_balance, as_expression=lambda row: row.invoice_amount - row.payment_total)
+create_project: .. found class: Invoice in: Rule.formula(derive=Invoice.invoice_balance, as_expression=lambda row: row.invoice_amount - row.payment_total)
+create_project: .. no classes found in: Rule.formula(derive=Invoice.invoice_balance, as_expression=lambda row: row.invoice_amount - row.payment_total)
+create_project: .. no classes found in: Rule.formula(derive=Invoice.invoice_balance, as_expression=lambda row: row.invoice_amount - row.payment_total)
+create_project: .. no classes found in: Rule.formula(derive=Invoice.invoice_balance, as_expression=lambda row: row.invoice_amount - row.payment_total)
+create_project: .. no classes found in: Rule.formula(derive=Invoice.invoice_balance, as_expression=lambda row: row.invoice_amount - row.payment_total)
+create_project: .. fixed hallucination/indent:     Rule.formula(derive=Invoice.is_paid, as_expression=lambda row: row.invoice_balance == 0)
+create_project: .. found class: Invoice in: Rule.formula(derive=Invoice.is_paid, as_expression=lambda row: row.invoice_balance == 0)
+create_project: .. no classes found in: Rule.formula(derive=Invoice.is_paid, as_expression=lambda row: row.invoice_balance == 0)
+create_project: .. no classes found in: Rule.formula(derive=Invoice.is_paid, as_expression=lambda row: row.invoice_balance == 0)
+create_project: .. no classes found in: Rule.formula(derive=Invoice.is_paid, as_expression=lambda row: row.invoice_balance == 0)
+create_project: .. no classes found in: Rule.formula(derive=Invoice.is_paid, as_expression=lambda row: row.invoice_balance == 0)
+create_project: 
+create_project: Project created.  Next steps:
+create_project: 
+create_project: $ ApiLogicServer run      # Run created API and Admin App, or
+create_project: 
+create_project: Customize using IDE on local machine:
+create_project: exit     # exit the Docker container
+create_project: code <local machine directory for: TimeTrackingBillingApp_iter_1>  # e.g., open VSCode on created project
+create_project: 
+create_project: 
+create_project: GENAI (57 secs) successful on try 1
+create_project: 
+create_project: 
+create_project: Welcome to API Logic Server, 14.02.25
+create_project: 
+create_project: creating in manager: sqlite:///system/genai/temp/create_db_models.sqlite
+create_project: 
+Waiting for background tasks to complete.. (in /opt/projects/by-ulid/01JJCFB49RE2G3FW6A1JFBJAG1)
+Waiting for background tasks to complete.. (in /opt/projects/by-ulid/01JJCFB49RE2G3FW6A1JFBJAG1)
+[1]   Running                 dbml-renderer -i docs/db.dbml -o ui/dber.svg &
+[2]-  Running                 ( cd /opt/webgenai; python database/manager.py -p "${proj_id}" --verify ) &
+[3]+  Running                 ( cd /opt/webgenai; python database/manager.py -jp "${proj_id}" > ui/project.json ) &
+Background tasks completed
+log: Project Created..
+log: Creating sample data..
+Copying SPA..

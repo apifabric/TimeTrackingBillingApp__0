@@ -4,13 +4,13 @@
 
 Project DBML {
   Note: '''
-Client: Represents clients in the system.
-Invoice: Represents invoices related to a specific project.
-Project: Represents projects associated with clients.
-Payment: Represents payments made against invoices.
-Person: Represents personnel and their billing information.
-Task: Represents tasks within projects.
-Timesheet: Represents timesheets logging work done by personnel.
+Client: Client table holding client information and budget status.
+Invoice: Invoice table details the amount due based on project tasking.
+Project: Project table associated with clients, holds project specifics and budget status.
+Payment: Payment records towards invoices of projects.
+Person: Person table records employee details along with hours and billing.
+Task: Task table defining task specifics, hours worked, amount billed, and budget status.
+Timesheet: Timesheet table that tracks employee hours worked on tasks.
 '''
 }
 
@@ -27,7 +27,7 @@ Table Client {
 
 Table Invoice {
     id INTEGER [primary key]
-    invoice_date DATE 
+    invoice_date DATETIME 
     project_id INTEGER 
     invoice_amount DECIMAL 
     payment_total DECIMAL 
@@ -49,7 +49,7 @@ Table Payment {
     id INTEGER [primary key]
     invoice_id INTEGER 
     payment_amount DECIMAL 
-    payment_date DATE 
+    payment_date DATETIME 
     notes VARCHAR 
     }
 
@@ -80,7 +80,7 @@ Table Timesheet {
     id INTEGER [primary key]
     task_id INTEGER 
     person_id INTEGER 
-    date_worked DATE 
+    date_worked DATETIME 
     hours_worked DECIMAL 
     month INTEGER 
     year INTEGER 

@@ -1,0 +1,61 @@
+<o-form-layout-manager attr="Timesheet" mode="tab" title="TIMESHEET">
+    <div fxFill fxLayout="column" fxLayoutAlign="start">
+        <o-table 
+            attr="TimesheetTable" 
+            service="Timesheet" 
+            entity="Timesheet" 
+            title="TIMESHEET"
+            keys="id"
+            columns="id;person_id;task_id;month;year;billing_rate;date_worked;hours_worked;total_amount_billed" 
+            header-actions="R;D"
+            visible-columns="id;person_id;task_id;month;year;billing_rate;date_worked;hours_worked;total_amount_billed"  
+            sort-columns="id" 
+            query-rows="20" 
+            quick-filter="yes"
+            row-height="medium" 
+            select-all-checkbox="true" 
+            pageable="yes"  
+            auto-adjust="true" 
+            virtual-scroll="yes" 
+            edition-mode="dblclick"
+            horizontal-scroll="yes"
+            show-title="yes"
+            export-button="yes">
+            
+            <o-table-column #id attr="id" title=" id*" type="integer" editable="no" required="no" content-align="center"></o-table-column>
+            
+            <o-table-column attr="person_id" title="person_id">
+    <o-table-cell-renderer-service attr="person_id" 
+        service="Person" entity="PersonType" columns="id;name"
+        parent-keys="id:person_id"
+        value-column="name" keys="person_id"
+        visible-columns="name" separator=" - " width="680px">
+    </o-table-cell-renderer-service>
+</o-table-column>
+            
+            <o-table-column attr="task_id" title="task_id">
+    <o-table-cell-renderer-service attr="task_id" 
+        service="Task" entity="TaskType" columns="id;name"
+        parent-keys="id:task_id"
+        value-column="name" keys="task_id"
+        visible-columns="name" separator=" - " width="680px">
+    </o-table-cell-renderer-service>
+</o-table-column>
+            
+            <o-table-column #month attr="month" title="month" type="integer" editable="no" required="no" content-align="center"></o-table-column>
+            
+            <o-table-column #year attr="year" title="year" type="integer" editable="no" required="no" content-align="center"></o-table-column>
+            
+            <o-table-column #billing_rate attr="billing_rate" title="billing_rate" type="currency" editable="no" required="no" currency-symbol="$" currency-symbol-position="left" thousand-separator=","decimal-separator="."></o-table-column>
+            
+            <o-table-column #date_worked attr="date_worked" title="date_worked" editable="no" required="no" content-align="left"></o-table-column>
+            
+            <o-table-column #hours_worked attr="hours_worked" title="hours_worked" type="currency" editable="no" required="no" currency-symbol="$" currency-symbol-position="left" thousand-separator=","decimal-separator="."></o-table-column>
+            
+            <o-table-column #total_amount_billed attr="total_amount_billed" title="total_amount_billed" type="currency" editable="no" required="no" currency-symbol="$" currency-symbol-position="left" thousand-separator=","decimal-separator="."></o-table-column>
+            
+            <o-table-context-menu></o-table-context-menu>
+            <o-table-paginator page-size-options="24;48;96"></o-table-paginator>
+        </o-table>
+    </div>
+</o-form-layout-manager>

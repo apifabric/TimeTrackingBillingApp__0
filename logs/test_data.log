@@ -1,0 +1,817 @@
+INFO:response2code:Loading GPT response from system/genai/temp/response.json
+INFO:response2code:Successfully wrote test data code to database/test_data/test_data_code.py
+..  logic_logger: <Logger logic_logger (DEBUG)>
+..  db_url: sqlite:////opt/projects/by-ulid/01JJCFB49RE2G3FW6A1JFBJAG1/database/test_data/db.sqlite
+..  cwd: /opt/projects/by-ulid/01JJCFB49RE2G3FW6A1JFBJAG1
+..  python_loc: /usr/local/bin/python
+..  test_data_loader version: 1.1
+config.py - security disabled
+config.py - SQLALCHEMY_DATABASE_URI_AUTHENTICATION: sqlite:////opt/projects/by-ulid/01JJCFB49RE2G3FW6A1JFBJAG1/database/authentication_db.sqlite
+
+config.py - SQLALCHEMY_DATABASE_URI_LANDING: sqlite:////opt/projects/by-ulid/01JJCFB49RE2G3FW6A1JFBJAG1/database/db_spa.sqlite
+
+Loading rules from /opt/projects/by-ulid/01JJCFB49RE2G3FW6A1JFBJAG1/logic/wg_rules
+01JJCFB5YB76XV1GS0Q5HQCS7V rule file: logic/wg_rules/Person_Totals.py
+01JJCFB5YXYHQ8FK4SK2JFY1PS rule file: logic/wg_rules/Timesheet_Bill_Calc.py
+01JJCFB5Z8T27C219Q3VH3C0KE rule file: logic/wg_rules/Task_Totals.py
+01JJCFB5ZMQP9CVPH6H0TF1AGR rule file: logic/wg_rules/Project_Totals.py
+01JJCFB5ZZHS8TBR2KQE0CH4GA rule file: logic/wg_rules/Client_Totals.py
+01JJCFB60DWS7VHA4BJ9J2NWN1 rule file: logic/wg_rules/Invoice_Totals.py
+[32mLoading Rule Module Person_Totals 01JJCFB5YB76XV1GS0Q5HQCS7V [0m
+[32mLoading Rule Module Timesheet_Bill_Calc 01JJCFB5YXYHQ8FK4SK2JFY1PS [0m
+[32mLoading Rule Module Task_Totals 01JJCFB5Z8T27C219Q3VH3C0KE [0m
+[32mLoading Rule Module Project_Totals 01JJCFB5ZMQP9CVPH6H0TF1AGR [0m
+[32mLoading Rule Module Invoice_Totals 01JJCFB60DWS7VHA4BJ9J2NWN1 [0m
+
+The following rules have been loaded
+Rule Bank[0x7b5e245ecb30] (loaded 2025-01-24 15:38:10.323176)
+Mapped Class[Person] rules:
+  Derive <class 'database.models.Person'>.total_hours_entered as Sum(Timesheet.hours_worked Where  - None)
+  Derive <class 'database.models.Person'>.total_amount_billed as Formula (-1): Rule.formula(derive=Person.total_amount_billed, a [...]
+  Constraint Function: None 
+Mapped Class[Timesheet] rules:
+  Derive <class 'database.models.Timesheet'>.total_amount_billed as Formula (-1): Rule.formula(derive=Timesheet.total_amount_billed [...]
+  Constraint Function: None 
+  Constraint Function: None 
+  Derive <class 'database.models.Timesheet'>.month as Formula (-1): Rule.formula(derive=Timesheet.month, as_expressio [...]
+  Derive <class 'database.models.Timesheet'>.year as Formula (-1): Rule.formula(derive=Timesheet.year, as_expression [...]
+  Derive <class 'database.models.Timesheet'>.billing_rate as Copy(person.billing_rate)
+Mapped Class[Task] rules:
+  Derive <class 'database.models.Task'>.total_task_hours_worked as Sum(Timesheet.hours_worked Where  - None)
+  Derive <class 'database.models.Task'>.total_task_amount_billed as Sum(Timesheet.total_amount_billed Where  - None)
+  Derive <class 'database.models.Task'>.is_over_budget as Formula (-1): Rule.formula(derive=Task.is_over_budget, as_expre [...]
+Mapped Class[Project] rules:
+  Derive <class 'database.models.Project'>.total_project_hours as Sum(Task.total_task_hours_worked Where  - None)
+  Derive <class 'database.models.Project'>.total_project_amount as Sum(Task.total_task_amount_billed Where  - None)
+  Derive <class 'database.models.Project'>.is_over_budget as Formula (-1): Rule.formula(derive=Project.is_over_budget, as_ex [...]
+Mapped Class[Invoice] rules:
+  Derive <class 'database.models.Invoice'>.invoice_amount as Sum(Task.total_task_amount_billed Where  - None)
+  Derive <class 'database.models.Invoice'>.payment_total as Sum(Payment.payment_amount Where  - None)
+  Derive <class 'database.models.Invoice'>.invoice_balance as Formula (-1): Rule.formula(derive=Invoice.invoice_balance, as_e [...]
+  Derive <class 'database.models.Invoice'>.is_paid as Formula (-1): Rule.formula(derive=Invoice.is_paid, as_expressio [...]
+
+The following attributes have been referenced
+
+..Person.total_hours_entered: aggregate derivation
+..Timesheet.hours_worked: sum derived from
+..Person.total_hours_entered: - formula
+..Person.billing_rate: - formula
+..Person.billing_rate: constraint
+..Timesheet.billing_rate: - formula
+..Timesheet.hours_worked: - formula
+..Timesheet.hours_worked: constraint
+..Timesheet.date_worked: constraint
+..Timesheet.date_worked.month: - formula
+..Timesheet.date_worked.year: - formula
+..Timesheet.billing_rate: parent copy derivation
+..Person.billing_rate: parent copy from
+..Task.total_task_hours_worked: aggregate derivation
+..Timesheet.hours_worked: sum derived from
+..Task.total_task_amount_billed: aggregate derivation
+..Timesheet.total_amount_billed: sum derived from
+..Task.total_task_hours_worked: - formula
+..Task.task_budget_hours: - formula
+..Project.total_project_hours: aggregate derivation
+..Task.total_task_hours_worked: sum derived from
+..Project.total_project_amount: aggregate derivation
+..Task.total_task_amount_billed: sum derived from
+..Project.total_project_amount: - formula
+..Project.project_budget_amount: - formula
+..Invoice.invoice_amount: aggregate derivation
+..Task.total_task_amount_billed: sum derived from
+..Invoice.payment_total: aggregate derivation
+..Payment.payment_amount: sum derived from
+..Invoice.invoice_amount: - formula
+..Invoice.payment_total: - formula
+..Invoice.invoice_balance: - formula
+
+The following rules have been activated
+Rule Bank[0x7b5e245ecb30] (loaded 2025-01-24 15:38:10.323176)
+Mapped Class[Person] rules:
+  Derive <class 'database.models.Person'>.total_hours_entered as Sum(Timesheet.hours_worked Where  - None)
+  Derive <class 'database.models.Person'>.total_amount_billed as Formula (1): Rule.formula(derive=Person.total_amount_billed, a [...]
+  Constraint Function: None 
+Mapped Class[Timesheet] rules:
+  Derive <class 'database.models.Timesheet'>.total_amount_billed as Formula (1): Rule.formula(derive=Timesheet.total_amount_billed [...]
+  Constraint Function: None 
+  Constraint Function: None 
+  Derive <class 'database.models.Timesheet'>.month as Formula (2): Rule.formula(derive=Timesheet.month, as_expressio [...]
+  Derive <class 'database.models.Timesheet'>.year as Formula (3): Rule.formula(derive=Timesheet.year, as_expression [...]
+  Derive <class 'database.models.Timesheet'>.billing_rate as Copy(person.billing_rate)
+Mapped Class[Task] rules:
+  Derive <class 'database.models.Task'>.total_task_hours_worked as Sum(Timesheet.hours_worked Where  - None)
+  Derive <class 'database.models.Task'>.total_task_amount_billed as Sum(Timesheet.total_amount_billed Where  - None)
+  Derive <class 'database.models.Task'>.is_over_budget as Formula (1): Rule.formula(derive=Task.is_over_budget, as_expre [...]
+Mapped Class[Project] rules:
+  Derive <class 'database.models.Project'>.total_project_hours as Sum(Task.total_task_hours_worked Where  - None)
+  Derive <class 'database.models.Project'>.total_project_amount as Sum(Task.total_task_amount_billed Where  - None)
+  Derive <class 'database.models.Project'>.is_over_budget as Formula (1): Rule.formula(derive=Project.is_over_budget, as_ex [...]
+Mapped Class[Invoice] rules:
+  Derive <class 'database.models.Invoice'>.invoice_amount as Sum(Task.total_task_amount_billed Where  - None)
+  Derive <class 'database.models.Invoice'>.payment_total as Sum(Payment.payment_amount Where  - None)
+  Derive <class 'database.models.Invoice'>.invoice_balance as Formula (1): Rule.formula(derive=Invoice.invoice_balance, as_e [...]
+  Derive <class 'database.models.Invoice'>.is_paid as Formula (2): Rule.formula(derive=Invoice.is_paid, as_expressio [...]
+Logic Bank 01.20.21 - 25 rules loaded
+..  LogicBank activated
+
+Logic Phase:		ROW LOGIC		(session=0x7b5e24637890) (sqlalchemy before_flush)			
+..Client[None] {Insert - client} id: None, name: Acme Corp, email: contact@acme.com, phone: 1234567890, total_hours: 0, total_amount: 0, budget_amount: 5000, is_over_budget: False  row: 0x7b5e24477dd0  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+Logic Phase:		COMMIT LOGIC		(session=0x7b5e24637890)   										
+Logic Phase:		AFTER_FLUSH LOGIC	(session=0x7b5e24637890)   										
+
+Rules Fired:		##
+
+Logic Phase:		COMPLETE(session=0x7b5e24637890))       	
+Logic Phase:		ROW LOGIC IGNORE RE-RAISE(session=0x7b5e24637890) (sqlalchemy before_flush)			
+
+Logic Phase:		ROW LOGIC		(session=0x7b5e24637890) (sqlalchemy before_flush)			
+..Client[None] {Insert - client} id: None, name: Global Inc, email: info@global.com, phone: 0987654321, total_hours: 0, total_amount: 0, budget_amount: 10000, is_over_budget: False  row: 0x7b5e23e2a5a0  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+Logic Phase:		COMMIT LOGIC		(session=0x7b5e24637890)   										
+Logic Phase:		AFTER_FLUSH LOGIC	(session=0x7b5e24637890)   										
+
+Rules Fired:		##
+
+Logic Phase:		COMPLETE(session=0x7b5e24637890))       	
+Logic Phase:		ROW LOGIC IGNORE RE-RAISE(session=0x7b5e24637890) (sqlalchemy before_flush)			
+
+Logic Phase:		ROW LOGIC		(session=0x7b5e24637890) (sqlalchemy before_flush)			
+..Client[None] {Insert - client} id: None, name: Innovate LLC, email: hello@innovate.com, phone: 1122334455, total_hours: 0, total_amount: 0, budget_amount: 3000, is_over_budget: False  row: 0x7b5e2476cfe0  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+Logic Phase:		COMMIT LOGIC		(session=0x7b5e24637890)   										
+Logic Phase:		AFTER_FLUSH LOGIC	(session=0x7b5e24637890)   										
+
+Rules Fired:		##
+
+Logic Phase:		COMPLETE(session=0x7b5e24637890))       	
+Logic Phase:		ROW LOGIC IGNORE RE-RAISE(session=0x7b5e24637890) (sqlalchemy before_flush)			
+
+Logic Phase:		ROW LOGIC		(session=0x7b5e24637890) (sqlalchemy before_flush)			
+..Client[None] {Insert - client} id: None, name: Techies, email: support@techies.com, phone: 5566778899, total_hours: 0, total_amount: 0, budget_amount: 7500, is_over_budget: False  row: 0x7b5e23ed7440  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+Logic Phase:		COMMIT LOGIC		(session=0x7b5e24637890)   										
+Logic Phase:		AFTER_FLUSH LOGIC	(session=0x7b5e24637890)   										
+
+Rules Fired:		##
+
+Logic Phase:		COMPLETE(session=0x7b5e24637890))       	
+Logic Phase:		ROW LOGIC IGNORE RE-RAISE(session=0x7b5e24637890) (sqlalchemy before_flush)			
+
+Logic Phase:		ROW LOGIC		(session=0x7b5e24637890) (sqlalchemy before_flush)			
+..Project[None] {Insert - client} id: None, client_id: 1, name: Website Redesign, total_project_hours: 0, total_project_amount: 0, project_budget_amount: 2000, is_over_budget: False  row: 0x7b5e24e1b830  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+..Project[None] {server_aggregate_defaults: total_project_hours total_project_amount } id: None, client_id: 1, name: Website Redesign, total_project_hours: 0, total_project_amount: 0, project_budget_amount: 2000, is_over_budget: False  row: 0x7b5e24e1b830  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+Logic Phase:		COMMIT LOGIC		(session=0x7b5e24637890)   										
+Logic Phase:		AFTER_FLUSH LOGIC	(session=0x7b5e24637890)   										
+
+Rules Fired:		##
+  Project		##
+    1. Derive <class 'database.models.Project'>.is_over_budget as Formula (1): Rule.formula(derive=Project.is_over_budget, as_ex [...]		##
+
+Logic Phase:		COMPLETE(session=0x7b5e24637890))       	
+Logic Phase:		ROW LOGIC IGNORE RE-RAISE(session=0x7b5e24637890) (sqlalchemy before_flush)			
+
+Logic Phase:		ROW LOGIC		(session=0x7b5e24637890) (sqlalchemy before_flush)			
+..Project[None] {Insert - client} id: None, client_id: 2, name: Mobile App Development, total_project_hours: 0, total_project_amount: 0, project_budget_amount: 5000, is_over_budget: False  row: 0x7b5e23e29e20  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+..Project[None] {server_aggregate_defaults: total_project_hours total_project_amount } id: None, client_id: 2, name: Mobile App Development, total_project_hours: 0, total_project_amount: 0, project_budget_amount: 5000, is_over_budget: False  row: 0x7b5e23e29e20  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+Logic Phase:		COMMIT LOGIC		(session=0x7b5e24637890)   										
+Logic Phase:		AFTER_FLUSH LOGIC	(session=0x7b5e24637890)   										
+
+Rules Fired:		##
+  Project		##
+    1. Derive <class 'database.models.Project'>.is_over_budget as Formula (1): Rule.formula(derive=Project.is_over_budget, as_ex [...]		##
+
+Logic Phase:		COMPLETE(session=0x7b5e24637890))       	
+Logic Phase:		ROW LOGIC IGNORE RE-RAISE(session=0x7b5e24637890) (sqlalchemy before_flush)			
+
+Logic Phase:		ROW LOGIC		(session=0x7b5e24637890) (sqlalchemy before_flush)			
+..Project[None] {Insert - client} id: None, client_id: 3, name: Cloud Migration, total_project_hours: 0, total_project_amount: 0, project_budget_amount: 8000, is_over_budget: False  row: 0x7b5e23e4c710  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+..Project[None] {server_aggregate_defaults: total_project_hours total_project_amount } id: None, client_id: 3, name: Cloud Migration, total_project_hours: 0, total_project_amount: 0, project_budget_amount: 8000, is_over_budget: False  row: 0x7b5e23e4c710  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+Logic Phase:		COMMIT LOGIC		(session=0x7b5e24637890)   										
+Logic Phase:		AFTER_FLUSH LOGIC	(session=0x7b5e24637890)   										
+
+Rules Fired:		##
+  Project		##
+    1. Derive <class 'database.models.Project'>.is_over_budget as Formula (1): Rule.formula(derive=Project.is_over_budget, as_ex [...]		##
+
+Logic Phase:		COMPLETE(session=0x7b5e24637890))       	
+Logic Phase:		ROW LOGIC IGNORE RE-RAISE(session=0x7b5e24637890) (sqlalchemy before_flush)			
+
+Logic Phase:		ROW LOGIC		(session=0x7b5e24637890) (sqlalchemy before_flush)			
+..Project[None] {Insert - client} id: None, client_id: 4, name: Security Audit, total_project_hours: 0, total_project_amount: 0, project_budget_amount: 3000, is_over_budget: False  row: 0x7b5e23d546b0  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+..Project[None] {server_aggregate_defaults: total_project_hours total_project_amount } id: None, client_id: 4, name: Security Audit, total_project_hours: 0, total_project_amount: 0, project_budget_amount: 3000, is_over_budget: False  row: 0x7b5e23d546b0  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+Logic Phase:		COMMIT LOGIC		(session=0x7b5e24637890)   										
+Logic Phase:		AFTER_FLUSH LOGIC	(session=0x7b5e24637890)   										
+
+Rules Fired:		##
+  Project		##
+    1. Derive <class 'database.models.Project'>.is_over_budget as Formula (1): Rule.formula(derive=Project.is_over_budget, as_ex [...]		##
+
+Logic Phase:		COMPLETE(session=0x7b5e24637890))       	
+Logic Phase:		ROW LOGIC IGNORE RE-RAISE(session=0x7b5e24637890) (sqlalchemy before_flush)			
+
+Logic Phase:		ROW LOGIC		(session=0x7b5e24637890) (sqlalchemy before_flush)			
+..Invoice[None] {Insert - client} id: None, invoice_date: 2025-02-01, project_id: 1, invoice_amount: 0, payment_total: 0, invoice_balance: 0, is_paid: False  row: 0x7b5e23d54e30  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+..Invoice[None] {server_aggregate_defaults: invoice_amount payment_total } id: None, invoice_date: 2025-02-01, project_id: 1, invoice_amount: 0, payment_total: 0, invoice_balance: 0, is_paid: False  row: 0x7b5e23d54e30  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+..Invoice[None] {Formula is_paid} id: None, invoice_date: 2025-02-01, project_id: 1, invoice_amount: 0, payment_total: 0, invoice_balance: 0, is_paid: True  row: 0x7b5e23d54e30  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+Logic Phase:		COMMIT LOGIC		(session=0x7b5e24637890)   										
+Logic Phase:		AFTER_FLUSH LOGIC	(session=0x7b5e24637890)   										
+
+Rules Fired:		##
+  Invoice		##
+    1. Derive <class 'database.models.Invoice'>.is_paid as Formula (2): Rule.formula(derive=Invoice.is_paid, as_expressio [...]		##
+    2. Derive <class 'database.models.Invoice'>.invoice_balance as Formula (1): Rule.formula(derive=Invoice.invoice_balance, as_e [...]		##
+
+Logic Phase:		COMPLETE(session=0x7b5e24637890))       	
+Logic Phase:		ROW LOGIC IGNORE RE-RAISE(session=0x7b5e24637890) (sqlalchemy before_flush)			
+
+Logic Phase:		ROW LOGIC		(session=0x7b5e24637890) (sqlalchemy before_flush)			
+..Invoice[None] {Insert - client} id: None, invoice_date: 2025-03-15, project_id: 2, invoice_amount: 0, payment_total: 0, invoice_balance: 0, is_paid: False  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+..Invoice[None] {server_aggregate_defaults: invoice_amount payment_total } id: None, invoice_date: 2025-03-15, project_id: 2, invoice_amount: 0, payment_total: 0, invoice_balance: 0, is_paid: False  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+..Invoice[None] {Formula is_paid} id: None, invoice_date: 2025-03-15, project_id: 2, invoice_amount: 0, payment_total: 0, invoice_balance: 0, is_paid: True  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+Logic Phase:		COMMIT LOGIC		(session=0x7b5e24637890)   										
+Logic Phase:		AFTER_FLUSH LOGIC	(session=0x7b5e24637890)   										
+
+Rules Fired:		##
+  Invoice		##
+    1. Derive <class 'database.models.Invoice'>.is_paid as Formula (2): Rule.formula(derive=Invoice.is_paid, as_expressio [...]		##
+    2. Derive <class 'database.models.Invoice'>.invoice_balance as Formula (1): Rule.formula(derive=Invoice.invoice_balance, as_e [...]		##
+
+Logic Phase:		COMPLETE(session=0x7b5e24637890))       	
+Logic Phase:		ROW LOGIC IGNORE RE-RAISE(session=0x7b5e24637890) (sqlalchemy before_flush)			
+
+Logic Phase:		ROW LOGIC		(session=0x7b5e24637890) (sqlalchemy before_flush)			
+..Invoice[None] {Insert - client} id: None, invoice_date: 2025-05-10, project_id: 3, invoice_amount: 0, payment_total: 0, invoice_balance: 0, is_paid: False  row: 0x7b5e23d550a0  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+..Invoice[None] {server_aggregate_defaults: invoice_amount payment_total } id: None, invoice_date: 2025-05-10, project_id: 3, invoice_amount: 0, payment_total: 0, invoice_balance: 0, is_paid: False  row: 0x7b5e23d550a0  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+..Invoice[None] {Formula is_paid} id: None, invoice_date: 2025-05-10, project_id: 3, invoice_amount: 0, payment_total: 0, invoice_balance: 0, is_paid: True  row: 0x7b5e23d550a0  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+Logic Phase:		COMMIT LOGIC		(session=0x7b5e24637890)   										
+Logic Phase:		AFTER_FLUSH LOGIC	(session=0x7b5e24637890)   										
+
+Rules Fired:		##
+  Invoice		##
+    1. Derive <class 'database.models.Invoice'>.is_paid as Formula (2): Rule.formula(derive=Invoice.is_paid, as_expressio [...]		##
+    2. Derive <class 'database.models.Invoice'>.invoice_balance as Formula (1): Rule.formula(derive=Invoice.invoice_balance, as_e [...]		##
+
+Logic Phase:		COMPLETE(session=0x7b5e24637890))       	
+Logic Phase:		ROW LOGIC IGNORE RE-RAISE(session=0x7b5e24637890) (sqlalchemy before_flush)			
+
+Logic Phase:		ROW LOGIC		(session=0x7b5e24637890) (sqlalchemy before_flush)			
+..Invoice[None] {Insert - client} id: None, invoice_date: 2025-06-20, project_id: 4, invoice_amount: 0, payment_total: 0, invoice_balance: 0, is_paid: False  row: 0x7b5e23d54950  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+..Invoice[None] {server_aggregate_defaults: invoice_amount payment_total } id: None, invoice_date: 2025-06-20, project_id: 4, invoice_amount: 0, payment_total: 0, invoice_balance: 0, is_paid: False  row: 0x7b5e23d54950  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+..Invoice[None] {Formula is_paid} id: None, invoice_date: 2025-06-20, project_id: 4, invoice_amount: 0, payment_total: 0, invoice_balance: 0, is_paid: True  row: 0x7b5e23d54950  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+Logic Phase:		COMMIT LOGIC		(session=0x7b5e24637890)   										
+Logic Phase:		AFTER_FLUSH LOGIC	(session=0x7b5e24637890)   										
+
+Rules Fired:		##
+  Invoice		##
+    1. Derive <class 'database.models.Invoice'>.is_paid as Formula (2): Rule.formula(derive=Invoice.is_paid, as_expressio [...]		##
+    2. Derive <class 'database.models.Invoice'>.invoice_balance as Formula (1): Rule.formula(derive=Invoice.invoice_balance, as_e [...]		##
+
+Logic Phase:		COMPLETE(session=0x7b5e24637890))       	
+Logic Phase:		ROW LOGIC IGNORE RE-RAISE(session=0x7b5e24637890) (sqlalchemy before_flush)			
+
+Logic Phase:		ROW LOGIC		(session=0x7b5e24637890) (sqlalchemy before_flush)			
+..Task[None] {Insert - client} id: None, project_id: 1, name: Design Phase, description: Create mockups and wireframes., total_task_hours_worked: 0, total_task_amount_billed: 0, task_budget_hours: 50, is_over_budget: False, invoice_id: 1  row: 0x7b5e23d56b10  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+..Task[None] {server_aggregate_defaults: total_task_hours_worked total_task_amount_billed } id: None, project_id: 1, name: Design Phase, description: Create mockups and wireframes., total_task_hours_worked: 0, total_task_amount_billed: 0, task_budget_hours: 50, is_over_budget: False, invoice_id: 1  row: 0x7b5e23d56b10  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+Logic Phase:		COMMIT LOGIC		(session=0x7b5e24637890)   										
+Logic Phase:		AFTER_FLUSH LOGIC	(session=0x7b5e24637890)   										
+
+Rules Fired:		##
+  Invoice		##
+    1. Derive <class 'database.models.Invoice'>.invoice_amount as Sum(Task.total_task_amount_billed Where  - None)		##
+  Project		##
+    2. Derive <class 'database.models.Project'>.total_project_hours as Sum(Task.total_task_hours_worked Where  - None)		##
+    3. Derive <class 'database.models.Project'>.total_project_amount as Sum(Task.total_task_amount_billed Where  - None)		##
+  Task		##
+    4. Derive <class 'database.models.Task'>.is_over_budget as Formula (1): Rule.formula(derive=Task.is_over_budget, as_expre [...]		##
+
+Logic Phase:		COMPLETE(session=0x7b5e24637890))       	
+Logic Phase:		ROW LOGIC IGNORE RE-RAISE(session=0x7b5e24637890) (sqlalchemy before_flush)			
+
+Logic Phase:		ROW LOGIC		(session=0x7b5e24637890) (sqlalchemy before_flush)			
+..Task[None] {Insert - client} id: None, project_id: 2, name: Development Phase, description: Develop core features and functionalities., total_task_hours_worked: 0, total_task_amount_billed: 0, task_budget_hours: 150, is_over_budget: False, invoice_id: 2  row: 0x7b5e23ed58b0  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+..Task[None] {server_aggregate_defaults: total_task_hours_worked total_task_amount_billed } id: None, project_id: 2, name: Development Phase, description: Develop core features and functionalities., total_task_hours_worked: 0, total_task_amount_billed: 0, task_budget_hours: 150, is_over_budget: False, invoice_id: 2  row: 0x7b5e23ed58b0  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+Logic Phase:		COMMIT LOGIC		(session=0x7b5e24637890)   										
+Logic Phase:		AFTER_FLUSH LOGIC	(session=0x7b5e24637890)   										
+
+Rules Fired:		##
+  Invoice		##
+    1. Derive <class 'database.models.Invoice'>.invoice_amount as Sum(Task.total_task_amount_billed Where  - None)		##
+  Project		##
+    2. Derive <class 'database.models.Project'>.total_project_hours as Sum(Task.total_task_hours_worked Where  - None)		##
+    3. Derive <class 'database.models.Project'>.total_project_amount as Sum(Task.total_task_amount_billed Where  - None)		##
+  Task		##
+    4. Derive <class 'database.models.Task'>.is_over_budget as Formula (1): Rule.formula(derive=Task.is_over_budget, as_expre [...]		##
+
+Logic Phase:		COMPLETE(session=0x7b5e24637890))       	
+Logic Phase:		ROW LOGIC IGNORE RE-RAISE(session=0x7b5e24637890) (sqlalchemy before_flush)			
+
+Logic Phase:		ROW LOGIC		(session=0x7b5e24637890) (sqlalchemy before_flush)			
+..Task[None] {Insert - client} id: None, project_id: 3, name: Testing Phase, description: Perform QA testing., total_task_hours_worked: 0, total_task_amount_billed: 0, task_budget_hours: 100, is_over_budget: False, invoice_id: 3  row: 0x7b5e26391e80  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+..Task[None] {server_aggregate_defaults: total_task_hours_worked total_task_amount_billed } id: None, project_id: 3, name: Testing Phase, description: Perform QA testing., total_task_hours_worked: 0, total_task_amount_billed: 0, task_budget_hours: 100, is_over_budget: False, invoice_id: 3  row: 0x7b5e26391e80  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+Logic Phase:		COMMIT LOGIC		(session=0x7b5e24637890)   										
+Logic Phase:		AFTER_FLUSH LOGIC	(session=0x7b5e24637890)   										
+
+Rules Fired:		##
+  Invoice		##
+    1. Derive <class 'database.models.Invoice'>.invoice_amount as Sum(Task.total_task_amount_billed Where  - None)		##
+  Project		##
+    2. Derive <class 'database.models.Project'>.total_project_hours as Sum(Task.total_task_hours_worked Where  - None)		##
+    3. Derive <class 'database.models.Project'>.total_project_amount as Sum(Task.total_task_amount_billed Where  - None)		##
+  Task		##
+    4. Derive <class 'database.models.Task'>.is_over_budget as Formula (1): Rule.formula(derive=Task.is_over_budget, as_expre [...]		##
+
+Logic Phase:		COMPLETE(session=0x7b5e24637890))       	
+Logic Phase:		ROW LOGIC IGNORE RE-RAISE(session=0x7b5e24637890) (sqlalchemy before_flush)			
+
+Logic Phase:		ROW LOGIC		(session=0x7b5e24637890) (sqlalchemy before_flush)			
+..Task[None] {Insert - client} id: None, project_id: 4, name: Deployment Phase, description: Deploy application to production., total_task_hours_worked: 0, total_task_amount_billed: 0, task_budget_hours: 60, is_over_budget: False, invoice_id: 4  row: 0x7b5e23d575f0  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+..Task[None] {server_aggregate_defaults: total_task_hours_worked total_task_amount_billed } id: None, project_id: 4, name: Deployment Phase, description: Deploy application to production., total_task_hours_worked: 0, total_task_amount_billed: 0, task_budget_hours: 60, is_over_budget: False, invoice_id: 4  row: 0x7b5e23d575f0  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+Logic Phase:		COMMIT LOGIC		(session=0x7b5e24637890)   										
+Logic Phase:		AFTER_FLUSH LOGIC	(session=0x7b5e24637890)   										
+
+Rules Fired:		##
+  Invoice		##
+    1. Derive <class 'database.models.Invoice'>.invoice_amount as Sum(Task.total_task_amount_billed Where  - None)		##
+  Project		##
+    2. Derive <class 'database.models.Project'>.total_project_hours as Sum(Task.total_task_hours_worked Where  - None)		##
+    3. Derive <class 'database.models.Project'>.total_project_amount as Sum(Task.total_task_amount_billed Where  - None)		##
+  Task		##
+    4. Derive <class 'database.models.Task'>.is_over_budget as Formula (1): Rule.formula(derive=Task.is_over_budget, as_expre [...]		##
+
+Logic Phase:		COMPLETE(session=0x7b5e24637890))       	
+Logic Phase:		ROW LOGIC IGNORE RE-RAISE(session=0x7b5e24637890) (sqlalchemy before_flush)			
+
+Logic Phase:		ROW LOGIC		(session=0x7b5e24637890) (sqlalchemy before_flush)			
+..Person[None] {Insert - client} id: None, client_id: 1, name: Alice, email: alice@acme.com, phone: 1231231234, billing_rate: 50, total_hours_entered: 0, total_amount_billed: 0  row: 0x7b5e23d746e0  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+..Person[None] {server_aggregate_defaults: total_hours_entered } id: None, client_id: 1, name: Alice, email: alice@acme.com, phone: 1231231234, billing_rate: 50, total_hours_entered: 0, total_amount_billed: 0  row: 0x7b5e23d746e0  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+Logic Phase:		COMMIT LOGIC		(session=0x7b5e24637890)   										
+Logic Phase:		AFTER_FLUSH LOGIC	(session=0x7b5e24637890)   										
+
+Rules Fired:		##
+  Person		##
+    1. Derive <class 'database.models.Person'>.total_amount_billed as Formula (1): Rule.formula(derive=Person.total_amount_billed, a [...]		##
+
+Logic Phase:		COMPLETE(session=0x7b5e24637890))       	
+Logic Phase:		ROW LOGIC IGNORE RE-RAISE(session=0x7b5e24637890) (sqlalchemy before_flush)			
+
+Logic Phase:		ROW LOGIC		(session=0x7b5e24637890) (sqlalchemy before_flush)			
+..Person[None] {Insert - client} id: None, client_id: 2, name: Bob, email: bob@global.com, phone: 2342342345, billing_rate: 75, total_hours_entered: 0, total_amount_billed: 0  row: 0x7b5e24409fd0  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+..Person[None] {server_aggregate_defaults: total_hours_entered } id: None, client_id: 2, name: Bob, email: bob@global.com, phone: 2342342345, billing_rate: 75, total_hours_entered: 0, total_amount_billed: 0  row: 0x7b5e24409fd0  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+Logic Phase:		COMMIT LOGIC		(session=0x7b5e24637890)   										
+Logic Phase:		AFTER_FLUSH LOGIC	(session=0x7b5e24637890)   										
+
+Rules Fired:		##
+  Person		##
+    1. Derive <class 'database.models.Person'>.total_amount_billed as Formula (1): Rule.formula(derive=Person.total_amount_billed, a [...]		##
+
+Logic Phase:		COMPLETE(session=0x7b5e24637890))       	
+Logic Phase:		ROW LOGIC IGNORE RE-RAISE(session=0x7b5e24637890) (sqlalchemy before_flush)			
+
+Logic Phase:		ROW LOGIC		(session=0x7b5e24637890) (sqlalchemy before_flush)			
+..Person[None] {Insert - client} id: None, client_id: 3, name: Charlie, email: charlie@innovate.com, phone: 3453453456, billing_rate: 100, total_hours_entered: 0, total_amount_billed: 0  row: 0x7b5e23d57da0  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+..Person[None] {server_aggregate_defaults: total_hours_entered } id: None, client_id: 3, name: Charlie, email: charlie@innovate.com, phone: 3453453456, billing_rate: 100, total_hours_entered: 0, total_amount_billed: 0  row: 0x7b5e23d57da0  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+Logic Phase:		COMMIT LOGIC		(session=0x7b5e24637890)   										
+Logic Phase:		AFTER_FLUSH LOGIC	(session=0x7b5e24637890)   										
+
+Rules Fired:		##
+  Person		##
+    1. Derive <class 'database.models.Person'>.total_amount_billed as Formula (1): Rule.formula(derive=Person.total_amount_billed, a [...]		##
+
+Logic Phase:		COMPLETE(session=0x7b5e24637890))       	
+Logic Phase:		ROW LOGIC IGNORE RE-RAISE(session=0x7b5e24637890) (sqlalchemy before_flush)			
+
+Logic Phase:		ROW LOGIC		(session=0x7b5e24637890) (sqlalchemy before_flush)			
+..Person[None] {Insert - client} id: None, client_id: 4, name: Dana, email: dana@techies.com, phone: 4564564567, billing_rate: 120, total_hours_entered: 0, total_amount_billed: 0  row: 0x7b5e23d75370  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+..Person[None] {server_aggregate_defaults: total_hours_entered } id: None, client_id: 4, name: Dana, email: dana@techies.com, phone: 4564564567, billing_rate: 120, total_hours_entered: 0, total_amount_billed: 0  row: 0x7b5e23d75370  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+Logic Phase:		COMMIT LOGIC		(session=0x7b5e24637890)   										
+Logic Phase:		AFTER_FLUSH LOGIC	(session=0x7b5e24637890)   										
+
+Rules Fired:		##
+  Person		##
+    1. Derive <class 'database.models.Person'>.total_amount_billed as Formula (1): Rule.formula(derive=Person.total_amount_billed, a [...]		##
+
+Logic Phase:		COMPLETE(session=0x7b5e24637890))       	
+Logic Phase:		ROW LOGIC IGNORE RE-RAISE(session=0x7b5e24637890) (sqlalchemy before_flush)			
+
+Logic Phase:		ROW LOGIC		(session=0x7b5e24637890) (sqlalchemy before_flush)			
+..Timesheet[None] {Insert - client} id: None, task_id: 1, person_id: 1, date_worked: 2025-02-10, hours_worked: 8, month: 2, year: 2025, billing_rate: 50, total_amount_billed: 400  row: 0x7b5e23d744d0  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+..Timesheet[None] {copy_rules for role: person - billing_rate} id: None, task_id: 1, person_id: 1, date_worked: 2025-02-10, hours_worked: 8, month: 2, year: 2025, billing_rate: 50.00, total_amount_billed: 400  row: 0x7b5e23d744d0  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+....Person[1] {Update - Adjusting person: total_hours_entered} id: 1, client_id: 1, name: Alice, email: alice@acme.com, phone: 1231231234, billing_rate: 50.00, total_hours_entered:  [0.00-->] 8.00, total_amount_billed: 0.00  row: 0x7b5e23d746e0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Person[1] {Formula total_amount_billed} id: 1, client_id: 1, name: Alice, email: alice@acme.com, phone: 1231231234, billing_rate: 50.00, total_hours_entered:  [0.00-->] 8.00, total_amount_billed:  [0.00-->] 400.0000  row: 0x7b5e23d746e0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Task[1] {Update - Adjusting task: total_task_hours_worked, total_task_amount_billed} id: 1, project_id: 1, name: Design Phase, description: Create mockups and wireframes., total_task_hours_worked:  [0.00-->] 8.00, total_task_amount_billed:  [0.00-->] 400.00, task_budget_hours: 50.00, is_over_budget: False, invoice_id: 1  row: 0x7b5e23d56b10  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Invoice[1] {Update - Adjusting invoice: invoice_amount} id: 1, invoice_date: 2025-02-01 00:00:00, project_id: 1, invoice_amount:  [0.00-->] 400.00, payment_total: 0.00, invoice_balance: 0.00, is_paid: True  row: 0x7b5e23d54e30  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Invoice[1] {Formula invoice_balance} id: 1, invoice_date: 2025-02-01 00:00:00, project_id: 1, invoice_amount:  [0.00-->] 400.00, payment_total: 0.00, invoice_balance:  [0.00-->] 400.00, is_paid: True  row: 0x7b5e23d54e30  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Invoice[1] {Formula is_paid} id: 1, invoice_date: 2025-02-01 00:00:00, project_id: 1, invoice_amount:  [0.00-->] 400.00, payment_total: 0.00, invoice_balance:  [0.00-->] 400.00, is_paid:  [True-->] False  row: 0x7b5e23d54e30  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Project[1] {Update - Adjusting project: total_project_hours, total_project_amount} id: 1, client_id: 1, name: Website Redesign, total_project_hours:  [0.00-->] 8.00, total_project_amount:  [0.00-->] 400.00, project_budget_amount: 2000.00, is_over_budget: False  row: 0x7b5e24e1b830  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+
+Logic Phase:		ROW LOGIC		(session=0x7b5e24637890) (sqlalchemy before_flush)			
+..Timesheet[None] {Insert - client} id: None, task_id: 2, person_id: 2, date_worked: 2025-03-12, hours_worked: 6, month: 3, year: 2025, billing_rate: 75, total_amount_billed: 450  row: 0x7b5e23d57a10  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+..Timesheet[None] {copy_rules for role: person - billing_rate} id: None, task_id: 2, person_id: 2, date_worked: 2025-03-12, hours_worked: 6, month: 3, year: 2025, billing_rate: 75.00, total_amount_billed: 450  row: 0x7b5e23d57a10  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+....Person[2] {Update - Adjusting person: total_hours_entered} id: 2, client_id: 2, name: Bob, email: bob@global.com, phone: 2342342345, billing_rate: 75.00, total_hours_entered:  [0.00-->] 6.00, total_amount_billed: 0.00  row: 0x7b5e24409fd0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Person[2] {Formula total_amount_billed} id: 2, client_id: 2, name: Bob, email: bob@global.com, phone: 2342342345, billing_rate: 75.00, total_hours_entered:  [0.00-->] 6.00, total_amount_billed:  [0.00-->] 450.0000  row: 0x7b5e24409fd0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Task[2] {Update - Adjusting task: total_task_hours_worked, total_task_amount_billed} id: 2, project_id: 2, name: Development Phase, description: Develop core features and functionalities., total_task_hours_worked:  [0.00-->] 6.00, total_task_amount_billed:  [0.00-->] 450.00, task_budget_hours: 150.00, is_over_budget: False, invoice_id: 2  row: 0x7b5e23ed58b0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Invoice[2] {Update - Adjusting invoice: invoice_amount} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount:  [0.00-->] 450.00, payment_total: 0.00, invoice_balance: 0.00, is_paid: True  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Invoice[2] {Formula invoice_balance} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount:  [0.00-->] 450.00, payment_total: 0.00, invoice_balance:  [0.00-->] 450.00, is_paid: True  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Invoice[2] {Formula is_paid} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount:  [0.00-->] 450.00, payment_total: 0.00, invoice_balance:  [0.00-->] 450.00, is_paid:  [True-->] False  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Project[2] {Update - Adjusting project: total_project_hours, total_project_amount} id: 2, client_id: 2, name: Mobile App Development, total_project_hours:  [0.00-->] 6.00, total_project_amount:  [0.00-->] 450.00, project_budget_amount: 5000.00, is_over_budget: False  row: 0x7b5e23e29e20  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+
+Logic Phase:		ROW LOGIC		(session=0x7b5e24637890) (sqlalchemy before_flush)			
+..Timesheet[None] {Insert - client} id: None, task_id: 3, person_id: 3, date_worked: 2025-05-08, hours_worked: 10, month: 5, year: 2025, billing_rate: 100, total_amount_billed: 1000  row: 0x7b5e23ed7d70  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+..Timesheet[None] {copy_rules for role: person - billing_rate} id: None, task_id: 3, person_id: 3, date_worked: 2025-05-08, hours_worked: 10, month: 5, year: 2025, billing_rate: 100.00, total_amount_billed: 1000  row: 0x7b5e23ed7d70  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+....Person[3] {Update - Adjusting person: total_hours_entered} id: 3, client_id: 3, name: Charlie, email: charlie@innovate.com, phone: 3453453456, billing_rate: 100.00, total_hours_entered:  [0.00-->] 10.00, total_amount_billed: 0.00  row: 0x7b5e23d57da0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Person[3] {Formula total_amount_billed} id: 3, client_id: 3, name: Charlie, email: charlie@innovate.com, phone: 3453453456, billing_rate: 100.00, total_hours_entered:  [0.00-->] 10.00, total_amount_billed:  [0.00-->] 1000.0000  row: 0x7b5e23d57da0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Task[3] {Update - Adjusting task: total_task_hours_worked, total_task_amount_billed} id: 3, project_id: 3, name: Testing Phase, description: Perform QA testing., total_task_hours_worked:  [0.00-->] 10.00, total_task_amount_billed:  [0.00-->] 1000.00, task_budget_hours: 100.00, is_over_budget: False, invoice_id: 3  row: 0x7b5e26391e80  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Invoice[3] {Update - Adjusting invoice: invoice_amount} id: 3, invoice_date: 2025-05-10 00:00:00, project_id: 3, invoice_amount:  [0.00-->] 1000.00, payment_total: 0.00, invoice_balance: 0.00, is_paid: True  row: 0x7b5e23d550a0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Invoice[3] {Formula invoice_balance} id: 3, invoice_date: 2025-05-10 00:00:00, project_id: 3, invoice_amount:  [0.00-->] 1000.00, payment_total: 0.00, invoice_balance:  [0.00-->] 1000.00, is_paid: True  row: 0x7b5e23d550a0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Invoice[3] {Formula is_paid} id: 3, invoice_date: 2025-05-10 00:00:00, project_id: 3, invoice_amount:  [0.00-->] 1000.00, payment_total: 0.00, invoice_balance:  [0.00-->] 1000.00, is_paid:  [True-->] False  row: 0x7b5e23d550a0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Project[3] {Update - Adjusting project: total_project_hours, total_project_amount} id: 3, client_id: 3, name: Cloud Migration, total_project_hours:  [0.00-->] 10.00, total_project_amount:  [0.00-->] 1000.00, project_budget_amount: 8000.00, is_over_budget: False  row: 0x7b5e23e4c710  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+
+Logic Phase:		ROW LOGIC		(session=0x7b5e24637890) (sqlalchemy before_flush)			
+..Timesheet[None] {Insert - client} id: None, task_id: 4, person_id: 4, date_worked: 2025-06-15, hours_worked: 7.5, month: 6, year: 2025, billing_rate: 120, total_amount_billed: 900  row: 0x7b5e23d749b0  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+..Timesheet[None] {copy_rules for role: person - billing_rate} id: None, task_id: 4, person_id: 4, date_worked: 2025-06-15, hours_worked: 7.5, month: 6, year: 2025, billing_rate: 120.00, total_amount_billed: 900  row: 0x7b5e23d749b0  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+....Person[4] {Update - Adjusting person: total_hours_entered} id: 4, client_id: 4, name: Dana, email: dana@techies.com, phone: 4564564567, billing_rate: 120.00, total_hours_entered:  [0.00-->] 7.50, total_amount_billed: 0.00  row: 0x7b5e23d75370  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Person[4] {Formula total_amount_billed} id: 4, client_id: 4, name: Dana, email: dana@techies.com, phone: 4564564567, billing_rate: 120.00, total_hours_entered:  [0.00-->] 7.50, total_amount_billed:  [0.00-->] 900.0000  row: 0x7b5e23d75370  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Task[4] {Update - Adjusting task: total_task_hours_worked, total_task_amount_billed} id: 4, project_id: 4, name: Deployment Phase, description: Deploy application to production., total_task_hours_worked:  [0.00-->] 7.50, total_task_amount_billed:  [0.00-->] 900.00, task_budget_hours: 60.00, is_over_budget: False, invoice_id: 4  row: 0x7b5e23d575f0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Invoice[4] {Update - Adjusting invoice: invoice_amount} id: 4, invoice_date: 2025-06-20 00:00:00, project_id: 4, invoice_amount:  [0.00-->] 900.00, payment_total: 0.00, invoice_balance: 0.00, is_paid: True  row: 0x7b5e23d54950  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Invoice[4] {Formula invoice_balance} id: 4, invoice_date: 2025-06-20 00:00:00, project_id: 4, invoice_amount:  [0.00-->] 900.00, payment_total: 0.00, invoice_balance:  [0.00-->] 900.00, is_paid: True  row: 0x7b5e23d54950  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Invoice[4] {Formula is_paid} id: 4, invoice_date: 2025-06-20 00:00:00, project_id: 4, invoice_amount:  [0.00-->] 900.00, payment_total: 0.00, invoice_balance:  [0.00-->] 900.00, is_paid:  [True-->] False  row: 0x7b5e23d54950  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Project[4] {Update - Adjusting project: total_project_hours, total_project_amount} id: 4, client_id: 4, name: Security Audit, total_project_hours:  [0.00-->] 7.50, total_project_amount:  [0.00-->] 900.00, project_budget_amount: 3000.00, is_over_budget: False  row: 0x7b5e23d546b0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+
+Logic Phase:		ROW LOGIC		(session=0x7b5e24637890) (sqlalchemy before_flush)			
+..Payment[None] {Insert - client} id: None, invoice_id: 1, payment_amount: 200, payment_date: 2025-02-20, notes: Initial deposit  row: 0x7b5e23ed7c50  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+....Invoice[1] {Update - Adjusting invoice: payment_total} id: 1, invoice_date: 2025-02-01 00:00:00, project_id: 1, invoice_amount: 0.00, payment_total:  [0.00-->] 200.00, invoice_balance: 0.00, is_paid: True  row: 0x7b5e23d54e30  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Invoice[1] {Formula invoice_balance} id: 1, invoice_date: 2025-02-01 00:00:00, project_id: 1, invoice_amount: 0.00, payment_total:  [0.00-->] 200.00, invoice_balance:  [0.00-->] -200.00, is_paid: True  row: 0x7b5e23d54e30  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Invoice[1] {Formula is_paid} id: 1, invoice_date: 2025-02-01 00:00:00, project_id: 1, invoice_amount: 0.00, payment_total:  [0.00-->] 200.00, invoice_balance:  [0.00-->] -200.00, is_paid:  [True-->] False  row: 0x7b5e23d54e30  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+Logic Phase:		COMMIT LOGIC		(session=0x7b5e24637890)   										
+Logic Phase:		AFTER_FLUSH LOGIC	(session=0x7b5e24637890)   										
+
+Rules Fired:		##
+  Invoice		##
+    1. Derive <class 'database.models.Invoice'>.is_paid as Formula (2): Rule.formula(derive=Invoice.is_paid, as_expressio [...]		##
+    2. Derive <class 'database.models.Invoice'>.invoice_balance as Formula (1): Rule.formula(derive=Invoice.invoice_balance, as_e [...]		##
+    3. Derive <class 'database.models.Invoice'>.payment_total as Sum(Payment.payment_amount Where  - None)		##
+
+Logic Phase:		COMPLETE(session=0x7b5e24637890))       	
+Logic Phase:		ROW LOGIC IGNORE RE-RAISE(session=0x7b5e24637890) (sqlalchemy before_flush)			
+
+Logic Phase:		ROW LOGIC		(session=0x7b5e24637890) (sqlalchemy before_flush)			
+..Payment[None] {Insert - client} id: None, invoice_id: 2, payment_amount: 300, payment_date: 2025-03-18, notes: Partial payment  row: 0x7b5e23d55940  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+....Invoice[2] {Update - Adjusting invoice: payment_total} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount: 0.00, payment_total:  [0.00-->] 300.00, invoice_balance: 0.00, is_paid: True  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Invoice[2] {Formula invoice_balance} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount: 0.00, payment_total:  [0.00-->] 300.00, invoice_balance:  [0.00-->] -300.00, is_paid: True  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Invoice[2] {Formula is_paid} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount: 0.00, payment_total:  [0.00-->] 300.00, invoice_balance:  [0.00-->] -300.00, is_paid:  [True-->] False  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+Logic Phase:		COMMIT LOGIC		(session=0x7b5e24637890)   										
+Logic Phase:		AFTER_FLUSH LOGIC	(session=0x7b5e24637890)   										
+
+Rules Fired:		##
+  Invoice		##
+    1. Derive <class 'database.models.Invoice'>.is_paid as Formula (2): Rule.formula(derive=Invoice.is_paid, as_expressio [...]		##
+    2. Derive <class 'database.models.Invoice'>.invoice_balance as Formula (1): Rule.formula(derive=Invoice.invoice_balance, as_e [...]		##
+    3. Derive <class 'database.models.Invoice'>.payment_total as Sum(Payment.payment_amount Where  - None)		##
+
+Logic Phase:		COMPLETE(session=0x7b5e24637890))       	
+Logic Phase:		ROW LOGIC IGNORE RE-RAISE(session=0x7b5e24637890) (sqlalchemy before_flush)			
+
+Logic Phase:		ROW LOGIC		(session=0x7b5e24637890) (sqlalchemy before_flush)			
+..Payment[None] {Insert - client} id: None, invoice_id: 3, payment_amount: 400, payment_date: 2025-05-15, notes: Quarterly payment  row: 0x7b5e23d57f80  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+....Invoice[3] {Update - Adjusting invoice: payment_total} id: 3, invoice_date: 2025-05-10 00:00:00, project_id: 3, invoice_amount: 0.00, payment_total:  [0.00-->] 400.00, invoice_balance: 0.00, is_paid: True  row: 0x7b5e23d550a0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Invoice[3] {Formula invoice_balance} id: 3, invoice_date: 2025-05-10 00:00:00, project_id: 3, invoice_amount: 0.00, payment_total:  [0.00-->] 400.00, invoice_balance:  [0.00-->] -400.00, is_paid: True  row: 0x7b5e23d550a0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Invoice[3] {Formula is_paid} id: 3, invoice_date: 2025-05-10 00:00:00, project_id: 3, invoice_amount: 0.00, payment_total:  [0.00-->] 400.00, invoice_balance:  [0.00-->] -400.00, is_paid:  [True-->] False  row: 0x7b5e23d550a0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+Logic Phase:		COMMIT LOGIC		(session=0x7b5e24637890)   										
+Logic Phase:		AFTER_FLUSH LOGIC	(session=0x7b5e24637890)   										
+
+Rules Fired:		##
+  Invoice		##
+    1. Derive <class 'database.models.Invoice'>.is_paid as Formula (2): Rule.formula(derive=Invoice.is_paid, as_expressio [...]		##
+    2. Derive <class 'database.models.Invoice'>.invoice_balance as Formula (1): Rule.formula(derive=Invoice.invoice_balance, as_e [...]		##
+    3. Derive <class 'database.models.Invoice'>.payment_total as Sum(Payment.payment_amount Where  - None)		##
+
+Logic Phase:		COMPLETE(session=0x7b5e24637890))       	
+Logic Phase:		ROW LOGIC IGNORE RE-RAISE(session=0x7b5e24637890) (sqlalchemy before_flush)			
+
+Logic Phase:		ROW LOGIC		(session=0x7b5e24637890) (sqlalchemy before_flush)			
+..Payment[None] {Insert - client} id: None, invoice_id: 4, payment_amount: 500, payment_date: 2025-06-25, notes: Final payment  row: 0x7b5e23d57f50  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+....Invoice[4] {Update - Adjusting invoice: payment_total} id: 4, invoice_date: 2025-06-20 00:00:00, project_id: 4, invoice_amount: 0.00, payment_total:  [0.00-->] 500.00, invoice_balance: 0.00, is_paid: True  row: 0x7b5e23d54950  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Invoice[4] {Formula invoice_balance} id: 4, invoice_date: 2025-06-20 00:00:00, project_id: 4, invoice_amount: 0.00, payment_total:  [0.00-->] 500.00, invoice_balance:  [0.00-->] -500.00, is_paid: True  row: 0x7b5e23d54950  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Invoice[4] {Formula is_paid} id: 4, invoice_date: 2025-06-20 00:00:00, project_id: 4, invoice_amount: 0.00, payment_total:  [0.00-->] 500.00, invoice_balance:  [0.00-->] -500.00, is_paid:  [True-->] False  row: 0x7b5e23d54950  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+Logic Phase:		COMMIT LOGIC		(session=0x7b5e24637890)   										
+Logic Phase:		AFTER_FLUSH LOGIC	(session=0x7b5e24637890)   										
+
+Rules Fired:		##
+  Invoice		##
+    1. Derive <class 'database.models.Invoice'>.is_paid as Formula (2): Rule.formula(derive=Invoice.is_paid, as_expressio [...]		##
+    2. Derive <class 'database.models.Invoice'>.invoice_balance as Formula (1): Rule.formula(derive=Invoice.invoice_balance, as_e [...]		##
+    3. Derive <class 'database.models.Invoice'>.payment_total as Sum(Payment.payment_amount Where  - None)		##
+
+Logic Phase:		COMPLETE(session=0x7b5e24637890))       	
+Logic Phase:		ROW LOGIC IGNORE RE-RAISE(session=0x7b5e24637890) (sqlalchemy before_flush)			
+
+Logic Phase:		ROW LOGIC		(session=0x7b5e24637890) (sqlalchemy before_flush)			
+..Timesheet[None] {Insert - client} id: None, task_id: 1, person_id: 1, date_worked: 2025-02-10, hours_worked: 8, month: 2, year: 2025, billing_rate: 50, total_amount_billed: 400  row: 0x7b5e23d75fd0  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+..Timesheet[None] {copy_rules for role: person - billing_rate} id: None, task_id: 1, person_id: 1, date_worked: 2025-02-10, hours_worked: 8, month: 2, year: 2025, billing_rate: 50.00, total_amount_billed: 400  row: 0x7b5e23d75fd0  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+....Person[1] {Update - Adjusting person: total_hours_entered} id: 1, client_id: 1, name: Alice, email: alice@acme.com, phone: 1231231234, billing_rate: 50.00, total_hours_entered:  [0.00-->] 8.00, total_amount_billed: 0.00  row: 0x7b5e23d746e0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Person[1] {Formula total_amount_billed} id: 1, client_id: 1, name: Alice, email: alice@acme.com, phone: 1231231234, billing_rate: 50.00, total_hours_entered:  [0.00-->] 8.00, total_amount_billed:  [0.00-->] 400.0000  row: 0x7b5e23d746e0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Task[1] {Update - Adjusting task: total_task_hours_worked, total_task_amount_billed} id: 1, project_id: 1, name: Design Phase, description: Create mockups and wireframes., total_task_hours_worked:  [0.00-->] 8.00, total_task_amount_billed:  [0.00-->] 400.00, task_budget_hours: 50.00, is_over_budget: False, invoice_id: 1  row: 0x7b5e23d56b10  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Invoice[1] {Update - Adjusting invoice: invoice_amount} id: 1, invoice_date: 2025-02-01 00:00:00, project_id: 1, invoice_amount:  [0.00-->] 400.00, payment_total: 200.00, invoice_balance: -200.00, is_paid: False  row: 0x7b5e23d54e30  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Invoice[1] {Formula invoice_balance} id: 1, invoice_date: 2025-02-01 00:00:00, project_id: 1, invoice_amount:  [0.00-->] 400.00, payment_total: 200.00, invoice_balance:  [-200.00-->] 200.00, is_paid: False  row: 0x7b5e23d54e30  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Project[1] {Update - Adjusting project: total_project_hours, total_project_amount} id: 1, client_id: 1, name: Website Redesign, total_project_hours:  [0.00-->] 8.00, total_project_amount:  [0.00-->] 400.00, project_budget_amount: 2000.00, is_over_budget: False  row: 0x7b5e24e1b830  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+
+Logic Phase:		ROW LOGIC		(session=0x7b5e24637890) (sqlalchemy before_flush)			
+..Task[1] {Update - client} id: 1, project_id: 1, name: Design Phase, description: Create mockups and wireframes., total_task_hours_worked:  [0.00-->] 8.00, total_task_amount_billed:  [0.00-->] 400.00, task_budget_hours: 50.00, is_over_budget: False, invoice_id: 1  row: 0x7b5e23d56b10  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Invoice[1] {Adjustment logic chaining deferred for this parent parent do_defer_adjustment: True, is_parent_submitted: True, is_parent_row_processed: False, invoice} id: 1, invoice_date: 2025-02-01 00:00:00, project_id: 1, invoice_amount:  [400.00-->] 800.00, payment_total: 200.00, invoice_balance: 200.00, is_paid: False  row: 0x7b5e23d54e30  session: 0x7b5e24637890  ins_upd_dlt: *, initial: *
+....Project[1] {Adjustment logic chaining deferred for this parent parent do_defer_adjustment: True, is_parent_submitted: True, is_parent_row_processed: False, project} id: 1, client_id: 1, name: Website Redesign, total_project_hours:  [8.00-->] 16.00, total_project_amount:  [400.00-->] 800.00, project_budget_amount: 2000.00, is_over_budget: False  row: 0x7b5e24e1b830  session: 0x7b5e24637890  ins_upd_dlt: *, initial: *
+..Person[1] {Update - client} id: 1, client_id: 1, name: Alice, email: alice@acme.com, phone: 1231231234, billing_rate: 50.00, total_hours_entered:  [0.00-->] 8.00, total_amount_billed:  [0.00-->] 400.0000  row: 0x7b5e23d746e0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Project[1] {Update - client} id: 1, client_id: 1, name: Website Redesign, total_project_hours:  [0.00-->] 16.00, total_project_amount:  [0.00-->] 800.00, project_budget_amount: 2000.00, is_over_budget: False  row: 0x7b5e24e1b830  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Invoice[1] {Update - client} id: 1, invoice_date: 2025-02-01 00:00:00, project_id: 1, invoice_amount:  [0.00-->] 800.00, payment_total: 200.00, invoice_balance:  [-200.00-->] 200.00, is_paid: False  row: 0x7b5e23d54e30  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Invoice[1] {Formula invoice_balance} id: 1, invoice_date: 2025-02-01 00:00:00, project_id: 1, invoice_amount:  [0.00-->] 800.00, payment_total: 200.00, invoice_balance:  [-200.00-->] 600.00, is_paid: False  row: 0x7b5e23d54e30  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Timesheet[None] {Insert - client} id: None, task_id: 2, person_id: 2, date_worked: 2025-03-12, hours_worked: 6, month: 3, year: 2025, billing_rate: 75, total_amount_billed: 450  row: 0x7b5e23d57d10  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+..Timesheet[None] {copy_rules for role: person - billing_rate} id: None, task_id: 2, person_id: 2, date_worked: 2025-03-12, hours_worked: 6, month: 3, year: 2025, billing_rate: 75.00, total_amount_billed: 450  row: 0x7b5e23d57d10  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+....Person[2] {Update - Adjusting person: total_hours_entered} id: 2, client_id: 2, name: Bob, email: bob@global.com, phone: 2342342345, billing_rate: 75.00, total_hours_entered:  [0.00-->] 6.00, total_amount_billed: 0.00  row: 0x7b5e24409fd0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Person[2] {Formula total_amount_billed} id: 2, client_id: 2, name: Bob, email: bob@global.com, phone: 2342342345, billing_rate: 75.00, total_hours_entered:  [0.00-->] 6.00, total_amount_billed:  [0.00-->] 450.0000  row: 0x7b5e24409fd0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Task[2] {Update - Adjusting task: total_task_hours_worked, total_task_amount_billed} id: 2, project_id: 2, name: Development Phase, description: Develop core features and functionalities., total_task_hours_worked:  [0.00-->] 6.00, total_task_amount_billed:  [0.00-->] 450.00, task_budget_hours: 150.00, is_over_budget: False, invoice_id: 2  row: 0x7b5e23ed58b0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Invoice[2] {Update - Adjusting invoice: invoice_amount} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount:  [0.00-->] 450.00, payment_total: 300.00, invoice_balance: -300.00, is_paid: False  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Invoice[2] {Formula invoice_balance} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount:  [0.00-->] 450.00, payment_total: 300.00, invoice_balance:  [-300.00-->] 150.00, is_paid: False  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Project[2] {Update - Adjusting project: total_project_hours, total_project_amount} id: 2, client_id: 2, name: Mobile App Development, total_project_hours:  [0.00-->] 6.00, total_project_amount:  [0.00-->] 450.00, project_budget_amount: 5000.00, is_over_budget: False  row: 0x7b5e23e29e20  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+
+Logic Phase:		ROW LOGIC		(session=0x7b5e24637890) (sqlalchemy before_flush)			
+..Task[1] {Update - client} id: 1, project_id: 1, name: Design Phase, description: Create mockups and wireframes., total_task_hours_worked:  [0.00-->] 8.00, total_task_amount_billed:  [0.00-->] 400.00, task_budget_hours: 50.00, is_over_budget: False, invoice_id: 1  row: 0x7b5e23d56b10  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Invoice[1] {Adjustment logic chaining deferred for this parent parent do_defer_adjustment: True, is_parent_submitted: True, is_parent_row_processed: False, invoice} id: 1, invoice_date: 2025-02-01 00:00:00, project_id: 1, invoice_amount:  [800.00-->] 1200.00, payment_total: 200.00, invoice_balance: 600.00, is_paid: False  row: 0x7b5e23d54e30  session: 0x7b5e24637890  ins_upd_dlt: *, initial: *
+....Project[1] {Adjustment logic chaining deferred for this parent parent do_defer_adjustment: True, is_parent_submitted: True, is_parent_row_processed: False, project} id: 1, client_id: 1, name: Website Redesign, total_project_hours:  [16.00-->] 24.00, total_project_amount:  [800.00-->] 1200.00, project_budget_amount: 2000.00, is_over_budget: False  row: 0x7b5e24e1b830  session: 0x7b5e24637890  ins_upd_dlt: *, initial: *
+..Invoice[2] {Update - client} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount:  [0.00-->] 450.00, payment_total: 300.00, invoice_balance:  [-300.00-->] 150.00, is_paid: False  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Person[1] {Update - client} id: 1, client_id: 1, name: Alice, email: alice@acme.com, phone: 1231231234, billing_rate: 50.00, total_hours_entered:  [0.00-->] 8.00, total_amount_billed:  [0.00-->] 400.0000  row: 0x7b5e23d746e0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Person[2] {Update - client} id: 2, client_id: 2, name: Bob, email: bob@global.com, phone: 2342342345, billing_rate: 75.00, total_hours_entered:  [0.00-->] 6.00, total_amount_billed:  [0.00-->] 450.0000  row: 0x7b5e24409fd0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Task[2] {Update - client} id: 2, project_id: 2, name: Development Phase, description: Develop core features and functionalities., total_task_hours_worked:  [0.00-->] 6.00, total_task_amount_billed:  [0.00-->] 450.00, task_budget_hours: 150.00, is_over_budget: False, invoice_id: 2  row: 0x7b5e23ed58b0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Invoice[2] {Update - Adjusting invoice: invoice_amount} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount:  [450.00-->] 900.00, payment_total: 300.00, invoice_balance: 150.00, is_paid: False  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Invoice[2] {Formula invoice_balance} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount:  [450.00-->] 900.00, payment_total: 300.00, invoice_balance:  [150.00-->] 600.00, is_paid: False  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Project[2] {Adjustment logic chaining deferred for this parent parent do_defer_adjustment: True, is_parent_submitted: True, is_parent_row_processed: False, project} id: 2, client_id: 2, name: Mobile App Development, total_project_hours:  [6.00-->] 12.00, total_project_amount:  [450.00-->] 900.00, project_budget_amount: 5000.00, is_over_budget: False  row: 0x7b5e23e29e20  session: 0x7b5e24637890  ins_upd_dlt: *, initial: *
+..Project[1] {Update - client} id: 1, client_id: 1, name: Website Redesign, total_project_hours:  [0.00-->] 24.00, total_project_amount:  [0.00-->] 1200.00, project_budget_amount: 2000.00, is_over_budget: False  row: 0x7b5e24e1b830  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Invoice[1] {Update - client} id: 1, invoice_date: 2025-02-01 00:00:00, project_id: 1, invoice_amount:  [0.00-->] 1200.00, payment_total: 200.00, invoice_balance:  [-200.00-->] 600.00, is_paid: False  row: 0x7b5e23d54e30  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Invoice[1] {Formula invoice_balance} id: 1, invoice_date: 2025-02-01 00:00:00, project_id: 1, invoice_amount:  [0.00-->] 1200.00, payment_total: 200.00, invoice_balance:  [-200.00-->] 1000.00, is_paid: False  row: 0x7b5e23d54e30  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Project[2] {Update - client} id: 2, client_id: 2, name: Mobile App Development, total_project_hours:  [0.00-->] 12.00, total_project_amount:  [0.00-->] 900.00, project_budget_amount: 5000.00, is_over_budget: False  row: 0x7b5e23e29e20  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Timesheet[None] {Insert - client} id: None, task_id: 2, person_id: 2, date_worked: 2025-03-12, hours_worked: 6, month: 3, year: 2025, billing_rate: 75.00, total_amount_billed: 450  row: 0x7b5e23d57d10  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+..Timesheet[None] {copy_rules for role: person - billing_rate} id: None, task_id: 2, person_id: 2, date_worked: 2025-03-12, hours_worked: 6, month: 3, year: 2025, billing_rate: 75.00, total_amount_billed: 450  row: 0x7b5e23d57d10  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+....Person[2] {Update - Adjusting person: total_hours_entered} id: 2, client_id: 2, name: Bob, email: bob@global.com, phone: 2342342345, billing_rate: 75.00, total_hours_entered:  [6.00-->] 12.00, total_amount_billed: 450.0000  row: 0x7b5e24409fd0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Person[2] {Formula total_amount_billed} id: 2, client_id: 2, name: Bob, email: bob@global.com, phone: 2342342345, billing_rate: 75.00, total_hours_entered:  [6.00-->] 12.00, total_amount_billed:  [450.0000-->] 900.0000  row: 0x7b5e24409fd0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Task[2] {Update - Adjusting task: total_task_hours_worked, total_task_amount_billed} id: 2, project_id: 2, name: Development Phase, description: Develop core features and functionalities., total_task_hours_worked:  [6.00-->] 12.00, total_task_amount_billed:  [450.00-->] 900.00, task_budget_hours: 150.00, is_over_budget: False, invoice_id: 2  row: 0x7b5e23ed58b0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Invoice[2] {Update - Adjusting invoice: invoice_amount} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount:  [900.00-->] 1350.00, payment_total: 300.00, invoice_balance: 600.00, is_paid: False  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Invoice[2] {Formula invoice_balance} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount:  [900.00-->] 1350.00, payment_total: 300.00, invoice_balance:  [600.00-->] 1050.00, is_paid: False  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Project[2] {Update - Adjusting project: total_project_hours, total_project_amount} id: 2, client_id: 2, name: Mobile App Development, total_project_hours:  [12.00-->] 18.00, total_project_amount:  [900.00-->] 1350.00, project_budget_amount: 5000.00, is_over_budget: False  row: 0x7b5e23e29e20  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+
+Logic Phase:		ROW LOGIC		(session=0x7b5e24637890) (sqlalchemy before_flush)			
+..Task[1] {Update - client} id: 1, project_id: 1, name: Design Phase, description: Create mockups and wireframes., total_task_hours_worked:  [0.00-->] 8.00, total_task_amount_billed:  [0.00-->] 400.00, task_budget_hours: 50.00, is_over_budget: False, invoice_id: 1  row: 0x7b5e23d56b10  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Invoice[1] {Adjustment logic chaining deferred for this parent parent do_defer_adjustment: True, is_parent_submitted: True, is_parent_row_processed: False, invoice} id: 1, invoice_date: 2025-02-01 00:00:00, project_id: 1, invoice_amount:  [1200.00-->] 1600.00, payment_total: 200.00, invoice_balance: 1000.00, is_paid: False  row: 0x7b5e23d54e30  session: 0x7b5e24637890  ins_upd_dlt: *, initial: *
+....Project[1] {Adjustment logic chaining deferred for this parent parent do_defer_adjustment: True, is_parent_submitted: True, is_parent_row_processed: False, project} id: 1, client_id: 1, name: Website Redesign, total_project_hours:  [24.00-->] 32.00, total_project_amount:  [1200.00-->] 1600.00, project_budget_amount: 2000.00, is_over_budget: False  row: 0x7b5e24e1b830  session: 0x7b5e24637890  ins_upd_dlt: *, initial: *
+..Invoice[2] {Update - client} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount:  [0.00-->] 1350.00, payment_total: 300.00, invoice_balance:  [-300.00-->] 1050.00, is_paid: False  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Person[1] {Update - client} id: 1, client_id: 1, name: Alice, email: alice@acme.com, phone: 1231231234, billing_rate: 50.00, total_hours_entered:  [0.00-->] 8.00, total_amount_billed:  [0.00-->] 400.0000  row: 0x7b5e23d746e0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Person[2] {Update - client} id: 2, client_id: 2, name: Bob, email: bob@global.com, phone: 2342342345, billing_rate: 75.00, total_hours_entered:  [0.00-->] 12.00, total_amount_billed:  [0.00-->] 900.0000  row: 0x7b5e24409fd0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Task[2] {Update - client} id: 2, project_id: 2, name: Development Phase, description: Develop core features and functionalities., total_task_hours_worked:  [0.00-->] 12.00, total_task_amount_billed:  [0.00-->] 900.00, task_budget_hours: 150.00, is_over_budget: False, invoice_id: 2  row: 0x7b5e23ed58b0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Invoice[2] {Update - Adjusting invoice: invoice_amount} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount:  [1350.00-->] 2250.00, payment_total: 300.00, invoice_balance: 1050.00, is_paid: False  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Invoice[2] {Formula invoice_balance} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount:  [1350.00-->] 2250.00, payment_total: 300.00, invoice_balance:  [1050.00-->] 1950.00, is_paid: False  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Project[2] {Adjustment logic chaining deferred for this parent parent do_defer_adjustment: True, is_parent_submitted: True, is_parent_row_processed: False, project} id: 2, client_id: 2, name: Mobile App Development, total_project_hours:  [18.00-->] 30.00, total_project_amount:  [1350.00-->] 2250.00, project_budget_amount: 5000.00, is_over_budget: False  row: 0x7b5e23e29e20  session: 0x7b5e24637890  ins_upd_dlt: *, initial: *
+..Project[1] {Update - client} id: 1, client_id: 1, name: Website Redesign, total_project_hours:  [0.00-->] 32.00, total_project_amount:  [0.00-->] 1600.00, project_budget_amount: 2000.00, is_over_budget: False  row: 0x7b5e24e1b830  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Invoice[1] {Update - client} id: 1, invoice_date: 2025-02-01 00:00:00, project_id: 1, invoice_amount:  [0.00-->] 1600.00, payment_total: 200.00, invoice_balance:  [-200.00-->] 1000.00, is_paid: False  row: 0x7b5e23d54e30  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Invoice[1] {Formula invoice_balance} id: 1, invoice_date: 2025-02-01 00:00:00, project_id: 1, invoice_amount:  [0.00-->] 1600.00, payment_total: 200.00, invoice_balance:  [-200.00-->] 1400.00, is_paid: False  row: 0x7b5e23d54e30  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Project[2] {Update - client} id: 2, client_id: 2, name: Mobile App Development, total_project_hours:  [0.00-->] 30.00, total_project_amount:  [0.00-->] 2250.00, project_budget_amount: 5000.00, is_over_budget: False  row: 0x7b5e23e29e20  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Timesheet[None] {Insert - client} id: None, task_id: 2, person_id: 2, date_worked: 2025-03-12, hours_worked: 6, month: 3, year: 2025, billing_rate: 75.00, total_amount_billed: 450  row: 0x7b5e23d57d10  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+..Timesheet[None] {copy_rules for role: person - billing_rate} id: None, task_id: 2, person_id: 2, date_worked: 2025-03-12, hours_worked: 6, month: 3, year: 2025, billing_rate: 75.00, total_amount_billed: 450  row: 0x7b5e23d57d10  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+....Person[2] {Update - Adjusting person: total_hours_entered} id: 2, client_id: 2, name: Bob, email: bob@global.com, phone: 2342342345, billing_rate: 75.00, total_hours_entered:  [12.00-->] 18.00, total_amount_billed: 900.0000  row: 0x7b5e24409fd0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Person[2] {Formula total_amount_billed} id: 2, client_id: 2, name: Bob, email: bob@global.com, phone: 2342342345, billing_rate: 75.00, total_hours_entered:  [12.00-->] 18.00, total_amount_billed:  [900.0000-->] 1350.0000  row: 0x7b5e24409fd0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Task[2] {Update - Adjusting task: total_task_hours_worked, total_task_amount_billed} id: 2, project_id: 2, name: Development Phase, description: Develop core features and functionalities., total_task_hours_worked:  [12.00-->] 18.00, total_task_amount_billed:  [900.00-->] 1350.00, task_budget_hours: 150.00, is_over_budget: False, invoice_id: 2  row: 0x7b5e23ed58b0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Invoice[2] {Update - Adjusting invoice: invoice_amount} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount:  [2250.00-->] 2700.00, payment_total: 300.00, invoice_balance: 1950.00, is_paid: False  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Invoice[2] {Formula invoice_balance} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount:  [2250.00-->] 2700.00, payment_total: 300.00, invoice_balance:  [1950.00-->] 2400.00, is_paid: False  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Project[2] {Update - Adjusting project: total_project_hours, total_project_amount} id: 2, client_id: 2, name: Mobile App Development, total_project_hours:  [30.00-->] 36.00, total_project_amount:  [2250.00-->] 2700.00, project_budget_amount: 5000.00, is_over_budget: False  row: 0x7b5e23e29e20  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+
+Logic Phase:		ROW LOGIC		(session=0x7b5e24637890) (sqlalchemy before_flush)			
+..Task[1] {Update - client} id: 1, project_id: 1, name: Design Phase, description: Create mockups and wireframes., total_task_hours_worked:  [0.00-->] 8.00, total_task_amount_billed:  [0.00-->] 400.00, task_budget_hours: 50.00, is_over_budget: False, invoice_id: 1  row: 0x7b5e23d56b10  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Invoice[1] {Adjustment logic chaining deferred for this parent parent do_defer_adjustment: True, is_parent_submitted: True, is_parent_row_processed: False, invoice} id: 1, invoice_date: 2025-02-01 00:00:00, project_id: 1, invoice_amount:  [1600.00-->] 2000.00, payment_total: 200.00, invoice_balance: 1400.00, is_paid: False  row: 0x7b5e23d54e30  session: 0x7b5e24637890  ins_upd_dlt: *, initial: *
+....Project[1] {Adjustment logic chaining deferred for this parent parent do_defer_adjustment: True, is_parent_submitted: True, is_parent_row_processed: False, project} id: 1, client_id: 1, name: Website Redesign, total_project_hours:  [32.00-->] 40.00, total_project_amount:  [1600.00-->] 2000.00, project_budget_amount: 2000.00, is_over_budget: False  row: 0x7b5e24e1b830  session: 0x7b5e24637890  ins_upd_dlt: *, initial: *
+..Invoice[2] {Update - client} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount:  [0.00-->] 2700.00, payment_total: 300.00, invoice_balance:  [-300.00-->] 2400.00, is_paid: False  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Person[1] {Update - client} id: 1, client_id: 1, name: Alice, email: alice@acme.com, phone: 1231231234, billing_rate: 50.00, total_hours_entered:  [0.00-->] 8.00, total_amount_billed:  [0.00-->] 400.0000  row: 0x7b5e23d746e0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Person[2] {Update - client} id: 2, client_id: 2, name: Bob, email: bob@global.com, phone: 2342342345, billing_rate: 75.00, total_hours_entered:  [0.00-->] 18.00, total_amount_billed:  [0.00-->] 1350.0000  row: 0x7b5e24409fd0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Task[2] {Update - client} id: 2, project_id: 2, name: Development Phase, description: Develop core features and functionalities., total_task_hours_worked:  [0.00-->] 18.00, total_task_amount_billed:  [0.00-->] 1350.00, task_budget_hours: 150.00, is_over_budget: False, invoice_id: 2  row: 0x7b5e23ed58b0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Invoice[2] {Update - Adjusting invoice: invoice_amount} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount:  [2700.00-->] 4050.00, payment_total: 300.00, invoice_balance: 2400.00, is_paid: False  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Invoice[2] {Formula invoice_balance} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount:  [2700.00-->] 4050.00, payment_total: 300.00, invoice_balance:  [2400.00-->] 3750.00, is_paid: False  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Project[2] {Adjustment logic chaining deferred for this parent parent do_defer_adjustment: True, is_parent_submitted: True, is_parent_row_processed: False, project} id: 2, client_id: 2, name: Mobile App Development, total_project_hours:  [36.00-->] 54.00, total_project_amount:  [2700.00-->] 4050.00, project_budget_amount: 5000.00, is_over_budget: False  row: 0x7b5e23e29e20  session: 0x7b5e24637890  ins_upd_dlt: *, initial: *
+..Project[1] {Update - client} id: 1, client_id: 1, name: Website Redesign, total_project_hours:  [0.00-->] 40.00, total_project_amount:  [0.00-->] 2000.00, project_budget_amount: 2000.00, is_over_budget: False  row: 0x7b5e24e1b830  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Invoice[1] {Update - client} id: 1, invoice_date: 2025-02-01 00:00:00, project_id: 1, invoice_amount:  [0.00-->] 2000.00, payment_total: 200.00, invoice_balance:  [-200.00-->] 1400.00, is_paid: False  row: 0x7b5e23d54e30  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Invoice[1] {Formula invoice_balance} id: 1, invoice_date: 2025-02-01 00:00:00, project_id: 1, invoice_amount:  [0.00-->] 2000.00, payment_total: 200.00, invoice_balance:  [-200.00-->] 1800.00, is_paid: False  row: 0x7b5e23d54e30  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Project[2] {Update - client} id: 2, client_id: 2, name: Mobile App Development, total_project_hours:  [0.00-->] 54.00, total_project_amount:  [0.00-->] 4050.00, project_budget_amount: 5000.00, is_over_budget: False  row: 0x7b5e23e29e20  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Timesheet[None] {Insert - client} id: None, task_id: 1, person_id: 1, date_worked: 2025-02-10, hours_worked: 8, month: 2, year: 2025, billing_rate: 50, total_amount_billed: 400  row: 0x7b5e23da6c60  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+..Timesheet[None] {copy_rules for role: person - billing_rate} id: None, task_id: 1, person_id: 1, date_worked: 2025-02-10, hours_worked: 8, month: 2, year: 2025, billing_rate: 50.00, total_amount_billed: 400  row: 0x7b5e23da6c60  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+....Person[1] {Update - Adjusting person: total_hours_entered} id: 1, client_id: 1, name: Alice, email: alice@acme.com, phone: 1231231234, billing_rate: 50.00, total_hours_entered:  [8.00-->] 16.00, total_amount_billed: 400.0000  row: 0x7b5e23d746e0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Person[1] {Formula total_amount_billed} id: 1, client_id: 1, name: Alice, email: alice@acme.com, phone: 1231231234, billing_rate: 50.00, total_hours_entered:  [8.00-->] 16.00, total_amount_billed:  [400.0000-->] 800.0000  row: 0x7b5e23d746e0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Task[1] {Update - Adjusting task: total_task_hours_worked, total_task_amount_billed} id: 1, project_id: 1, name: Design Phase, description: Create mockups and wireframes., total_task_hours_worked:  [8.00-->] 16.00, total_task_amount_billed:  [400.00-->] 800.00, task_budget_hours: 50.00, is_over_budget: False, invoice_id: 1  row: 0x7b5e23d56b10  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Invoice[1] {Update - Adjusting invoice: invoice_amount} id: 1, invoice_date: 2025-02-01 00:00:00, project_id: 1, invoice_amount:  [2000.00-->] 2400.00, payment_total: 200.00, invoice_balance: 1800.00, is_paid: False  row: 0x7b5e23d54e30  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Invoice[1] {Formula invoice_balance} id: 1, invoice_date: 2025-02-01 00:00:00, project_id: 1, invoice_amount:  [2000.00-->] 2400.00, payment_total: 200.00, invoice_balance:  [1800.00-->] 2200.00, is_paid: False  row: 0x7b5e23d54e30  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Project[1] {Update - Adjusting project: total_project_hours, total_project_amount} id: 1, client_id: 1, name: Website Redesign, total_project_hours:  [40.00-->] 48.00, total_project_amount:  [2000.00-->] 2400.00, project_budget_amount: 2000.00, is_over_budget: False  row: 0x7b5e24e1b830  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Project[1] {Formula is_over_budget} id: 1, client_id: 1, name: Website Redesign, total_project_hours:  [40.00-->] 48.00, total_project_amount:  [2000.00-->] 2400.00, project_budget_amount: 2000.00, is_over_budget:  [False-->] True  row: 0x7b5e24e1b830  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+
+Logic Phase:		ROW LOGIC		(session=0x7b5e24637890) (sqlalchemy before_flush)			
+..Task[1] {Update - client} id: 1, project_id: 1, name: Design Phase, description: Create mockups and wireframes., total_task_hours_worked:  [0.00-->] 16.00, total_task_amount_billed:  [0.00-->] 800.00, task_budget_hours: 50.00, is_over_budget: False, invoice_id: 1  row: 0x7b5e23d56b10  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Invoice[1] {Adjustment logic chaining deferred for this parent parent do_defer_adjustment: True, is_parent_submitted: True, is_parent_row_processed: False, invoice} id: 1, invoice_date: 2025-02-01 00:00:00, project_id: 1, invoice_amount:  [2400.00-->] 3200.00, payment_total: 200.00, invoice_balance: 2200.00, is_paid: False  row: 0x7b5e23d54e30  session: 0x7b5e24637890  ins_upd_dlt: *, initial: *
+....Project[1] {Adjustment logic chaining deferred for this parent parent do_defer_adjustment: True, is_parent_submitted: True, is_parent_row_processed: False, project} id: 1, client_id: 1, name: Website Redesign, total_project_hours:  [48.00-->] 64.00, total_project_amount:  [2400.00-->] 3200.00, project_budget_amount: 2000.00, is_over_budget: True  row: 0x7b5e24e1b830  session: 0x7b5e24637890  ins_upd_dlt: *, initial: *
+..Invoice[2] {Update - client} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount:  [0.00-->] 4050.00, payment_total: 300.00, invoice_balance:  [-300.00-->] 3750.00, is_paid: False  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Person[1] {Update - client} id: 1, client_id: 1, name: Alice, email: alice@acme.com, phone: 1231231234, billing_rate: 50.00, total_hours_entered:  [0.00-->] 16.00, total_amount_billed:  [0.00-->] 800.0000  row: 0x7b5e23d746e0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Person[2] {Update - client} id: 2, client_id: 2, name: Bob, email: bob@global.com, phone: 2342342345, billing_rate: 75.00, total_hours_entered:  [0.00-->] 18.00, total_amount_billed:  [0.00-->] 1350.0000  row: 0x7b5e24409fd0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Task[2] {Update - client} id: 2, project_id: 2, name: Development Phase, description: Develop core features and functionalities., total_task_hours_worked:  [0.00-->] 18.00, total_task_amount_billed:  [0.00-->] 1350.00, task_budget_hours: 150.00, is_over_budget: False, invoice_id: 2  row: 0x7b5e23ed58b0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Invoice[2] {Update - Adjusting invoice: invoice_amount} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount:  [4050.00-->] 5400.00, payment_total: 300.00, invoice_balance: 3750.00, is_paid: False  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Invoice[2] {Formula invoice_balance} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount:  [4050.00-->] 5400.00, payment_total: 300.00, invoice_balance:  [3750.00-->] 5100.00, is_paid: False  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Project[2] {Adjustment logic chaining deferred for this parent parent do_defer_adjustment: True, is_parent_submitted: True, is_parent_row_processed: False, project} id: 2, client_id: 2, name: Mobile App Development, total_project_hours:  [54.00-->] 72.00, total_project_amount:  [4050.00-->] 5400.00, project_budget_amount: 5000.00, is_over_budget: False  row: 0x7b5e23e29e20  session: 0x7b5e24637890  ins_upd_dlt: *, initial: *
+..Project[1] {Update - client} id: 1, client_id: 1, name: Website Redesign, total_project_hours:  [0.00-->] 64.00, total_project_amount:  [0.00-->] 3200.00, project_budget_amount: 2000.00, is_over_budget:  [False-->] True  row: 0x7b5e24e1b830  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Invoice[1] {Update - client} id: 1, invoice_date: 2025-02-01 00:00:00, project_id: 1, invoice_amount:  [0.00-->] 3200.00, payment_total: 200.00, invoice_balance:  [-200.00-->] 2200.00, is_paid: False  row: 0x7b5e23d54e30  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Invoice[1] {Formula invoice_balance} id: 1, invoice_date: 2025-02-01 00:00:00, project_id: 1, invoice_amount:  [0.00-->] 3200.00, payment_total: 200.00, invoice_balance:  [-200.00-->] 3000.00, is_paid: False  row: 0x7b5e23d54e30  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Project[2] {Update - client} id: 2, client_id: 2, name: Mobile App Development, total_project_hours:  [0.00-->] 72.00, total_project_amount:  [0.00-->] 5400.00, project_budget_amount: 5000.00, is_over_budget: False  row: 0x7b5e23e29e20  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Project[2] {Formula is_over_budget} id: 2, client_id: 2, name: Mobile App Development, total_project_hours:  [0.00-->] 72.00, total_project_amount:  [0.00-->] 5400.00, project_budget_amount: 5000.00, is_over_budget:  [False-->] True  row: 0x7b5e23e29e20  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Timesheet[None] {Insert - client} id: None, task_id: 2, person_id: 2, date_worked: 2025-03-12, hours_worked: 6, month: 3, year: 2025, billing_rate: 75, total_amount_billed: 450  row: 0x7b5e23da7440  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+..Timesheet[None] {copy_rules for role: person - billing_rate} id: None, task_id: 2, person_id: 2, date_worked: 2025-03-12, hours_worked: 6, month: 3, year: 2025, billing_rate: 75.00, total_amount_billed: 450  row: 0x7b5e23da7440  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+....Person[2] {Update - Adjusting person: total_hours_entered} id: 2, client_id: 2, name: Bob, email: bob@global.com, phone: 2342342345, billing_rate: 75.00, total_hours_entered:  [18.00-->] 24.00, total_amount_billed: 1350.0000  row: 0x7b5e24409fd0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Person[2] {Formula total_amount_billed} id: 2, client_id: 2, name: Bob, email: bob@global.com, phone: 2342342345, billing_rate: 75.00, total_hours_entered:  [18.00-->] 24.00, total_amount_billed:  [1350.0000-->] 1800.0000  row: 0x7b5e24409fd0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Task[2] {Update - Adjusting task: total_task_hours_worked, total_task_amount_billed} id: 2, project_id: 2, name: Development Phase, description: Develop core features and functionalities., total_task_hours_worked:  [18.00-->] 24.00, total_task_amount_billed:  [1350.00-->] 1800.00, task_budget_hours: 150.00, is_over_budget: False, invoice_id: 2  row: 0x7b5e23ed58b0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Invoice[2] {Update - Adjusting invoice: invoice_amount} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount:  [5400.00-->] 5850.00, payment_total: 300.00, invoice_balance: 5100.00, is_paid: False  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Invoice[2] {Formula invoice_balance} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount:  [5400.00-->] 5850.00, payment_total: 300.00, invoice_balance:  [5100.00-->] 5550.00, is_paid: False  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Project[2] {Update - Adjusting project: total_project_hours, total_project_amount} id: 2, client_id: 2, name: Mobile App Development, total_project_hours:  [72.00-->] 78.00, total_project_amount:  [5400.00-->] 5850.00, project_budget_amount: 5000.00, is_over_budget: True  row: 0x7b5e23e29e20  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+
+Logic Phase:		ROW LOGIC		(session=0x7b5e24637890) (sqlalchemy before_flush)			
+..Task[1] {Update - client} id: 1, project_id: 1, name: Design Phase, description: Create mockups and wireframes., total_task_hours_worked:  [0.00-->] 16.00, total_task_amount_billed:  [0.00-->] 800.00, task_budget_hours: 50.00, is_over_budget: False, invoice_id: 1  row: 0x7b5e23d56b10  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Invoice[1] {Adjustment logic chaining deferred for this parent parent do_defer_adjustment: True, is_parent_submitted: True, is_parent_row_processed: False, invoice} id: 1, invoice_date: 2025-02-01 00:00:00, project_id: 1, invoice_amount:  [3200.00-->] 4000.00, payment_total: 200.00, invoice_balance: 3000.00, is_paid: False  row: 0x7b5e23d54e30  session: 0x7b5e24637890  ins_upd_dlt: *, initial: *
+....Project[1] {Adjustment logic chaining deferred for this parent parent do_defer_adjustment: True, is_parent_submitted: True, is_parent_row_processed: False, project} id: 1, client_id: 1, name: Website Redesign, total_project_hours:  [64.00-->] 80.00, total_project_amount:  [3200.00-->] 4000.00, project_budget_amount: 2000.00, is_over_budget: True  row: 0x7b5e24e1b830  session: 0x7b5e24637890  ins_upd_dlt: *, initial: *
+..Invoice[2] {Update - client} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount:  [0.00-->] 5850.00, payment_total: 300.00, invoice_balance:  [-300.00-->] 5550.00, is_paid: False  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Person[1] {Update - client} id: 1, client_id: 1, name: Alice, email: alice@acme.com, phone: 1231231234, billing_rate: 50.00, total_hours_entered:  [0.00-->] 16.00, total_amount_billed:  [0.00-->] 800.0000  row: 0x7b5e23d746e0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Person[2] {Update - client} id: 2, client_id: 2, name: Bob, email: bob@global.com, phone: 2342342345, billing_rate: 75.00, total_hours_entered:  [0.00-->] 24.00, total_amount_billed:  [0.00-->] 1800.0000  row: 0x7b5e24409fd0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Task[2] {Update - client} id: 2, project_id: 2, name: Development Phase, description: Develop core features and functionalities., total_task_hours_worked:  [0.00-->] 24.00, total_task_amount_billed:  [0.00-->] 1800.00, task_budget_hours: 150.00, is_over_budget: False, invoice_id: 2  row: 0x7b5e23ed58b0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Invoice[2] {Update - Adjusting invoice: invoice_amount} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount:  [5850.00-->] 7650.00, payment_total: 300.00, invoice_balance: 5550.00, is_paid: False  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Invoice[2] {Formula invoice_balance} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount:  [5850.00-->] 7650.00, payment_total: 300.00, invoice_balance:  [5550.00-->] 7350.00, is_paid: False  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Project[2] {Adjustment logic chaining deferred for this parent parent do_defer_adjustment: True, is_parent_submitted: True, is_parent_row_processed: False, project} id: 2, client_id: 2, name: Mobile App Development, total_project_hours:  [78.00-->] 102.00, total_project_amount:  [5850.00-->] 7650.00, project_budget_amount: 5000.00, is_over_budget: True  row: 0x7b5e23e29e20  session: 0x7b5e24637890  ins_upd_dlt: *, initial: *
+..Project[1] {Update - client} id: 1, client_id: 1, name: Website Redesign, total_project_hours:  [0.00-->] 80.00, total_project_amount:  [0.00-->] 4000.00, project_budget_amount: 2000.00, is_over_budget:  [False-->] True  row: 0x7b5e24e1b830  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Invoice[1] {Update - client} id: 1, invoice_date: 2025-02-01 00:00:00, project_id: 1, invoice_amount:  [0.00-->] 4000.00, payment_total: 200.00, invoice_balance:  [-200.00-->] 3000.00, is_paid: False  row: 0x7b5e23d54e30  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Invoice[1] {Formula invoice_balance} id: 1, invoice_date: 2025-02-01 00:00:00, project_id: 1, invoice_amount:  [0.00-->] 4000.00, payment_total: 200.00, invoice_balance:  [-200.00-->] 3800.00, is_paid: False  row: 0x7b5e23d54e30  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Project[2] {Update - client} id: 2, client_id: 2, name: Mobile App Development, total_project_hours:  [0.00-->] 102.00, total_project_amount:  [0.00-->] 7650.00, project_budget_amount: 5000.00, is_over_budget:  [False-->] True  row: 0x7b5e23e29e20  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Timesheet[None] {Insert - client} id: None, task_id: 2, person_id: 2, date_worked: 2025-03-12, hours_worked: 6, month: 3, year: 2025, billing_rate: 75.00, total_amount_billed: 450  row: 0x7b5e23da7440  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+..Timesheet[None] {copy_rules for role: person - billing_rate} id: None, task_id: 2, person_id: 2, date_worked: 2025-03-12, hours_worked: 6, month: 3, year: 2025, billing_rate: 75.00, total_amount_billed: 450  row: 0x7b5e23da7440  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+....Person[2] {Update - Adjusting person: total_hours_entered} id: 2, client_id: 2, name: Bob, email: bob@global.com, phone: 2342342345, billing_rate: 75.00, total_hours_entered:  [24.00-->] 30.00, total_amount_billed: 1800.0000  row: 0x7b5e24409fd0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Person[2] {Formula total_amount_billed} id: 2, client_id: 2, name: Bob, email: bob@global.com, phone: 2342342345, billing_rate: 75.00, total_hours_entered:  [24.00-->] 30.00, total_amount_billed:  [1800.0000-->] 2250.0000  row: 0x7b5e24409fd0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Task[2] {Update - Adjusting task: total_task_hours_worked, total_task_amount_billed} id: 2, project_id: 2, name: Development Phase, description: Develop core features and functionalities., total_task_hours_worked:  [24.00-->] 30.00, total_task_amount_billed:  [1800.00-->] 2250.00, task_budget_hours: 150.00, is_over_budget: False, invoice_id: 2  row: 0x7b5e23ed58b0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Invoice[2] {Update - Adjusting invoice: invoice_amount} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount:  [7650.00-->] 8100.00, payment_total: 300.00, invoice_balance: 7350.00, is_paid: False  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Invoice[2] {Formula invoice_balance} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount:  [7650.00-->] 8100.00, payment_total: 300.00, invoice_balance:  [7350.00-->] 7800.00, is_paid: False  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Project[2] {Update - Adjusting project: total_project_hours, total_project_amount} id: 2, client_id: 2, name: Mobile App Development, total_project_hours:  [102.00-->] 108.00, total_project_amount:  [7650.00-->] 8100.00, project_budget_amount: 5000.00, is_over_budget: True  row: 0x7b5e23e29e20  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+
+Logic Phase:		ROW LOGIC		(session=0x7b5e24637890) (sqlalchemy before_flush)			
+..Task[1] {Update - client} id: 1, project_id: 1, name: Design Phase, description: Create mockups and wireframes., total_task_hours_worked:  [0.00-->] 16.00, total_task_amount_billed:  [0.00-->] 800.00, task_budget_hours: 50.00, is_over_budget: False, invoice_id: 1  row: 0x7b5e23d56b10  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Invoice[1] {Adjustment logic chaining deferred for this parent parent do_defer_adjustment: True, is_parent_submitted: True, is_parent_row_processed: False, invoice} id: 1, invoice_date: 2025-02-01 00:00:00, project_id: 1, invoice_amount:  [4000.00-->] 4800.00, payment_total: 200.00, invoice_balance: 3800.00, is_paid: False  row: 0x7b5e23d54e30  session: 0x7b5e24637890  ins_upd_dlt: *, initial: *
+....Project[1] {Adjustment logic chaining deferred for this parent parent do_defer_adjustment: True, is_parent_submitted: True, is_parent_row_processed: False, project} id: 1, client_id: 1, name: Website Redesign, total_project_hours:  [80.00-->] 96.00, total_project_amount:  [4000.00-->] 4800.00, project_budget_amount: 2000.00, is_over_budget: True  row: 0x7b5e24e1b830  session: 0x7b5e24637890  ins_upd_dlt: *, initial: *
+..Invoice[2] {Update - client} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount:  [0.00-->] 8100.00, payment_total: 300.00, invoice_balance:  [-300.00-->] 7800.00, is_paid: False  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Person[1] {Update - client} id: 1, client_id: 1, name: Alice, email: alice@acme.com, phone: 1231231234, billing_rate: 50.00, total_hours_entered:  [0.00-->] 16.00, total_amount_billed:  [0.00-->] 800.0000  row: 0x7b5e23d746e0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Person[2] {Update - client} id: 2, client_id: 2, name: Bob, email: bob@global.com, phone: 2342342345, billing_rate: 75.00, total_hours_entered:  [0.00-->] 30.00, total_amount_billed:  [0.00-->] 2250.0000  row: 0x7b5e24409fd0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Task[2] {Update - client} id: 2, project_id: 2, name: Development Phase, description: Develop core features and functionalities., total_task_hours_worked:  [0.00-->] 30.00, total_task_amount_billed:  [0.00-->] 2250.00, task_budget_hours: 150.00, is_over_budget: False, invoice_id: 2  row: 0x7b5e23ed58b0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Invoice[2] {Update - Adjusting invoice: invoice_amount} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount:  [8100.00-->] 10350.00, payment_total: 300.00, invoice_balance: 7800.00, is_paid: False  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Invoice[2] {Formula invoice_balance} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount:  [8100.00-->] 10350.00, payment_total: 300.00, invoice_balance:  [7800.00-->] 10050.00, is_paid: False  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Project[2] {Adjustment logic chaining deferred for this parent parent do_defer_adjustment: True, is_parent_submitted: True, is_parent_row_processed: False, project} id: 2, client_id: 2, name: Mobile App Development, total_project_hours:  [108.00-->] 138.00, total_project_amount:  [8100.00-->] 10350.00, project_budget_amount: 5000.00, is_over_budget: True  row: 0x7b5e23e29e20  session: 0x7b5e24637890  ins_upd_dlt: *, initial: *
+..Project[1] {Update - client} id: 1, client_id: 1, name: Website Redesign, total_project_hours:  [0.00-->] 96.00, total_project_amount:  [0.00-->] 4800.00, project_budget_amount: 2000.00, is_over_budget:  [False-->] True  row: 0x7b5e24e1b830  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Invoice[1] {Update - client} id: 1, invoice_date: 2025-02-01 00:00:00, project_id: 1, invoice_amount:  [0.00-->] 4800.00, payment_total: 200.00, invoice_balance:  [-200.00-->] 3800.00, is_paid: False  row: 0x7b5e23d54e30  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Invoice[1] {Formula invoice_balance} id: 1, invoice_date: 2025-02-01 00:00:00, project_id: 1, invoice_amount:  [0.00-->] 4800.00, payment_total: 200.00, invoice_balance:  [-200.00-->] 4600.00, is_paid: False  row: 0x7b5e23d54e30  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Project[2] {Update - client} id: 2, client_id: 2, name: Mobile App Development, total_project_hours:  [0.00-->] 138.00, total_project_amount:  [0.00-->] 10350.00, project_budget_amount: 5000.00, is_over_budget:  [False-->] True  row: 0x7b5e23e29e20  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Timesheet[None] {Insert - client} id: None, task_id: 2, person_id: 2, date_worked: 2025-03-12, hours_worked: 6, month: 3, year: 2025, billing_rate: 75.00, total_amount_billed: 450  row: 0x7b5e23da7440  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+..Timesheet[None] {copy_rules for role: person - billing_rate} id: None, task_id: 2, person_id: 2, date_worked: 2025-03-12, hours_worked: 6, month: 3, year: 2025, billing_rate: 75.00, total_amount_billed: 450  row: 0x7b5e23da7440  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+....Person[2] {Update - Adjusting person: total_hours_entered} id: 2, client_id: 2, name: Bob, email: bob@global.com, phone: 2342342345, billing_rate: 75.00, total_hours_entered:  [30.00-->] 36.00, total_amount_billed: 2250.0000  row: 0x7b5e24409fd0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Person[2] {Formula total_amount_billed} id: 2, client_id: 2, name: Bob, email: bob@global.com, phone: 2342342345, billing_rate: 75.00, total_hours_entered:  [30.00-->] 36.00, total_amount_billed:  [2250.0000-->] 2700.0000  row: 0x7b5e24409fd0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Task[2] {Update - Adjusting task: total_task_hours_worked, total_task_amount_billed} id: 2, project_id: 2, name: Development Phase, description: Develop core features and functionalities., total_task_hours_worked:  [30.00-->] 36.00, total_task_amount_billed:  [2250.00-->] 2700.00, task_budget_hours: 150.00, is_over_budget: False, invoice_id: 2  row: 0x7b5e23ed58b0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Invoice[2] {Update - Adjusting invoice: invoice_amount} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount:  [10350.00-->] 10800.00, payment_total: 300.00, invoice_balance: 10050.00, is_paid: False  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Invoice[2] {Formula invoice_balance} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount:  [10350.00-->] 10800.00, payment_total: 300.00, invoice_balance:  [10050.00-->] 10500.00, is_paid: False  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Project[2] {Update - Adjusting project: total_project_hours, total_project_amount} id: 2, client_id: 2, name: Mobile App Development, total_project_hours:  [138.00-->] 144.00, total_project_amount:  [10350.00-->] 10800.00, project_budget_amount: 5000.00, is_over_budget: True  row: 0x7b5e23e29e20  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+
+Logic Phase:		ROW LOGIC		(session=0x7b5e24637890) (sqlalchemy before_flush)			
+..Task[1] {Update - client} id: 1, project_id: 1, name: Design Phase, description: Create mockups and wireframes., total_task_hours_worked:  [0.00-->] 16.00, total_task_amount_billed:  [0.00-->] 800.00, task_budget_hours: 50.00, is_over_budget: False, invoice_id: 1  row: 0x7b5e23d56b10  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Invoice[1] {Adjustment logic chaining deferred for this parent parent do_defer_adjustment: True, is_parent_submitted: True, is_parent_row_processed: False, invoice} id: 1, invoice_date: 2025-02-01 00:00:00, project_id: 1, invoice_amount:  [4800.00-->] 5600.00, payment_total: 200.00, invoice_balance: 4600.00, is_paid: False  row: 0x7b5e23d54e30  session: 0x7b5e24637890  ins_upd_dlt: *, initial: *
+....Project[1] {Adjustment logic chaining deferred for this parent parent do_defer_adjustment: True, is_parent_submitted: True, is_parent_row_processed: False, project} id: 1, client_id: 1, name: Website Redesign, total_project_hours:  [96.00-->] 112.00, total_project_amount:  [4800.00-->] 5600.00, project_budget_amount: 2000.00, is_over_budget: True  row: 0x7b5e24e1b830  session: 0x7b5e24637890  ins_upd_dlt: *, initial: *
+..Invoice[2] {Update - client} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount:  [0.00-->] 10800.00, payment_total: 300.00, invoice_balance:  [-300.00-->] 10500.00, is_paid: False  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Person[1] {Update - client} id: 1, client_id: 1, name: Alice, email: alice@acme.com, phone: 1231231234, billing_rate: 50.00, total_hours_entered:  [0.00-->] 16.00, total_amount_billed:  [0.00-->] 800.0000  row: 0x7b5e23d746e0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Person[2] {Update - client} id: 2, client_id: 2, name: Bob, email: bob@global.com, phone: 2342342345, billing_rate: 75.00, total_hours_entered:  [0.00-->] 36.00, total_amount_billed:  [0.00-->] 2700.0000  row: 0x7b5e24409fd0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Task[2] {Update - client} id: 2, project_id: 2, name: Development Phase, description: Develop core features and functionalities., total_task_hours_worked:  [0.00-->] 36.00, total_task_amount_billed:  [0.00-->] 2700.00, task_budget_hours: 150.00, is_over_budget: False, invoice_id: 2  row: 0x7b5e23ed58b0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Invoice[2] {Update - Adjusting invoice: invoice_amount} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount:  [10800.00-->] 13500.00, payment_total: 300.00, invoice_balance: 10500.00, is_paid: False  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Invoice[2] {Formula invoice_balance} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount:  [10800.00-->] 13500.00, payment_total: 300.00, invoice_balance:  [10500.00-->] 13200.00, is_paid: False  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Project[2] {Adjustment logic chaining deferred for this parent parent do_defer_adjustment: True, is_parent_submitted: True, is_parent_row_processed: False, project} id: 2, client_id: 2, name: Mobile App Development, total_project_hours:  [144.00-->] 180.00, total_project_amount:  [10800.00-->] 13500.00, project_budget_amount: 5000.00, is_over_budget: True  row: 0x7b5e23e29e20  session: 0x7b5e24637890  ins_upd_dlt: *, initial: *
+..Project[1] {Update - client} id: 1, client_id: 1, name: Website Redesign, total_project_hours:  [0.00-->] 112.00, total_project_amount:  [0.00-->] 5600.00, project_budget_amount: 2000.00, is_over_budget:  [False-->] True  row: 0x7b5e24e1b830  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Invoice[1] {Update - client} id: 1, invoice_date: 2025-02-01 00:00:00, project_id: 1, invoice_amount:  [0.00-->] 5600.00, payment_total: 200.00, invoice_balance:  [-200.00-->] 4600.00, is_paid: False  row: 0x7b5e23d54e30  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Invoice[1] {Formula invoice_balance} id: 1, invoice_date: 2025-02-01 00:00:00, project_id: 1, invoice_amount:  [0.00-->] 5600.00, payment_total: 200.00, invoice_balance:  [-200.00-->] 5400.00, is_paid: False  row: 0x7b5e23d54e30  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Project[2] {Update - client} id: 2, client_id: 2, name: Mobile App Development, total_project_hours:  [0.00-->] 180.00, total_project_amount:  [0.00-->] 13500.00, project_budget_amount: 5000.00, is_over_budget:  [False-->] True  row: 0x7b5e23e29e20  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+..Timesheet[None] {Insert - client} id: None, task_id: 2, person_id: 2, date_worked: 2025-03-12, hours_worked: 6, month: 3, year: 2025, billing_rate: 75.00, total_amount_billed: 450  row: 0x7b5e23da7440  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+..Timesheet[None] {copy_rules for role: person - billing_rate} id: None, task_id: 2, person_id: 2, date_worked: 2025-03-12, hours_worked: 6, month: 3, year: 2025, billing_rate: 75.00, total_amount_billed: 450  row: 0x7b5e23da7440  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+....Person[2] {Update - Adjusting person: total_hours_entered} id: 2, client_id: 2, name: Bob, email: bob@global.com, phone: 2342342345, billing_rate: 75.00, total_hours_entered:  [36.00-->] 42.00, total_amount_billed: 2700.0000  row: 0x7b5e24409fd0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Person[2] {Formula total_amount_billed} id: 2, client_id: 2, name: Bob, email: bob@global.com, phone: 2342342345, billing_rate: 75.00, total_hours_entered:  [36.00-->] 42.00, total_amount_billed:  [2700.0000-->] 3150.0000  row: 0x7b5e24409fd0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Task[2] {Update - Adjusting task: total_task_hours_worked, total_task_amount_billed} id: 2, project_id: 2, name: Development Phase, description: Develop core features and functionalities., total_task_hours_worked:  [36.00-->] 42.00, total_task_amount_billed:  [2700.00-->] 3150.00, task_budget_hours: 150.00, is_over_budget: False, invoice_id: 2  row: 0x7b5e23ed58b0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Invoice[2] {Update - Adjusting invoice: invoice_amount} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount:  [13500.00-->] 13950.00, payment_total: 300.00, invoice_balance: 13200.00, is_paid: False  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Invoice[2] {Formula invoice_balance} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount:  [13500.00-->] 13950.00, payment_total: 300.00, invoice_balance:  [13200.00-->] 13650.00, is_paid: False  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Project[2] {Update - Adjusting project: total_project_hours, total_project_amount} id: 2, client_id: 2, name: Mobile App Development, total_project_hours:  [180.00-->] 186.00, total_project_amount:  [13500.00-->] 13950.00, project_budget_amount: 5000.00, is_over_budget: True  row: 0x7b5e23e29e20  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+
+Logic Phase:		ROW LOGIC		(session=0x7b5e24637890) (sqlalchemy before_flush)			
+..Timesheet[None] {Insert - client} id: None, task_id: 2, person_id: 2, date_worked: 2025-03-12, hours_worked: 6, month: 3, year: 2025, billing_rate: 75, total_amount_billed: 450  row: 0x7b5e23dcc620  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+..Timesheet[None] {copy_rules for role: person - billing_rate} id: None, task_id: 2, person_id: 2, date_worked: 2025-03-12, hours_worked: 6, month: 3, year: 2025, billing_rate: 75.00, total_amount_billed: 450  row: 0x7b5e23dcc620  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+....Person[2] {Update - Adjusting person: total_hours_entered} id: 2, client_id: 2, name: Bob, email: bob@global.com, phone: 2342342345, billing_rate: 75.00, total_hours_entered:  [0.00-->] 6.00, total_amount_billed: 0.00  row: 0x7b5e24409fd0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Person[2] {Formula total_amount_billed} id: 2, client_id: 2, name: Bob, email: bob@global.com, phone: 2342342345, billing_rate: 75.00, total_hours_entered:  [0.00-->] 6.00, total_amount_billed:  [0.00-->] 450.0000  row: 0x7b5e24409fd0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Task[2] {Update - Adjusting task: total_task_hours_worked, total_task_amount_billed} id: 2, project_id: 2, name: Development Phase, description: Develop core features and functionalities., total_task_hours_worked:  [0.00-->] 6.00, total_task_amount_billed:  [0.00-->] 450.00, task_budget_hours: 150.00, is_over_budget: False, invoice_id: 2  row: 0x7b5e23ed58b0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Invoice[2] {Update - Adjusting invoice: invoice_amount} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount:  [0.00-->] 450.00, payment_total: 300.00, invoice_balance: -300.00, is_paid: False  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Invoice[2] {Formula invoice_balance} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount:  [0.00-->] 450.00, payment_total: 300.00, invoice_balance:  [-300.00-->] 150.00, is_paid: False  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Project[2] {Update - Adjusting project: total_project_hours, total_project_amount} id: 2, client_id: 2, name: Mobile App Development, total_project_hours:  [0.00-->] 6.00, total_project_amount:  [0.00-->] 450.00, project_budget_amount: 5000.00, is_over_budget: False  row: 0x7b5e23e29e20  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+
+Logic Phase:		ROW LOGIC		(session=0x7b5e24637890) (sqlalchemy before_flush)			
+..Timesheet[None] {Insert - client} id: None, task_id: 3, person_id: 3, date_worked: 2025-05-08, hours_worked: 10, month: 5, year: 2025, billing_rate: 100, total_amount_billed: 1000  row: 0x7b5e23dcc500  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+..Timesheet[None] {copy_rules for role: person - billing_rate} id: None, task_id: 3, person_id: 3, date_worked: 2025-05-08, hours_worked: 10, month: 5, year: 2025, billing_rate: 100.00, total_amount_billed: 1000  row: 0x7b5e23dcc500  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+....Person[3] {Update - Adjusting person: total_hours_entered} id: 3, client_id: 3, name: Charlie, email: charlie@innovate.com, phone: 3453453456, billing_rate: 100.00, total_hours_entered:  [0.00-->] 10.00, total_amount_billed: 0.00  row: 0x7b5e23d57da0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Person[3] {Formula total_amount_billed} id: 3, client_id: 3, name: Charlie, email: charlie@innovate.com, phone: 3453453456, billing_rate: 100.00, total_hours_entered:  [0.00-->] 10.00, total_amount_billed:  [0.00-->] 1000.0000  row: 0x7b5e23d57da0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Task[3] {Update - Adjusting task: total_task_hours_worked, total_task_amount_billed} id: 3, project_id: 3, name: Testing Phase, description: Perform QA testing., total_task_hours_worked:  [0.00-->] 10.00, total_task_amount_billed:  [0.00-->] 1000.00, task_budget_hours: 100.00, is_over_budget: False, invoice_id: 3  row: 0x7b5e26391e80  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Invoice[3] {Update - Adjusting invoice: invoice_amount} id: 3, invoice_date: 2025-05-10 00:00:00, project_id: 3, invoice_amount:  [0.00-->] 1000.00, payment_total: 400.00, invoice_balance: -400.00, is_paid: False  row: 0x7b5e23d550a0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Invoice[3] {Formula invoice_balance} id: 3, invoice_date: 2025-05-10 00:00:00, project_id: 3, invoice_amount:  [0.00-->] 1000.00, payment_total: 400.00, invoice_balance:  [-400.00-->] 600.00, is_paid: False  row: 0x7b5e23d550a0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Project[3] {Update - Adjusting project: total_project_hours, total_project_amount} id: 3, client_id: 3, name: Cloud Migration, total_project_hours:  [0.00-->] 10.00, total_project_amount:  [0.00-->] 1000.00, project_budget_amount: 8000.00, is_over_budget: False  row: 0x7b5e23e4c710  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+
+Logic Phase:		ROW LOGIC		(session=0x7b5e24637890) (sqlalchemy before_flush)			
+..Timesheet[None] {Insert - client} id: None, task_id: 4, person_id: 4, date_worked: 2025-06-15, hours_worked: 7.5, month: 6, year: 2025, billing_rate: 120, total_amount_billed: 900  row: 0x7b5e23dcd460  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+..Timesheet[None] {copy_rules for role: person - billing_rate} id: None, task_id: 4, person_id: 4, date_worked: 2025-06-15, hours_worked: 7.5, month: 6, year: 2025, billing_rate: 120.00, total_amount_billed: 900  row: 0x7b5e23dcd460  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+....Person[4] {Update - Adjusting person: total_hours_entered} id: 4, client_id: 4, name: Dana, email: dana@techies.com, phone: 4564564567, billing_rate: 120.00, total_hours_entered:  [0.00-->] 7.50, total_amount_billed: 0.00  row: 0x7b5e23d75370  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Person[4] {Formula total_amount_billed} id: 4, client_id: 4, name: Dana, email: dana@techies.com, phone: 4564564567, billing_rate: 120.00, total_hours_entered:  [0.00-->] 7.50, total_amount_billed:  [0.00-->] 900.0000  row: 0x7b5e23d75370  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Task[4] {Update - Adjusting task: total_task_hours_worked, total_task_amount_billed} id: 4, project_id: 4, name: Deployment Phase, description: Deploy application to production., total_task_hours_worked:  [0.00-->] 7.50, total_task_amount_billed:  [0.00-->] 900.00, task_budget_hours: 60.00, is_over_budget: False, invoice_id: 4  row: 0x7b5e23d575f0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Invoice[4] {Update - Adjusting invoice: invoice_amount} id: 4, invoice_date: 2025-06-20 00:00:00, project_id: 4, invoice_amount:  [0.00-->] 900.00, payment_total: 500.00, invoice_balance: -500.00, is_paid: False  row: 0x7b5e23d54950  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Invoice[4] {Formula invoice_balance} id: 4, invoice_date: 2025-06-20 00:00:00, project_id: 4, invoice_amount:  [0.00-->] 900.00, payment_total: 500.00, invoice_balance:  [-500.00-->] 400.00, is_paid: False  row: 0x7b5e23d54950  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Project[4] {Update - Adjusting project: total_project_hours, total_project_amount} id: 4, client_id: 4, name: Security Audit, total_project_hours:  [0.00-->] 7.50, total_project_amount:  [0.00-->] 900.00, project_budget_amount: 3000.00, is_over_budget: False  row: 0x7b5e23d546b0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+
+Logic Phase:		ROW LOGIC		(session=0x7b5e24637890) (sqlalchemy before_flush)			
+..Timesheet[None] {Insert - client} id: None, task_id: 1, person_id: 1, date_worked: 2025-02-10, hours_worked: 8, month: 2, year: 2025, billing_rate: 50, total_amount_billed: 400  row: 0x7b5e23dcd3a0  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+..Timesheet[None] {copy_rules for role: person - billing_rate} id: None, task_id: 1, person_id: 1, date_worked: 2025-02-10, hours_worked: 8, month: 2, year: 2025, billing_rate: 50.00, total_amount_billed: 400  row: 0x7b5e23dcd3a0  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+....Person[1] {Update - Adjusting person: total_hours_entered} id: 1, client_id: 1, name: Alice, email: alice@acme.com, phone: 1231231234, billing_rate: 50.00, total_hours_entered:  [0.00-->] 8.00, total_amount_billed: 0.00  row: 0x7b5e23d746e0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Person[1] {Formula total_amount_billed} id: 1, client_id: 1, name: Alice, email: alice@acme.com, phone: 1231231234, billing_rate: 50.00, total_hours_entered:  [0.00-->] 8.00, total_amount_billed:  [0.00-->] 400.0000  row: 0x7b5e23d746e0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Task[1] {Update - Adjusting task: total_task_hours_worked, total_task_amount_billed} id: 1, project_id: 1, name: Design Phase, description: Create mockups and wireframes., total_task_hours_worked:  [0.00-->] 8.00, total_task_amount_billed:  [0.00-->] 400.00, task_budget_hours: 50.00, is_over_budget: False, invoice_id: 1  row: 0x7b5e23d56b10  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Invoice[1] {Update - Adjusting invoice: invoice_amount} id: 1, invoice_date: 2025-02-01 00:00:00, project_id: 1, invoice_amount:  [0.00-->] 400.00, payment_total: 200.00, invoice_balance: -200.00, is_paid: False  row: 0x7b5e23d54e30  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Invoice[1] {Formula invoice_balance} id: 1, invoice_date: 2025-02-01 00:00:00, project_id: 1, invoice_amount:  [0.00-->] 400.00, payment_total: 200.00, invoice_balance:  [-200.00-->] 200.00, is_paid: False  row: 0x7b5e23d54e30  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Project[1] {Update - Adjusting project: total_project_hours, total_project_amount} id: 1, client_id: 1, name: Website Redesign, total_project_hours:  [0.00-->] 8.00, total_project_amount:  [0.00-->] 400.00, project_budget_amount: 2000.00, is_over_budget: False  row: 0x7b5e24e1b830  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+
+Logic Phase:		ROW LOGIC		(session=0x7b5e24637890) (sqlalchemy before_flush)			
+..Timesheet[None] {Insert - client} id: None, task_id: 2, person_id: 2, date_worked: 2025-03-12, hours_worked: 6, month: 3, year: 2025, billing_rate: 75, total_amount_billed: 450  row: 0x7b5e23dcef60  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+..Timesheet[None] {copy_rules for role: person - billing_rate} id: None, task_id: 2, person_id: 2, date_worked: 2025-03-12, hours_worked: 6, month: 3, year: 2025, billing_rate: 75.00, total_amount_billed: 450  row: 0x7b5e23dcef60  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+....Person[2] {Update - Adjusting person: total_hours_entered} id: 2, client_id: 2, name: Bob, email: bob@global.com, phone: 2342342345, billing_rate: 75.00, total_hours_entered:  [0.00-->] 6.00, total_amount_billed: 0.00  row: 0x7b5e24409fd0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Person[2] {Formula total_amount_billed} id: 2, client_id: 2, name: Bob, email: bob@global.com, phone: 2342342345, billing_rate: 75.00, total_hours_entered:  [0.00-->] 6.00, total_amount_billed:  [0.00-->] 450.0000  row: 0x7b5e24409fd0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Task[2] {Update - Adjusting task: total_task_hours_worked, total_task_amount_billed} id: 2, project_id: 2, name: Development Phase, description: Develop core features and functionalities., total_task_hours_worked:  [0.00-->] 6.00, total_task_amount_billed:  [0.00-->] 450.00, task_budget_hours: 150.00, is_over_budget: False, invoice_id: 2  row: 0x7b5e23ed58b0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Invoice[2] {Update - Adjusting invoice: invoice_amount} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount:  [0.00-->] 450.00, payment_total: 300.00, invoice_balance: -300.00, is_paid: False  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Invoice[2] {Formula invoice_balance} id: 2, invoice_date: 2025-03-15 00:00:00, project_id: 2, invoice_amount:  [0.00-->] 450.00, payment_total: 300.00, invoice_balance:  [-300.00-->] 150.00, is_paid: False  row: 0x7b5e23e4d040  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Project[2] {Update - Adjusting project: total_project_hours, total_project_amount} id: 2, client_id: 2, name: Mobile App Development, total_project_hours:  [0.00-->] 6.00, total_project_amount:  [0.00-->] 450.00, project_budget_amount: 5000.00, is_over_budget: False  row: 0x7b5e23e29e20  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+
+Logic Phase:		ROW LOGIC		(session=0x7b5e24637890) (sqlalchemy before_flush)			
+..Timesheet[None] {Insert - client} id: None, task_id: 3, person_id: 3, date_worked: 2025-05-08, hours_worked: 10, month: 5, year: 2025, billing_rate: 100, total_amount_billed: 1000  row: 0x7b5e23dce600  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+..Timesheet[None] {copy_rules for role: person - billing_rate} id: None, task_id: 3, person_id: 3, date_worked: 2025-05-08, hours_worked: 10, month: 5, year: 2025, billing_rate: 100.00, total_amount_billed: 1000  row: 0x7b5e23dce600  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+....Person[3] {Update - Adjusting person: total_hours_entered} id: 3, client_id: 3, name: Charlie, email: charlie@innovate.com, phone: 3453453456, billing_rate: 100.00, total_hours_entered:  [0.00-->] 10.00, total_amount_billed: 0.00  row: 0x7b5e23d57da0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Person[3] {Formula total_amount_billed} id: 3, client_id: 3, name: Charlie, email: charlie@innovate.com, phone: 3453453456, billing_rate: 100.00, total_hours_entered:  [0.00-->] 10.00, total_amount_billed:  [0.00-->] 1000.0000  row: 0x7b5e23d57da0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Task[3] {Update - Adjusting task: total_task_hours_worked, total_task_amount_billed} id: 3, project_id: 3, name: Testing Phase, description: Perform QA testing., total_task_hours_worked:  [0.00-->] 10.00, total_task_amount_billed:  [0.00-->] 1000.00, task_budget_hours: 100.00, is_over_budget: False, invoice_id: 3  row: 0x7b5e26391e80  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Invoice[3] {Update - Adjusting invoice: invoice_amount} id: 3, invoice_date: 2025-05-10 00:00:00, project_id: 3, invoice_amount:  [0.00-->] 1000.00, payment_total: 400.00, invoice_balance: -400.00, is_paid: False  row: 0x7b5e23d550a0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Invoice[3] {Formula invoice_balance} id: 3, invoice_date: 2025-05-10 00:00:00, project_id: 3, invoice_amount:  [0.00-->] 1000.00, payment_total: 400.00, invoice_balance:  [-400.00-->] 600.00, is_paid: False  row: 0x7b5e23d550a0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Project[3] {Update - Adjusting project: total_project_hours, total_project_amount} id: 3, client_id: 3, name: Cloud Migration, total_project_hours:  [0.00-->] 10.00, total_project_amount:  [0.00-->] 1000.00, project_budget_amount: 8000.00, is_over_budget: False  row: 0x7b5e23e4c710  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+
+Logic Phase:		ROW LOGIC		(session=0x7b5e24637890) (sqlalchemy before_flush)			
+..Timesheet[None] {Insert - client} id: None, task_id: 4, person_id: 4, date_worked: 2025-06-15, hours_worked: 7.5, month: 6, year: 2025, billing_rate: 120, total_amount_billed: 900  row: 0x7b5e23dcfe90  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+..Timesheet[None] {copy_rules for role: person - billing_rate} id: None, task_id: 4, person_id: 4, date_worked: 2025-06-15, hours_worked: 7.5, month: 6, year: 2025, billing_rate: 120.00, total_amount_billed: 900  row: 0x7b5e23dcfe90  session: 0x7b5e24637890  ins_upd_dlt: ins, initial: ins
+....Person[4] {Update - Adjusting person: total_hours_entered} id: 4, client_id: 4, name: Dana, email: dana@techies.com, phone: 4564564567, billing_rate: 120.00, total_hours_entered:  [0.00-->] 7.50, total_amount_billed: 0.00  row: 0x7b5e23d75370  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Person[4] {Formula total_amount_billed} id: 4, client_id: 4, name: Dana, email: dana@techies.com, phone: 4564564567, billing_rate: 120.00, total_hours_entered:  [0.00-->] 7.50, total_amount_billed:  [0.00-->] 900.0000  row: 0x7b5e23d75370  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+....Task[4] {Update - Adjusting task: total_task_hours_worked, total_task_amount_billed} id: 4, project_id: 4, name: Deployment Phase, description: Deploy application to production., total_task_hours_worked:  [0.00-->] 7.50, total_task_amount_billed:  [0.00-->] 900.00, task_budget_hours: 60.00, is_over_budget: False, invoice_id: 4  row: 0x7b5e23d575f0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Invoice[4] {Update - Adjusting invoice: invoice_amount} id: 4, invoice_date: 2025-06-20 00:00:00, project_id: 4, invoice_amount:  [0.00-->] 900.00, payment_total: 500.00, invoice_balance: -500.00, is_paid: False  row: 0x7b5e23d54950  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Invoice[4] {Formula invoice_balance} id: 4, invoice_date: 2025-06-20 00:00:00, project_id: 4, invoice_amount:  [0.00-->] 900.00, payment_total: 500.00, invoice_balance:  [-500.00-->] 400.00, is_paid: False  row: 0x7b5e23d54950  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+......Project[4] {Update - Adjusting project: total_project_hours, total_project_amount} id: 4, client_id: 4, name: Security Audit, total_project_hours:  [0.00-->] 7.50, total_project_amount:  [0.00-->] 900.00, project_budget_amount: 3000.00, is_over_budget: False  row: 0x7b5e23d546b0  session: 0x7b5e24637890  ins_upd_dlt: upd, initial: upd
+*** Models.py Using TestBase ***
+..  db_url: sqlite:////opt/projects/by-ulid/01JJCFB49RE2G3FW6A1JFBJAG1/database/test_data/db.sqlite
+..  cwd: /opt/projects/by-ulid/01JJCFB49RE2G3FW6A1JFBJAG1
+..  python_loc: /usr/local/bin/python
+..  test_data_loader version: 1.1
+..  LogicBank activated
+print(Pass: 1)
+Error adding variable to session: name 'date' is not defined
+print(Pass: 2)
+print(Pass: 3)
+print(Pass: 4)
+print(Pass: 5)
+..  db_url: sqlite:////opt/projects/by-ulid/01JJCFB49RE2G3FW6A1JFBJAG1/database/test_data/db.sqlite
+..  cwd: /opt/projects/by-ulid/01JJCFB49RE2G3FW6A1JFBJAG1
+..  python_loc: /usr/local/bin/python
+..  test_data_loader version: 1.1
+..  LogicBank activated
+print(Pass: 1)
+Error adding variable to session: name 'date' is not defined
+print(Pass: 2)
+print(Pass: 3)
+print(Pass: 4)
+print(Pass: 5)
+Error: near line 14: UNIQUE constraint failed: client.id
+Error: near line 15: UNIQUE constraint failed: client.id
+Error: near line 16: UNIQUE constraint failed: client.id
+Error: near line 17: UNIQUE constraint failed: client.id
+Error: near line 30: UNIQUE constraint failed: person.id
+Error: near line 31: UNIQUE constraint failed: person.id
+Error: near line 32: UNIQUE constraint failed: person.id
+Error: near line 33: UNIQUE constraint failed: person.id
+Error: near line 45: UNIQUE constraint failed: project.id
+Error: near line 46: UNIQUE constraint failed: project.id
+Error: near line 47: UNIQUE constraint failed: project.id
+Error: near line 48: UNIQUE constraint failed: project.id
+Error: near line 60: UNIQUE constraint failed: invoice.id
+Error: near line 61: UNIQUE constraint failed: invoice.id
+Error: near line 62: UNIQUE constraint failed: invoice.id
+Error: near line 63: UNIQUE constraint failed: invoice.id
+Error: near line 73: UNIQUE constraint failed: payment.id
+Error: near line 74: UNIQUE constraint failed: payment.id
+Error: near line 75: UNIQUE constraint failed: payment.id
+Error: near line 76: UNIQUE constraint failed: payment.id
+Error: near line 91: UNIQUE constraint failed: task.id
+Error: near line 92: UNIQUE constraint failed: task.id
+Error: near line 93: UNIQUE constraint failed: task.id
+Error: near line 94: UNIQUE constraint failed: task.id

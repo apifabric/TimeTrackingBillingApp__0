@@ -1,6 +1,6 @@
 # coding: utf-8
 from sqlalchemy import DECIMAL, DateTime  # API Logic Server GenAI assist
-from sqlalchemy import Boolean, Column, DECIMAL, Date, ForeignKey, Integer, String
+from sqlalchemy import Boolean, Column, DECIMAL, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -10,8 +10,8 @@ from sqlalchemy.ext.declarative import declarative_base
 # Alter this file per your database maintenance policy
 #    See https://apilogicserver.github.io/Docs/Project-Rebuild/#rebuilding
 #
-# Created:  January 24, 2025 15:34:29
-# Database: sqlite:////tmp/tmp.yPFDTSY3US-01JJCEZB79KQ52AB7AAAQJ9YZE/TimeTrackingBillingApplication/database/db.sqlite
+# Created:  January 24, 2025 15:37:58
+# Database: sqlite:////tmp/tmp.JIXaCkG2Ep/TimeTrackingBillingApp_iter_1/database/db.sqlite
 # Dialect:  sqlite
 #
 # mypy: ignore-errors
@@ -46,13 +46,13 @@ else:
 
 class Client(Base):  # type: ignore
     """
-    description: Represents clients in the system.
+    description: Client table holding client information and budget status.
     """
     __tablename__ = 'client'
     _s_collection_name = 'Client'  # type: ignore
 
     id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False)
+    name = Column(String)
     email = Column(String)
     phone = Column(String)
     total_hours : DECIMAL = Column(DECIMAL(10, 2))
@@ -70,14 +70,14 @@ class Client(Base):  # type: ignore
 
 class Person(Base):  # type: ignore
     """
-    description: Represents personnel and their billing information.
+    description: Person table records employee details along with hours and billing.
     """
     __tablename__ = 'person'
     _s_collection_name = 'Person'  # type: ignore
 
     id = Column(Integer, primary_key=True)
     client_id = Column(ForeignKey('client.id'))
-    name = Column(String, nullable=False)
+    name = Column(String)
     email = Column(String)
     phone = Column(String)
     billing_rate : DECIMAL = Column(DECIMAL(10, 2))
@@ -94,14 +94,14 @@ class Person(Base):  # type: ignore
 
 class Project(Base):  # type: ignore
     """
-    description: Represents projects associated with clients.
+    description: Project table associated with clients, holds project specifics and budget status.
     """
     __tablename__ = 'project'
     _s_collection_name = 'Project'  # type: ignore
 
     id = Column(Integer, primary_key=True)
     client_id = Column(ForeignKey('client.id'))
-    name = Column(String, nullable=False)
+    name = Column(String)
     total_project_hours : DECIMAL = Column(DECIMAL(10, 2))
     total_project_amount : DECIMAL = Column(DECIMAL(10, 2))
     project_budget_amount : DECIMAL = Column(DECIMAL(10, 2))
@@ -118,13 +118,13 @@ class Project(Base):  # type: ignore
 
 class Invoice(Base):  # type: ignore
     """
-    description: Represents invoices related to a specific project.
+    description: Invoice table details the amount due based on project tasking.
     """
     __tablename__ = 'invoice'
     _s_collection_name = 'Invoice'  # type: ignore
 
     id = Column(Integer, primary_key=True)
-    invoice_date = Column(Date)
+    invoice_date = Column(DateTime)
     project_id = Column(ForeignKey('project.id'))
     invoice_amount : DECIMAL = Column(DECIMAL(10, 2))
     payment_total : DECIMAL = Column(DECIMAL(10, 2))
@@ -142,7 +142,7 @@ class Invoice(Base):  # type: ignore
 
 class Payment(Base):  # type: ignore
     """
-    description: Represents payments made against invoices.
+    description: Payment records towards invoices of projects.
     """
     __tablename__ = 'payment'
     _s_collection_name = 'Payment'  # type: ignore
@@ -150,7 +150,7 @@ class Payment(Base):  # type: ignore
     id = Column(Integer, primary_key=True)
     invoice_id = Column(ForeignKey('invoice.id'))
     payment_amount : DECIMAL = Column(DECIMAL(10, 2))
-    payment_date = Column(Date)
+    payment_date = Column(DateTime)
     notes = Column(String)
 
     # parent relationships (access parent)
@@ -162,14 +162,14 @@ class Payment(Base):  # type: ignore
 
 class Task(Base):  # type: ignore
     """
-    description: Represents tasks within projects.
+    description: Task table defining task specifics, hours worked, amount billed, and budget status.
     """
     __tablename__ = 'task'
     _s_collection_name = 'Task'  # type: ignore
 
     id = Column(Integer, primary_key=True)
     project_id = Column(ForeignKey('project.id'))
-    name = Column(String, nullable=False)
+    name = Column(String)
     description = Column(String)
     total_task_hours_worked : DECIMAL = Column(DECIMAL(10, 2))
     total_task_amount_billed : DECIMAL = Column(DECIMAL(10, 2))
@@ -188,7 +188,7 @@ class Task(Base):  # type: ignore
 
 class Timesheet(Base):  # type: ignore
     """
-    description: Represents timesheets logging work done by personnel.
+    description: Timesheet table that tracks employee hours worked on tasks.
     """
     __tablename__ = 'timesheet'
     _s_collection_name = 'Timesheet'  # type: ignore
@@ -196,7 +196,7 @@ class Timesheet(Base):  # type: ignore
     id = Column(Integer, primary_key=True)
     task_id = Column(ForeignKey('task.id'))
     person_id = Column(ForeignKey('person.id'))
-    date_worked = Column(Date)
+    date_worked = Column(DateTime)
     hours_worked : DECIMAL = Column(DECIMAL(10, 2))
     month = Column(Integer)
     year = Column(Integer)

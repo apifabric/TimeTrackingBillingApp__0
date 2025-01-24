@@ -1,0 +1,405 @@
+about:
+  date: January 24, 2025 15:37:58
+  recent_changes: works with modified safrs-react-admin
+  version: 0.0.0
+api_root: '{http_type}://{swagger_host}:{port}/{api}'
+authentication: '{system-default}'
+entities:
+  Client:
+    columns:
+    - label: ' name*'
+      name: name
+      search: true
+      sort: true
+      template: text
+      type: VARCHAR
+    - name: email
+      template: text
+      type: VARCHAR
+    - name: phone
+      template: text
+      type: VARCHAR
+    - name: total_hours
+      template: currency
+      type: DECIMAL(10, 2)
+    - name: total_amount
+      template: currency
+      type: DECIMAL(10, 2)
+    - name: budget_amount
+      template: currency
+      type: DECIMAL(10, 2)
+    - name: is_over_budget
+      type: Boolean
+    - name: id
+      template: integer
+      type: INTEGER
+    description: Client table holding client information and budget status.
+    detail_template: detail_template.html
+    exclude: 'false'
+    favorite: name
+    hidden: {}
+    home_template: home_template.html
+    info_list: Client table holding client information and budget status.
+    label: Client
+    mode: tab
+    new_template: new_template.html
+    primary_key:
+    - id
+    tab_groups:
+    - direction: tomany
+      fks:
+      - client_id
+      name: PersonList
+      resource: Person
+    - direction: tomany
+      fks:
+      - client_id
+      name: ProjectList
+      resource: Project
+    type: Client
+  Invoice:
+    columns:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+      template: integer
+      type: INTEGER
+    - name: project_id
+      template: integer
+      type: INTEGER
+    - name: invoice_date
+      type: DATETIME
+    - name: invoice_amount
+      template: currency
+      type: DECIMAL(10, 2)
+    - name: payment_total
+      template: currency
+      type: DECIMAL(10, 2)
+    - name: invoice_balance
+      template: currency
+      type: DECIMAL(10, 2)
+    - name: is_paid
+      type: Boolean
+    description: Invoice table details the amount due based on project tasking.
+    detail_template: detail_template.html
+    exclude: 'false'
+    favorite: id
+    hidden: {}
+    home_template: home_template.html
+    info_list: Invoice table details the amount due based on project tasking.
+    label: Invoice
+    mode: tab
+    new_template: new_template.html
+    primary_key:
+    - id
+    tab_groups:
+    - direction: tomany
+      fks:
+      - invoice_id
+      name: PaymentList
+      resource: Payment
+    - direction: tomany
+      fks:
+      - invoice_id
+      name: TaskList
+      resource: Task
+    - direction: toone
+      fks:
+      - project_id
+      name: project
+      resource: Project
+    type: Invoice
+  Payment:
+    columns:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+      template: integer
+      type: INTEGER
+    - name: invoice_id
+      template: integer
+      type: INTEGER
+    - name: payment_amount
+      template: currency
+      type: DECIMAL(10, 2)
+    - name: payment_date
+      type: DATETIME
+    - name: notes
+      template: text
+      type: VARCHAR
+    description: Payment records towards invoices of projects.
+    detail_template: detail_template.html
+    exclude: 'false'
+    favorite: id
+    hidden: {}
+    home_template: home_template.html
+    info_list: Payment records towards invoices of projects.
+    label: Payment
+    mode: tab
+    new_template: new_template.html
+    primary_key:
+    - id
+    tab_groups:
+    - direction: toone
+      fks:
+      - invoice_id
+      name: invoice
+      resource: Invoice
+    type: Payment
+  Person:
+    columns:
+    - label: ' name*'
+      name: name
+      search: true
+      sort: true
+      template: text
+      type: VARCHAR
+    - name: client_id
+      template: integer
+      type: INTEGER
+    - name: email
+      template: text
+      type: VARCHAR
+    - name: phone
+      template: text
+      type: VARCHAR
+    - name: billing_rate
+      template: currency
+      type: DECIMAL(10, 2)
+    - name: id
+      template: integer
+      type: INTEGER
+    - name: total_hours_entered
+      template: currency
+      type: DECIMAL(10, 2)
+    - name: total_amount_billed
+      template: currency
+      type: DECIMAL(10, 2)
+    description: Person table records employee details along with hours and billing.
+    detail_template: detail_template.html
+    exclude: 'false'
+    favorite: name
+    hidden: {}
+    home_template: home_template.html
+    info_list: Person table records employee details along with hours and billing.
+    label: Person
+    mode: tab
+    new_template: new_template.html
+    primary_key:
+    - id
+    tab_groups:
+    - direction: tomany
+      fks:
+      - person_id
+      name: TimesheetList
+      resource: Timesheet
+    - direction: toone
+      fks:
+      - client_id
+      name: client
+      resource: Client
+    type: Person
+  Project:
+    columns:
+    - label: ' name*'
+      name: name
+      search: true
+      sort: true
+      template: text
+      type: VARCHAR
+    - name: client_id
+      template: integer
+      type: INTEGER
+    - name: total_project_hours
+      template: currency
+      type: DECIMAL(10, 2)
+    - name: total_project_amount
+      template: currency
+      type: DECIMAL(10, 2)
+    - name: project_budget_amount
+      template: currency
+      type: DECIMAL(10, 2)
+    - name: is_over_budget
+      type: Boolean
+    - name: id
+      template: integer
+      type: INTEGER
+    description: Project table associated with clients, holds project specifics and
+      budget status.
+    detail_template: detail_template.html
+    exclude: 'false'
+    favorite: name
+    hidden: {}
+    home_template: home_template.html
+    info_list: Project table associated with clients, holds project specifics and
+      budget status.
+    label: Project
+    mode: tab
+    new_template: new_template.html
+    primary_key:
+    - id
+    tab_groups:
+    - direction: tomany
+      fks:
+      - project_id
+      name: InvoiceList
+      resource: Invoice
+    - direction: tomany
+      fks:
+      - project_id
+      name: TaskList
+      resource: Task
+    - direction: toone
+      fks:
+      - client_id
+      name: client
+      resource: Client
+    type: Project
+  Task:
+    columns:
+    - label: ' name*'
+      name: name
+      search: true
+      sort: true
+      template: text
+      type: VARCHAR
+    - name: invoice_id
+      template: integer
+      type: INTEGER
+    - name: project_id
+      template: integer
+      type: INTEGER
+    - name: description
+      template: text
+      type: VARCHAR
+    - name: task_budget_hours
+      template: currency
+      type: DECIMAL(10, 2)
+    - name: is_over_budget
+      type: Boolean
+    - name: id
+      template: integer
+      type: INTEGER
+    - name: total_task_hours_worked
+      template: currency
+      type: DECIMAL(10, 2)
+    - name: total_task_amount_billed
+      template: currency
+      type: DECIMAL(10, 2)
+    description: Task table defining task specifics, hours worked, amount billed,
+      and budget status.
+    detail_template: detail_template.html
+    exclude: 'false'
+    favorite: name
+    hidden: {}
+    home_template: home_template.html
+    info_list: Task table defining task specifics, hours worked, amount billed, and
+      budget status.
+    label: Task
+    mode: tab
+    new_template: new_template.html
+    primary_key:
+    - id
+    tab_groups:
+    - direction: tomany
+      fks:
+      - task_id
+      name: TimesheetList
+      resource: Timesheet
+    - direction: toone
+      fks:
+      - invoice_id
+      name: invoice
+      resource: Invoice
+    - direction: toone
+      fks:
+      - project_id
+      name: project
+      resource: Project
+    type: Task
+  Timesheet:
+    columns:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+      template: integer
+      type: INTEGER
+    - name: person_id
+      template: integer
+      type: INTEGER
+    - name: task_id
+      template: integer
+      type: INTEGER
+    - name: month
+      template: integer
+      type: INTEGER
+    - name: year
+      template: integer
+      type: INTEGER
+    - name: billing_rate
+      template: currency
+      type: DECIMAL(10, 2)
+    - name: date_worked
+      type: DATETIME
+    - name: hours_worked
+      template: currency
+      type: DECIMAL(10, 2)
+    - name: total_amount_billed
+      template: currency
+      type: DECIMAL(10, 2)
+    description: Timesheet table that tracks employee hours worked on tasks.
+    detail_template: detail_template.html
+    exclude: 'false'
+    favorite: id
+    hidden: {}
+    home_template: home_template.html
+    info_list: Timesheet table that tracks employee hours worked on tasks.
+    label: Timesheet
+    mode: tab
+    new_template: new_template.html
+    primary_key:
+    - id
+    tab_groups:
+    - direction: toone
+      fks:
+      - person_id
+      name: person
+      resource: Person
+    - direction: toone
+      fks:
+      - task_id
+      name: task
+      resource: Task
+    type: Timesheet
+settings:
+  HomeJS: /admin-app/home.js
+  max_list_columns: 8
+  style_guide:
+    applicationLocales:
+    - en
+    - es
+    currency_symbol: $
+    currency_symbol_position: left
+    date_format: LL
+    decimal_max: '1000000000'
+    decimal_min: '0'
+    decimal_separator: .
+    edit_on_mode: dblclick
+    exclude_listpicker: false
+    include_translation: false
+    keycloak_client_id: alsclient
+    keycloak_realm: kcals
+    keycloak_url: http://localhost:8080
+    locale: en
+    max_decimal_digits: '4'
+    min_decimal_digits: '2'
+    mode: tab
+    pick_style: list
+    serviceType: OntimizeEE
+    startSessionPath: /auth/login
+    style: light
+    thousand_separator: ','
+    use_keycloak: false

@@ -1,0 +1,60 @@
+Loading rules from /opt/projects/by-ulid/01JJCFB49RE2G3FW6A1JFBJAG1/logic/wg_rules
+01JJCFB5YB76XV1GS0Q5HQCS7V rule file: logic/wg_rules/Person_Totals.py
+01JJCFB5YXYHQ8FK4SK2JFY1PS rule file: logic/wg_rules/Timesheet_Bill_Calc.py
+01JJCFB5Z8T27C219Q3VH3C0KE rule file: logic/wg_rules/Task_Totals.py
+01JJCFB5ZMQP9CVPH6H0TF1AGR rule file: logic/wg_rules/Project_Totals.py
+01JJCFB5ZZHS8TBR2KQE0CH4GA rule file: logic/wg_rules/Client_Totals.py
+01JJCFB60DWS7VHA4BJ9J2NWN1 rule file: logic/wg_rules/Invoice_Totals.py
+
+[34mVerifying rule: Person_Totals - 01JJCFB5YB76XV1GS0Q5HQCS7V[0m
+
+[32mActivated rule 01JJCFB5YB76XV1GS0Q5HQCS7V[0m
+
+[34mVerifying rule: Timesheet_Bill_Calc - 01JJCFB5YXYHQ8FK4SK2JFY1PS[0m
+
+[32mActivated rule 01JJCFB5YXYHQ8FK4SK2JFY1PS[0m
+
+[34mVerifying rule: Task_Totals - 01JJCFB5Z8T27C219Q3VH3C0KE[0m
+
+[32mActivated rule 01JJCFB5Z8T27C219Q3VH3C0KE[0m
+
+[34mVerifying rule: Project_Totals - 01JJCFB5ZMQP9CVPH6H0TF1AGR[0m
+
+[32mActivated rule 01JJCFB5ZMQP9CVPH6H0TF1AGR[0m
+
+[34mVerifying rule: Invoice_Totals - 01JJCFB60DWS7VHA4BJ9J2NWN1[0m
+
+[32mActivated rule 01JJCFB60DWS7VHA4BJ9J2NWN1[0m
+01JJCFB5YB76XV1GS0Q5HQCS7V rule file: logic/wg_rules/Person_Totals.py
+01JJCFB5YXYHQ8FK4SK2JFY1PS rule file: logic/wg_rules/Timesheet_Bill_Calc.py
+01JJCFB5Z8T27C219Q3VH3C0KE rule file: logic/wg_rules/Task_Totals.py
+01JJCFB5ZMQP9CVPH6H0TF1AGR rule file: logic/wg_rules/Project_Totals.py
+01JJCFB5ZZHS8TBR2KQE0CH4GA rule file: logic/wg_rules/Client_Totals.py
+01JJCFB60DWS7VHA4BJ9J2NWN1 rule file: logic/wg_rules/Invoice_Totals.py
+
+[34mVerifying rule: Client_Totals - 01JJCFB5ZZHS8TBR2KQE0CH4GA[0m
+type object 'Project' has no attribute 'total_task_hours_worked'
+Traceback (most recent call last):
+  File "/opt/projects/by-ulid/01JJCFB49RE2G3FW6A1JFBJAG1/logic/load_verify_rules.py", line 144, in verify_rules
+    rule_module.init_rule()
+  File "/opt/projects/by-ulid/01JJCFB49RE2G3FW6A1JFBJAG1/logic/wg_rules/Client_Totals.py", line 6, in init_rule
+    Rule.sum(derive=Client.total_hours, as_sum_of=Project.total_task_hours_worked)
+                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: type object 'Project' has no attribute 'total_task_hours_worked'
+Loading rules from /opt/projects/by-ulid/01JJCFB49RE2G3FW6A1JFBJAG1/logic/wg_rules
+01JJCFB5YB76XV1GS0Q5HQCS7V rule file: logic/wg_rules/Person_Totals.py
+01JJCFB5YXYHQ8FK4SK2JFY1PS rule file: logic/wg_rules/Timesheet_Bill_Calc.py
+01JJCFB5Z8T27C219Q3VH3C0KE rule file: logic/wg_rules/Task_Totals.py
+01JJCFB5ZMQP9CVPH6H0TF1AGR rule file: logic/wg_rules/Project_Totals.py
+01JJCFB5ZZHS8TBR2KQE0CH4GA rule file: logic/wg_rules/Client_Totals.py
+01JJCFB60DWS7VHA4BJ9J2NWN1 rule file: logic/wg_rules/Invoice_Totals.py
+[32mLoading Rule Module Person_Totals 01JJCFB5YB76XV1GS0Q5HQCS7V [0m
+[32mLoading Rule Module Timesheet_Bill_Calc 01JJCFB5YXYHQ8FK4SK2JFY1PS [0m
+[32mLoading Rule Module Task_Totals 01JJCFB5Z8T27C219Q3VH3C0KE [0m
+[32mLoading Rule Module Project_Totals 01JJCFB5ZMQP9CVPH6H0TF1AGR [0m
+[32mLoading Rule Module Invoice_Totals 01JJCFB60DWS7VHA4BJ9J2NWN1 [0m
+[31mFailed to verify accepted rule code
+Rule.sum(derive=Client.total_hours, as_sum_of=Project.total_task_hours_worked)
+Rule.sum(derive=Client.total_amount, as_sum_of=Task.total_task_amount_billed)
+Rule.formula(derive=Client.is_over_budget, as_expression=lambda row: row.total_amount > row.budget_amount)
+[33mAttributeError: type object 'Project' has no attribute 'total_task_hours_worked'[0m

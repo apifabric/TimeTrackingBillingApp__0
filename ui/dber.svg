@@ -65,7 +65,7 @@
 <polygon fill="#e7e2dd" stroke="transparent" points="1672.44,-1199.67 1672.44,-1259.67 2100.44,-1259.67 2100.44,-1199.67 1672.44,-1199.67"/>
 <polygon fill="none" stroke="#29235c" points="1672.44,-1199.67 1672.44,-1259.67 2100.44,-1259.67 2100.44,-1199.67 1672.44,-1199.67"/>
 <text text-anchor="start" x="1683.44" y="-1219.87" font-family="Helvetica,sans-Serif" font-size="32.00" fill="#29235c">invoice_date &#160;&#160;&#160;</text>
-<text text-anchor="start" x="2004.1" y="-1220.87" font-family="Helvetica,sans-Serif" font-style="italic" font-size="32.00" fill="#29235c">DATE</text>
+<text text-anchor="start" x="1927.67" y="-1220.87" font-family="Helvetica,sans-Serif" font-style="italic" font-size="32.00" fill="#29235c">DATETIME</text>
 <polygon fill="#e7e2dd" stroke="transparent" points="1672.44,-1139.67 1672.44,-1199.67 2100.44,-1199.67 2100.44,-1139.67 1672.44,-1139.67"/>
 <polygon fill="none" stroke="#29235c" points="1672.44,-1139.67 1672.44,-1199.67 2100.44,-1199.67 2100.44,-1139.67 1672.44,-1139.67"/>
 <text text-anchor="start" x="1683.44" y="-1159.87" font-family="Helvetica,sans-Serif" font-size="32.00" fill="#29235c">project_id &#160;&#160;&#160;</text>
@@ -167,7 +167,7 @@
 <polygon fill="#e7e2dd" stroke="transparent" points="887.1,-747.67 887.1,-807.67 1333.1,-807.67 1333.1,-747.67 887.1,-747.67"/>
 <polygon fill="none" stroke="#29235c" points="887.1,-747.67 887.1,-807.67 1333.1,-807.67 1333.1,-747.67 887.1,-747.67"/>
 <text text-anchor="start" x="898.1" y="-767.87" font-family="Helvetica,sans-Serif" font-size="32.00" fill="#29235c">payment_date &#160;&#160;&#160;</text>
-<text text-anchor="start" x="1236.76" y="-768.87" font-family="Helvetica,sans-Serif" font-style="italic" font-size="32.00" fill="#29235c">DATE</text>
+<text text-anchor="start" x="1160.33" y="-768.87" font-family="Helvetica,sans-Serif" font-style="italic" font-size="32.00" fill="#29235c">DATETIME</text>
 <polygon fill="#e7e2dd" stroke="transparent" points="887.1,-687.67 887.1,-747.67 1333.1,-747.67 1333.1,-687.67 887.1,-687.67"/>
 <polygon fill="none" stroke="#29235c" points="887.1,-687.67 887.1,-747.67 1333.1,-747.67 1333.1,-687.67 887.1,-687.67"/>
 <text text-anchor="start" x="898.1" y="-707.87" font-family="Helvetica,sans-Serif" font-size="32.00" fill="#29235c">notes &#160;&#160;&#160;</text>
@@ -321,7 +321,7 @@
 <polygon fill="#e7e2dd" stroke="transparent" points="101.41,-1011.67 101.41,-1071.67 577.41,-1071.67 577.41,-1011.67 101.41,-1011.67"/>
 <polygon fill="none" stroke="#29235c" points="101.41,-1011.67 101.41,-1071.67 577.41,-1071.67 577.41,-1011.67 101.41,-1011.67"/>
 <text text-anchor="start" x="112.41" y="-1031.87" font-family="Helvetica,sans-Serif" font-size="32.00" fill="#29235c">date_worked &#160;&#160;&#160;</text>
-<text text-anchor="start" x="481.08" y="-1032.87" font-family="Helvetica,sans-Serif" font-style="italic" font-size="32.00" fill="#29235c">DATE</text>
+<text text-anchor="start" x="404.64" y="-1032.87" font-family="Helvetica,sans-Serif" font-style="italic" font-size="32.00" fill="#29235c">DATETIME</text>
 <polygon fill="#e7e2dd" stroke="transparent" points="101.41,-951.67 101.41,-1011.67 577.41,-1011.67 577.41,-951.67 101.41,-951.67"/>
 <polygon fill="none" stroke="#29235c" points="101.41,-951.67 101.41,-1011.67 577.41,-1011.67 577.41,-951.67 101.41,-951.67"/>
 <text text-anchor="start" x="112.41" y="-971.87" font-family="Helvetica,sans-Serif" font-size="32.00" fill="#29235c">hours_worked &#160;&#160;&#160;</text>

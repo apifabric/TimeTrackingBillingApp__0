@@ -1,0 +1,152 @@
+<div class="container">
+<o-form-container breadcrumb="yes" breadcrumb-label-columns="name" breadcrumb-separator=", " class="fill-form">
+      <o-form #form attr="Client_form_edit" 
+        service="Client" 
+        entity="Client" 
+        fxLayout="column" 
+        show-header="yes" 
+        header-actions="R;I;U;D"
+        #oDetailForm keys="id" 
+        keys-sql-types="INTEGER" 
+        show-header-navigation="yes"
+        (onDataLoaded)="onDataLoaded($event)">
+
+  <o-row attr="row1" layout-align="start stretch">
+    <div fxLayout="row wrap" fxLayoutAlign="start start" fxFlex fxLayoutGap="14px">
+      
+      <o-text-input #name attr="name" label=" name*" enabled="yes" required="no" fxFlex="20%" class="form-field"></o-text-input>
+      
+      <o-text-input #email attr="email" label="email" enabled="yes" required="no" fxFlex="20%" class="form-field"></o-text-input>
+      
+      <o-text-input #phone attr="phone" label="phone" enabled="yes" required="no" fxFlex="20%" class="form-field"></o-text-input>
+      
+      <o-currency-input #total_hours attr="total_hours" title="total_hours" type="currency" editable="no" required="no" currency-symbol="$" currency-symbol-position="left" thousand-separator="," decimal-separator="."></o-currency-input>
+      
+      <o-currency-input #total_amount attr="total_amount" title="total_amount" type="currency" editable="no" required="no" currency-symbol="$" currency-symbol-position="left" thousand-separator="," decimal-separator="."></o-currency-input>
+      
+      <o-currency-input #budget_amount attr="budget_amount" title="budget_amount" type="currency" editable="no" required="no" currency-symbol="$" currency-symbol-position="left" thousand-separator="," decimal-separator="."></o-currency-input>
+      
+      <o-text-input #is_over_budget attr="is_over_budget" label="is_over_budget" enabled="yes" required="no" fxFlex="20%" class="form-field"></o-text-input>
+      
+      <o-integer-input #id attr="id" label="id" type="integer" editable="no" required="no" ></o-integer-input>
+      
+    </div>
+  </o-row>
+      
+      <mat-tab-group fxFill>
+        
+        <mat-tab label="PERSON-client_id">
+    <div layout-padding>
+      <o-table 
+        attr="PersonTable" 
+        service="Person" 
+        entity="Person" 
+        keys="id"
+        parent-keys="client_id:id"
+        columns="name;client_id;email;phone;billing_rate;id;total_hours_entered;total_amount_billed"  
+        horizontal-scroll="yes"
+        detail-form-route="Person" 
+        edit-form-route="Person"
+        visible-columns="name;client_id;email;phone;billing_rate;id;total_hours_entered;total_amount_billed"  
+        sort-columns="name" 
+        query-rows="25" 
+        quick-filter="yes"
+        row-height="medium" 
+        select-all-checkbox="true" 
+        pageable="yes"  
+        auto-adjust="true" 
+        virtual-scroll="yes" 
+        insert-button="yes" 
+        delete-button="yes" 
+        fixed-header="true" 
+        class="vertical-padding-8"
+        edition-mode="dblclick" 
+        horizontal-scroll="yes" class="fill-form">
+        
+          <o-table-column #name attr="name" title=" name*" editable="no" required="no" content-align="left"></o-table-column>
+        
+          <o-table-column attr="client_id" title="client_id">
+    <o-table-cell-renderer-service attr="client_id" 
+        service="Client" entity="ClientType" columns="id;name"
+        parent-keys="id:client_id"
+        value-column="name" keys="client_id"
+        visible-columns="name" separator=" - " width="680px">
+    </o-table-cell-renderer-service>
+</o-table-column>
+        
+          <o-table-column #email attr="email" title="email" editable="no" required="no" content-align="left"></o-table-column>
+        
+          <o-table-column #phone attr="phone" title="phone" editable="no" required="no" content-align="left"></o-table-column>
+        
+          <o-table-column #billing_rate attr="billing_rate" title="billing_rate" type="currency" editable="no" required="no" currency-symbol="$" currency-symbol-position="left" thousand-separator=","decimal-separator="."></o-table-column>
+        
+          <o-table-column #id attr="id" title="id" type="integer" editable="no" required="no" content-align="center"></o-table-column>
+        
+          <o-table-column #total_hours_entered attr="total_hours_entered" title="total_hours_entered" type="currency" editable="no" required="no" currency-symbol="$" currency-symbol-position="left" thousand-separator=","decimal-separator="."></o-table-column>
+        
+          <o-table-column #total_amount_billed attr="total_amount_billed" title="total_amount_billed" type="currency" editable="no" required="no" currency-symbol="$" currency-symbol-position="left" thousand-separator=","decimal-separator="."></o-table-column>
+        
+        <o-table-paginator page-size-options="25;50;100"></o-table-paginator>
+      </o-table>
+    </div>
+</mat-tab>
+        
+        <mat-tab label="PROJECT-client_id">
+    <div layout-padding>
+      <o-table 
+        attr="ProjectTable" 
+        service="Project" 
+        entity="Project" 
+        keys="id"
+        parent-keys="client_id:id"
+        columns="name;client_id;total_project_hours;total_project_amount;project_budget_amount;is_over_budget;id"  
+        horizontal-scroll="yes"
+        detail-form-route="Project" 
+        edit-form-route="Project"
+        visible-columns="name;client_id;total_project_hours;total_project_amount;project_budget_amount;is_over_budget;id"  
+        sort-columns="name" 
+        query-rows="25" 
+        quick-filter="yes"
+        row-height="medium" 
+        select-all-checkbox="true" 
+        pageable="yes"  
+        auto-adjust="true" 
+        virtual-scroll="yes" 
+        insert-button="yes" 
+        delete-button="yes" 
+        fixed-header="true" 
+        class="vertical-padding-8"
+        edition-mode="dblclick" 
+        horizontal-scroll="yes" class="fill-form">
+        
+          <o-table-column #name attr="name" title=" name*" editable="no" required="no" content-align="left"></o-table-column>
+        
+          <o-table-column attr="client_id" title="client_id">
+    <o-table-cell-renderer-service attr="client_id" 
+        service="Client" entity="ClientType" columns="id;name"
+        parent-keys="id:client_id"
+        value-column="name" keys="client_id"
+        visible-columns="name" separator=" - " width="680px">
+    </o-table-cell-renderer-service>
+</o-table-column>
+        
+          <o-table-column #total_project_hours attr="total_project_hours" title="total_project_hours" type="currency" editable="no" required="no" currency-symbol="$" currency-symbol-position="left" thousand-separator=","decimal-separator="."></o-table-column>
+        
+          <o-table-column #total_project_amount attr="total_project_amount" title="total_project_amount" type="currency" editable="no" required="no" currency-symbol="$" currency-symbol-position="left" thousand-separator=","decimal-separator="."></o-table-column>
+        
+          <o-table-column #project_budget_amount attr="project_budget_amount" title="project_budget_amount" type="currency" editable="no" required="no" currency-symbol="$" currency-symbol-position="left" thousand-separator=","decimal-separator="."></o-table-column>
+        
+          <o-table-column #is_over_budget attr="is_over_budget" title="is_over_budget" editable="no" required="no" content-align="left"></o-table-column>
+        
+          <o-table-column #id attr="id" title="id" type="integer" editable="no" required="no" content-align="center"></o-table-column>
+        
+        <o-table-paginator page-size-options="25;50;100"></o-table-paginator>
+      </o-table>
+    </div>
+</mat-tab>
+        
+      </mat-tab-group>
+      
+    </o-form>
+  </o-form-container>
+</div>
